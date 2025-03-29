@@ -1,7 +1,7 @@
 # Ollama Teacher Discord Bot
 
 <div align="center">
-  <img src="https://ollama.ai/images/ollama.png" alt="Ollama Logo" width="120"/>
+  <img src="ollamaBotLogo.png" alt="Ollama Bot Logo" width="120"/>
   <br>
   <h3>Bringing AI-powered learning to your Discord server</h3>
 </div>
