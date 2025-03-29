@@ -1,7 +1,7 @@
 # Ollama Teacher Discord Bot
 
 <div align="center">
-  <img src="ollamaBotLogo.png" alt="Ollama Bot Logo" width="120"/>
+  <img src="ollamaBotLogo.png" alt="Ollama Bot Logo" width="250"/>
   <br>
   <h3>Bringing AI-powered learning to your Discord server</h3>
 </div>
@@ -85,8 +85,8 @@ The bot uses a modular architecture with specialized components:
 
 ### Step 1: Get the code
 ```bash
-git clone https://github.com/yourusername/ollama-teacher-bot.git
-cd ollama-teacher-bot
+git clone https://github.com/Leoleojames1/OllamaDiscordTeacher
+cd OllamaDiscordTeacher
 ```
 
 ### Step 2: Set up environment
@@ -100,6 +100,10 @@ pip install -r requirements.txt
 ```
 
 ### Step 3: Configure the bot
+
+Go to this guide by Snyk and get the bot token after registering:
+[Snyk Discord Bot Creation](https://www.youtube.com/watch?v=CaPBYyPX0rM&t=312s&ab_channel=Snyk)
+
 Create a `.env` file in the project root:
 ```
 # Discord Bot Configuration
