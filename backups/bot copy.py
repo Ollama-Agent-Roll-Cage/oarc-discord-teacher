@@ -1,8 +1,8 @@
 import os
 import asyncio
 from dotenv import load_dotenv
-from discord import Intents, Message, Embed, Color, File, Game, Status
-from discord.ext import commands, tasks
+from discord import Intents, Message, Embed, Color, File, Game
+from discord.ext import commands
 import ollama
 import logging
 import urllib.parse
@@ -11,7 +11,7 @@ import xml.etree.ElementTree as ET
 import re
 import time
 import aiohttp
-from datetime import datetime, timezone, UTC  # Import UTC from datetime
+from datetime import datetime
 import markdown
 import pandas as pd
 import pyarrow as pa
@@ -19,7 +19,6 @@ import pyarrow.parquet as pq
 from pathlib import Path
 import json
 from bs4 import BeautifulSoup
-from collections import defaultdict
 
 # Load environment variables from .env file
 load_dotenv()
@@ -94,12 +93,6 @@ DEFAULT_RESOURCES = [
     "https://arxiv.org/abs/1706.03762"  # Attention Is All You Need paper
 ]
 
-# Add these global variables after other configurations
-USER_CONVERSATIONS = defaultdict(lambda: [{'role': 'system', 'content': SYSTEM_PROMPT}])
-COMMAND_MEMORY = defaultdict(dict)  # Stores persistent memory for commands
-USER_PROFILES_DIR = os.path.join(DATA_DIR, 'user_profiles')
-Path(USER_PROFILES_DIR).mkdir(parents=True, exist_ok=True)
-
 # ---------- Helper Functions ----------
 
 def is_text_file(file_content):
@@ -142,60 +135,6 @@ async def get_ollama_response(prompt, with_context=True):
     except Exception as e:
         logging.error(f"An error occurred: {e}")
         return f"An error occurred: {e}"
-
-# Add this helper function
-def get_user_key(ctx_or_message):
-    """Generate a unique key for user storage.
-    Works with both Context and Message objects."""
-    try:
-        # Handle both Context and Message objects
-        if hasattr(ctx_or_message, 'guild'):
-            # It's a Context object
-            guild = ctx_or_message.guild
-            author = ctx_or_message.author
-        else:
-            # It's a Message object
-            guild = ctx_or_message.guild
-            author = ctx_or_message.author
-            
-        # Handle DMs (no guild)
-        if guild is None:
-            return f"dm_{author.id}"
-            
-        return f"{guild.id}_{author.id}"
-        
-    except Exception as e:
-        logging.error(f"Error generating user key: {e}")
-        # Fallback to just user ID if there's an error
-        return f"user_{ctx_or_message.author.id}"
-
-async def store_user_conversation(message, content, is_bot=False):
-    """Store user conversation with metadata."""
-    try:
-        # Get user_key based on whether it's a DM or guild message
-        if message.guild:
-            user_key = f"{message.guild.id}_{message.author.id}"
-            guild_id = message.guild.id
-        else:
-            user_key = f"dm_{message.author.id}"
-            guild_id = None
-            
-        timestamp = datetime.now(UTC).isoformat()
-        
-        conversation_entry = {
-            'role': 'assistant' if is_bot else 'user',
-            'content': content,
-            'timestamp': timestamp,
-            'user_id': message.author.id,
-            'guild_id': guild_id,
-            'username': message.author.display_name or message.author.name,
-            'is_dm': guild_id is None
-        }
-        
-        USER_CONVERSATIONS[user_key].append(conversation_entry)
-        
-    except Exception as e:
-        logging.error(f"Error storing conversation: {e}")
 
 # ---------- Parquet Storage ----------
 
@@ -386,7 +325,7 @@ class ArxivSearcher:
                     if link.get('rel') == 'alternate'
                 ),
                 'categories': [cat.get('term') for cat in entry.findall('atom:category', namespaces)],
-                'timestamp': datetime.now(UTC).isoformat()
+                'timestamp': datetime.utcnow().isoformat()
             }
             
             # Add optional fields if present
@@ -460,7 +399,7 @@ class DuckDuckGoSearcher:
                             # Save search results to Parquet
                             search_data = {
                                 'query': search_query,
-                                'timestamp': datetime.now(UTC).isoformat(),
+                                'timestamp': datetime.utcnow().isoformat(),
                                 'raw_results': result_text
                             }
                             
@@ -622,7 +561,7 @@ class WebCrawler:
                         # Save crawled content
                         crawl_data = {
                             'url': url,
-                            'timestamp': datetime.now(UTC).isoformat(),
+                            'timestamp': datetime.utcnow().isoformat(),
                             'content': html[:100000]  # Limit content size
                         }
                         
@@ -672,41 +611,26 @@ class WebCrawler:
 
 @bot.command(name='reset')
 async def reset(ctx):
-    """Resets the user's conversation log."""
-    user_key = get_user_key(ctx)
-    USER_CONVERSATIONS[user_key] = [{'role': 'system', 'content': SYSTEM_PROMPT}]
-    COMMAND_MEMORY[user_key].clear()
-    await ctx.send("✅ Your conversation context has been reset.")
-
-@bot.command(name='globalReset')
-async def global_reset(ctx):
-    """Resets all conversation logs (admin only)."""
-    if not ctx.author.guild_permissions.administrator and ctx.author.id != ctx.guild.owner_id:
-        await ctx.send("⚠️ Only server administrators and owner can use this command.")
-        return
-        
-    USER_CONVERSATIONS.clear()
-    COMMAND_MEMORY.clear()
-    await ctx.send("🔄 Global conversation context has been reset.")
+    """Resets the conversation log."""
+    conversation_logs.clear()
+    conversation_logs.append({'role': 'system', 'content': SYSTEM_PROMPT})
+    await ctx.send("✅ Conversation context has been reset.")
 
 @bot.command(name='help')
 async def help_command(ctx):
     """Display help information."""
     help_text = """# 🤖 Ollama Teacher Bot Commands
 
-## Personal Commands
-- `!profile` - View your learning profile
-- `!profile <question>` - Ask about your learning history
-- `!reset` - Clear your conversation history
+## Direct Commands (use with ! prefix)
+- `!help` - Show this help message
+- `!reset` - Clear conversation history
+- `!learn` - Show learning resources
 
 ## AI-Powered Commands
-- `!arxiv <arxiv_url_or_id> [--memory] <question>` - Learn from ArXiv papers
+- `!arxiv <arxiv_url_or_id> <question>` - Learn from ArXiv papers
 - `!ddg <query> <question>` - Search DuckDuckGo and learn
 - `!crawl <url> <question>` - Learn from web pages
 - `!pandas <query>` - Query stored data
-
-## Admin Commands
-- `!globalReset` - Reset all conversations (admin only)
 
 ## Chat Mode
 - Mention the bot without commands to start a conversation
@@ -714,11 +638,10 @@ async def help_command(ctx):
 
 ## Examples
 ```
-!profile                                    # View your profile
-!profile What topics have I been learning?  # Ask about your progress
-!arxiv --memory 1706.03762 Tell me about attention mechanisms
+!arxiv 1706.03762 Explain attention mechanism
 !ddg "python asyncio" How to use async/await?
 !crawl https://pypi.org/project/ollama/ How to use this package?
+!pandas Show recent ArXiv papers
 ```
 """
     await send_in_chunks(ctx, help_text)
@@ -756,15 +679,7 @@ async def learn_default(ctx):
 async def arxiv_search(ctx, arxiv_ids: str, *, question: str = None):
     """Search for multiple ArXiv papers and learn from them."""
     try:
-        # Check for memory flag
-        user_key = get_user_key(ctx)
-        use_memory = '--memory' in arxiv_ids
-        arxiv_ids = arxiv_ids.replace('--memory', '').strip()
-        
         async with ctx.typing():
-            # Get previous context if using memory
-            previous_context = COMMAND_MEMORY[user_key].get('arxiv', '') if use_memory else ''
-            
             # Split IDs by space or comma
             id_list = re.split(r'[,\s]+', arxiv_ids.strip())
             all_papers = []
@@ -785,12 +700,6 @@ async def arxiv_search(ctx, arxiv_ids: str, *, question: str = None):
                         
                     paper_text = await ArxivSearcher.format_paper_for_learning(paper_info)
                     all_papers.append({"id": arxiv_id, "content": paper_text})
-                    
-                    # Store the paper details in user's memory if memory flag is used
-                    if use_memory:
-                        memory_key = f"paper_{arxiv_id}"
-                        COMMAND_MEMORY[user_key][memory_key] = paper_text
-                        
                 except Exception as e:
                     logger.error(f"Error processing {arxiv_id_or_url}: {e}")
                     await ctx.send(f"⚠️ Error with {arxiv_id_or_url}: {str(e)}")
@@ -800,62 +709,19 @@ async def arxiv_search(ctx, arxiv_ids: str, *, question: str = None):
                 return
                 
             if question:
-                # Include previous context in prompt if memory is enabled
-                combined_prompt = ""
-                if use_memory and previous_context:
-                    combined_prompt = f"""Previous context:
-{previous_context}
-
-New papers to analyze:
-"""
-                
-                combined_prompt += "I want to learn from these research papers:\n\n"
+                # Combine all papers for the question
+                combined_prompt = "I want to learn from these research papers:\n\n"
                 for paper in all_papers:
                     combined_prompt += f"Paper {paper['id']}:\n{paper['content']}\n\n"
                 combined_prompt += f"\nMy question is: {question}\n\nPlease provide a detailed answer using information from all papers."
                 
-                if use_memory:
-                    combined_prompt += "\n\nIncorporate relevant information from previously discussed papers if available."
-                
                 ai_response = await get_ollama_response(combined_prompt, with_context=False)
-                
-                # Store context if using memory
-                if use_memory:
-                    COMMAND_MEMORY[user_key]['arxiv'] = combined_prompt + f"\n\nAnswer: {ai_response}"
-                
-                # Format response with memory indicator
-                response_text = f"""{'🧠 Using Memory: Previous context incorporated\n\n' if use_memory and previous_context else ''}# ArXiv Paper Analysis
-
-**Papers analyzed:** {', '.join(p['id'] for p in all_papers)}
-{f'**Memory active:** Previous context from {len(previous_context.split()) // 100} discussions' if use_memory and previous_context else ''}
-
-{ai_response}
-
-{'> Use !reset to clear your memory context' if use_memory else '> Add --memory flag to enable persistent memory'}"""
-                
-                await send_in_chunks(ctx, response_text, reference=ctx.message)
+                await send_in_chunks(ctx, ai_response, reference=ctx.message)
             else:
                 # Send each paper's information
                 for paper in all_papers:
-                    header = "🧠 Memory Stored: " if use_memory else ""
-                    await send_in_chunks(ctx, header + paper['content'], reference=ctx.message)
-            
-            # Store conversation in user history
-            await store_user_conversation(
-                ctx.author.id, 
-                ctx.guild.id, 
-                f"Asked about ArXiv papers: {arxiv_ids}" + (f" with question: {question}" if question else ""),
-                is_bot=False
-            )
-            
-            if ai_response:
-                await store_user_conversation(
-                    ctx.author.id,
-                    ctx.guild.id,
-                    ai_response,
-                    is_bot=True
-                )
-                
+                    await send_in_chunks(ctx, paper['content'], reference=ctx.message)
+                    
     except Exception as e:
         logging.error(f"Error in arxiv_search: {e}")
         await ctx.send(f"⚠️ Error: {str(e)}")
@@ -1107,66 +973,6 @@ Use more specific queries like:
         logging.error(f"Error in pandas_query: {e}")
         await ctx.send(f"⚠️ Error in data query: {str(e)}\nTry using !reset if the issue persists.")
 
-@bot.command(name='profile')
-async def view_profile(ctx, *, question: str = None):
-    """View your user profile or ask questions about your learning history."""
-    try:
-        user_key = get_user_key(ctx)
-        user_name = ctx.author.display_name or ctx.author.name
-        profile_path = os.path.join(USER_PROFILES_DIR, f"{user_key}_profile.json")
-        
-        # Check if profile exists
-        if not os.path.exists(profile_path):
-            await ctx.send(f"⚠️ No profile found for {user_name}. Interact with me more to build your profile!")
-            return
-            
-        # Load profile data
-        with open(profile_path, 'r', encoding='utf-8') as f:
-            profile_data = json.load(f)
-            
-        # Get conversation history
-        conversations = USER_CONVERSATIONS.get(user_key, [])
-        user_messages = [
-            conv for conv in conversations 
-            if conv['role'] == 'user' and 'content' in conv
-        ]
-        
-        # Format basic profile info
-        profile_text = f"""# 👤 Profile for {user_name}
-
-## Activity Summary
-- Messages: {len(user_messages)}
-- First Interaction: {user_messages[0]['timestamp'] if user_messages else 'N/A'}
-- Last Active: {profile_data.get('timestamp', 'Unknown')}
-
-## Learning Analysis
-{profile_data.get('analysis', 'No analysis available yet.')}
-"""
-
-        if question:
-            # Create context for answering questions about the user
-            context = f"""User Profile Information:
-{profile_data.get('analysis', '')}
-
-Recent Conversations:
-{chr(10).join([f"- {msg['content']}" for msg in user_messages[-10:]])}
-
-Question about the user: {question}
-
-Please provide a detailed, personalized answer based on the user's profile and conversation history.
-Address the user by name ({user_name}) in your response."""
-
-            async with ctx.typing():
-                answer = await get_ollama_response(context, with_context=False)
-                await send_in_chunks(ctx, f"# 🔍 Profile Query\n\n{answer}", reference=ctx.message)
-        else:
-            # Just show the profile
-            await send_in_chunks(ctx, profile_text, reference=ctx.message)
-            
-    except Exception as e:
-        logging.error(f"Error in view_profile: {e}")
-        await ctx.send(f"⚠️ Error accessing profile: {str(e)}")
-
 async def process_file_attachment(attachment):
     """Process a file attachment and return its content."""
     if attachment.size > MAX_FILE_SIZE:
@@ -1201,24 +1007,13 @@ async def on_message(message: Message):
     if message.author == bot.user:
         return
 
-    # Get user's preferred name
-    user_name = message.author.display_name or message.author.name
-    
     # Only process if bot is mentioned
     if bot.user and bot.user.mentioned_in(message):
         content = re.sub(f'<@!?{bot.user.id}>', '', message.content).strip()
         
-        # Store user information
-        await store_user_conversation(message, content)
-        
-        # Add personalized greeting for direct questions
-        if not content.startswith('!'):
-            greeting = f"Hi {user_name}! "
-        else:
-            greeting = ""
-        
         # Process commands if starts with !
         if content.startswith('!'):
+            # Create a new message object with the cleaned content
             message.content = content
             await bot.process_commands(message)
         # Handle conversation for non-command mentions
@@ -1232,39 +1027,36 @@ async def on_message(message: Message):
                             file_content = await process_file_attachment(attachment)
                             files_content.append(f"File: {attachment.filename}\n{file_content}")
                         except ValueError as e:
-                            await message.channel.send(f"⚠️ {user_name}, there was an error with {attachment.filename}: {str(e)}")
+                            await message.channel.send(f"⚠️ Error with {attachment.filename}: {str(e)}")
                             continue
                     
                     if files_content:
                         # Combine file contents with the question
-                        combined_prompt = f"""The user {user_name} has provided these file(s) to analyze:
+                        combined_prompt = f"""Here are the file(s) to analyze:
 
 {chr(10).join(files_content)}
 
-Their question or request is: {content}
+User's question or request: {content}
 
-Please provide a detailed response, including code examples if relevant. Address the user by name in your response."""
+Please provide a detailed response, including code examples if relevant."""
                         
                         conversation_logs.append({'role': 'user', 'content': combined_prompt})
                         async with message.channel.typing():
                             response = await get_ollama_response(combined_prompt)
                         conversation_logs.append({'role': 'assistant', 'content': response})
-                        await store_user_conversation(message, response, is_bot=True)
-                        await send_in_chunks(message.channel, greeting + response, message)
+                        await send_in_chunks(message.channel, response, message)
                         return
                 
                 # Regular conversation without files
-                personalized_content = f"{user_name} asks: {content}\n\nProvide a helpful response, addressing them by name."
-                conversation_logs.append({'role': 'user', 'content': personalized_content})
+                conversation_logs.append({'role': 'user', 'content': content})
                 async with message.channel.typing():
-                    response = await get_ollama_response(personalized_content)
+                    response = await get_ollama_response(content)
                 conversation_logs.append({'role': 'assistant', 'content': response})
-                await store_user_conversation(message, response, is_bot=True)
-                await send_in_chunks(message.channel, greeting + response, message)
+                await send_in_chunks(message.channel, response, message)
             
             except Exception as e:
                 logging.error(f"Error processing message: {e}")
-                await message.channel.send(f"⚠️ {user_name}, an error occurred: {str(e)}")
+                await message.channel.send(f"⚠️ An error occurred: {str(e)}")
 
 async def change_nickname(guild):
     """Change the bot's nickname in the specified guild."""
@@ -1277,104 +1069,16 @@ async def change_nickname(guild):
 
 @bot.event
 async def on_ready():
-    """Called when the bot is ready."""
-    try:
-        # Log startup
-        logging.info(f'{bot.user.name} is now running!')
-        logging.info(f'Connected to {len(bot.guilds)} guilds')
-        
-        # Start periodic tasks
-        analyze_user_profiles.start()
-        
-        # Initialize user data storage
+    """Called when the bot is ready to start interacting with the server."""
+    logging.info(f'{bot.user.name} is now running!')
+    
+    # Change the nickname if enabled
+    if CHANGE_NICKNAME:
         for guild in bot.guilds:
-            logging.info(f'Initializing data for guild: {guild.name}')
-            guild_dir = Path(f"{DATA_DIR}/guilds/{guild.id}")
-            guild_dir.mkdir(parents=True, exist_ok=True)
-            
-            # Store member information
-            member_data = {}
-            for member in guild.members:
-                if not member.bot:
-                    member_data[str(member.id)] = {
-                        'name': member.name,
-                        'display_name': member.display_name,
-                        'joined_at': member.joined_at.isoformat() if member.joined_at else None,
-                        'roles': [role.name for role in member.roles if role.name != "@everyone"],
-                        'last_active': datetime.now(UTC).isoformat()
-                    }
-            
-            # Save member data
-            member_file = guild_dir / 'members.json'
-            with open(member_file, 'w', encoding='utf-8') as f:
-                json.dump(member_data, f, indent=2)
-        
-        # Change nicknames if enabled
-        if CHANGE_NICKNAME:
-            for guild in bot.guilds:
-                try:
-                    await guild.me.edit(nick="Ollama Teacher")
-                    logging.info(f'Nickname changed in guild {guild.name}')
-                except Exception as e:
-                    logging.error(f'Failed to change nickname in {guild.name}: {e}')
-        
-        # Set custom status with help command info
-        status_text = "!help | Mention me with questions!"
-        await bot.change_presence(
-            activity=Game(name=status_text),
-            status=Status.online
-        )
-        
-        logging.info('Bot initialization complete!')
-        
-    except Exception as e:
-        logging.error(f'Error in on_ready: {e}')
-
-@tasks.loop(minutes=30)
-async def analyze_user_profiles():
-    """Analyze user conversations and update profiles periodically."""
-    try:
-        for user_key, conversations in USER_CONVERSATIONS.items():
-            guild_id, user_id = map(int, user_key.split('_'))
-            
-            # Get user messages only
-            user_messages = [
-                conv['content'] for conv in conversations 
-                if conv['role'] == 'user'
-            ]
-            
-            if not user_messages:
-                continue
-                
-            # Create analysis prompt
-            analysis_prompt = f"""Analyze these user messages and extract key information:
-{chr(10).join(user_messages[-50:])}
-
-Please identify:
-1. Main topics of interest
-2. Technical skill level
-3. Common questions or patterns
-4. Learning progress
-5. Key concepts discussed
-
-Format the response as concise bullet points."""
-            
-            # Get AI analysis
-            analysis = await get_ollama_response(analysis_prompt, with_context=False)
-            
-            # Save to user profile
-            profile_path = os.path.join(USER_PROFILES_DIR, f"{user_key}_profile.json")
-            profile_data = {
-                'timestamp': datetime.now(UTC).isoformat(),
-                'analysis': analysis,
-                'username': bot.get_user(int(user_id)).name if bot.get_user(int(user_id)) else 'Unknown'
-            }
-            
-            with open(profile_path, 'w', encoding='utf-8') as f:
-                json.dump(profile_data, f, indent=2)
-                
-    except Exception as e:
-        logging.error(f"Error in analyze_user_profiles: {e}")
+            await change_nickname(guild)
+    
+    # Set custom status
+    await bot.change_presence(activity=Game(name="!help for commands"))
 
 def main():
     """Main function to run the bot."""
