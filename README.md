@@ -100,6 +100,10 @@ pip install -r requirements.txt
 ```
 
 ### Step 3: Configure the bot
+
+Go to this guide by Snyk and get the bot token after registering:
+[Snyk Discord Bot Creation](https://www.youtube.com/watch?v=CaPBYyPX0rM&t=312s&ab_channel=Snyk)
+
 Create a `.env` file in the project root:
 ```
 # Discord Bot Configuration
