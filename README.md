@@ -85,8 +85,8 @@ The bot uses a modular architecture with specialized components:
 
 ### Step 1: Get the code
 ```bash
-git clone https://github.com/yourusername/ollama-teacher-bot.git
-cd ollama-teacher-bot
+git clone https://github.com/Leoleojames1/OllamaDiscordTeacher
+cd OllamaDiscordTeacher
 ```
 
 ### Step 2: Set up environment
