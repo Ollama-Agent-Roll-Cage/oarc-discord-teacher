@@ -753,35 +753,24 @@ async def help_command(ctx):
 ## AI-Powered Commands
 - `!arxiv <arxiv_url_or_id> [--memory] <question>` - Learn from ArXiv papers
 - `!ddg <query> <question>` - Search DuckDuckGo and learn
-- `!crawl <url1> [url2 url3...] <question>` - Learn from web pages
+- `!crawl <url> <question>` - Learn from web pages
 - `!pandas <query>` - Query stored data
-- `!links [limit]` - Collect and organize links from channel history
 
 ## Admin Commands
 - `!globalReset` - Reset all conversations (admin only)
 
-## Download and build your own custom OllamaDiscordTeacher from the github repo
-https://github.com/Leoleojames1/OllamaDiscordTeacher/tree/master
-
+## 
 ## Chat Mode
 - Mention the bot without commands to start a conversation
 - Example: @Ollama Teacher What is machine learning?
-
-## Memory Feature
-The `--memory` flag saves context between queries:
-- Add `--memory` before your question to enable persistent memory
-- Great for follow-up questions about the same topic
-- Use `!reset` to clear saved memory when you're done
 
 ## Examples
 ```
 !profile                                    # View your profile
 !profile What topics have I been learning?  # Ask about your progress
 !arxiv --memory 1706.03762 Tell me about attention mechanisms
-!arxiv 1706.03762 2104.05704 Compare these two papers  # Multiple papers
 !ddg "python asyncio" How to use async/await?
-!crawl https://pypi.org/project/ollama/ https://github.com/ollama/ollama Compare these
-!links 500                                  # Collect links from last 500 messages
+!crawl https://pypi.org/project/ollama/ How to use this package?
 ```
 """
     await send_in_chunks(ctx, help_text)

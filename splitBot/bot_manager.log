@@ -1,0 +1,20 @@
+2025-04-01 02:55:45,416 - BotManager - ERROR - Error loading papers: 'BotManagerApp' object has no attribute 'status_label'
+2025-04-01 03:08:40,095 - BotManager - INFO - Data directories initialized at data
+2025-04-01 03:09:03,652 - BotManager - INFO - Bot process started with PID: 30876 using script: M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\main.py
+2025-04-01 03:09:05,932 - BotManager - INFO - Bot output: 2025-04-01 03:09:05,932 - discord.client - WARNING - PyNaCl is not installed, voice will NOT be supported
+2025-04-01 03:09:05,935 - BotManager - INFO - Bot output: [2025-04-01 03:09:05] [INFO    ] discord.client: logging in using static token
+2025-04-01 03:09:05,936 - BotManager - INFO - Bot output: 2025-04-01 03:09:05,935 - discord.client - INFO - logging in using static token
+2025-04-01 03:09:06,546 - BotManager - INFO - Bot output: [2025-04-01 03:09:06] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 75b7b8cb6f64a09e43f2f10f211fd5e2).
+2025-04-01 03:09:06,547 - BotManager - INFO - Bot output: 2025-04-01 03:09:06,546 - discord.gateway - INFO - Shard ID None has connected to Gateway (Session ID: 75b7b8cb6f64a09e43f2f10f211fd5e2).
+2025-04-01 03:09:08,569 - BotManager - INFO - Bot output: 2025-04-01 03:09:08,569 - root - INFO - OllamaTeacher is now running!
+2025-04-01 03:09:08,571 - BotManager - INFO - Bot output: 2025-04-01 03:09:08,569 - root - INFO - Connected to 2 guilds
+2025-04-01 03:09:08,572 - BotManager - INFO - Bot output: 2025-04-01 03:09:08,569 - root - INFO - Initializing data for guild: \U0001f47dOllama Agent Roll Cage\U0001f9d9
+2025-04-01 03:09:08,575 - BotManager - INFO - Bot output: 2025-04-01 03:09:08,572 - root - INFO - Initializing data for guild: I-Made-This
+2025-04-01 03:09:08,754 - BotManager - INFO - Bot output: 2025-04-01 03:09:08,754 - root - INFO - Nickname changed in guild \U0001f47dOllama Agent Roll Cage\U0001f9d9
+2025-04-01 03:09:08,923 - BotManager - INFO - Bot output: 2025-04-01 03:09:08,922 - root - INFO - Nickname changed in guild I-Made-This
+2025-04-01 03:09:08,925 - BotManager - INFO - Bot output: 2025-04-01 03:09:08,923 - root - INFO - Bot initialization complete!
+2025-04-01 03:11:18,534 - BotManager - INFO - Bot output: 2025-04-01 03:11:18,534 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-04-01 03:11:34,536 - BotManager - INFO - Bot output: 2025-04-01 03:11:34,536 - root - INFO - Data saved to data/crawls/github_com_Leoleojames1_OllamaDiscordTeacher_1743495094.parquet
+2025-04-01 03:11:48,000 - BotManager - INFO - Bot output: 2025-04-01 03:11:47,999 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2025-04-01 03:13:11,574 - BotManager - WARNING - Bot process did not terminate within timeout, forcing...
+2025-04-01 03:13:11,591 - BotManager - INFO - Bot process exited with code: 1
