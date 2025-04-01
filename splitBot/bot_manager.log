@@ -18,3 +18,18 @@
 2025-04-01 03:11:48,000 - BotManager - INFO - Bot output: 2025-04-01 03:11:47,999 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
 2025-04-01 03:13:11,574 - BotManager - WARNING - Bot process did not terminate within timeout, forcing...
 2025-04-01 03:13:11,591 - BotManager - INFO - Bot process exited with code: 1
+2025-04-01 03:14:56,855 - BotManager - INFO - Data directories initialized at data
+2025-04-01 03:15:01,432 - BotManager - INFO - Bot process started with PID: 37776 using script: M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\main.py
+2025-04-01 03:15:03,674 - BotManager - INFO - Bot output: 2025-04-01 03:15:03,674 - discord.client - WARNING - PyNaCl is not installed, voice will NOT be supported
+2025-04-01 03:15:03,677 - BotManager - INFO - Bot output: [2025-04-01 03:15:03] [INFO    ] discord.client: logging in using static token
+2025-04-01 03:15:03,679 - BotManager - INFO - Bot output: 2025-04-01 03:15:03,677 - discord.client - INFO - logging in using static token
+2025-04-01 03:15:04,444 - BotManager - INFO - Bot output: [2025-04-01 03:15:04] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 062108e60a11aede80f54a0ba58a71b3).
+2025-04-01 03:15:04,445 - BotManager - INFO - Bot output: 2025-04-01 03:15:04,444 - discord.gateway - INFO - Shard ID None has connected to Gateway (Session ID: 062108e60a11aede80f54a0ba58a71b3).
+2025-04-01 03:15:06,461 - BotManager - INFO - Bot output: 2025-04-01 03:15:06,461 - root - INFO - OllamaTeacher is now running!
+2025-04-01 03:15:06,483 - BotManager - INFO - Bot output: 2025-04-01 03:15:06,461 - root - INFO - Connected to 2 guilds
+2025-04-01 03:15:06,484 - BotManager - INFO - Bot output: 2025-04-01 03:15:06,461 - root - INFO - Initializing data for guild: \U0001f47dOllama Agent Roll Cage\U0001f9d9
+2025-04-01 03:15:06,485 - BotManager - INFO - Bot output: 2025-04-01 03:15:06,463 - root - INFO - Initializing data for guild: I-Made-This
+2025-04-01 03:15:06,634 - BotManager - INFO - Bot output: 2025-04-01 03:15:06,634 - root - INFO - Nickname changed in guild \U0001f47dOllama Agent Roll Cage\U0001f9d9
+2025-04-01 03:15:06,835 - BotManager - INFO - Bot output: 2025-04-01 03:15:06,835 - root - INFO - Nickname changed in guild I-Made-This
+2025-04-01 03:15:06,836 - BotManager - INFO - Bot output: 2025-04-01 03:15:06,835 - root - INFO - Bot initialization complete!
+2025-04-01 03:15:28,446 - BotManager - WARNING - Bot process did not terminate within timeout, forcing...

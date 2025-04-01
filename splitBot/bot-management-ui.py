@@ -13,6 +13,8 @@ import subprocess
 import signal
 import webbrowser
 
+# use pyqy6 instead of tkinter
+
 # Import bot modules
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from utils import ParquetStorage
