@@ -6,6 +6,7 @@ from datetime import datetime, timezone, UTC
 import json
 from pathlib import Path
 from collections import defaultdict
+import signal
 
 from dotenv import load_dotenv
 from discord import Intents, Message, Game, Status, File
@@ -21,6 +22,11 @@ from commands import register_commands
 
 # Load environment variables from .env file
 load_dotenv()
+
+# Add this after loading environment variables:
+logging.info(f"Environment configuration: OLLAMA_MODEL={os.getenv('OLLAMA_MODEL')}")
+CONFIG_MODEL_NAME = os.getenv('CONFIG_MODEL_NAME', 'default_model_name')  # Define a default value if not set
+logging.info(f"Config.py MODEL_NAME: {CONFIG_MODEL_NAME}")
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -74,6 +80,7 @@ async def on_message(message: Message):
 
     # Get user's preferred name
     user_name = message.author.display_name or message.author.name
+    user_key = get_user_key(message)
     
     # Only process if bot is mentioned
     if bot.user and bot.user.mentioned_in(message):
@@ -82,21 +89,28 @@ async def on_message(message: Message):
         # Store user information
         await store_user_conversation(message, content)
         
-        # Add personalized greeting for direct questions
-        if not content.startswith('!'):
-            greeting = f"Hi {user_name}! "
-        else:
-            greeting = ""
-        
         # Process commands if starts with !
         if content.startswith('!'):
             message.content = content
             await bot.process_commands(message)
+            return  # This return is critical to prevent double processing
+            
         # Handle conversation for non-command mentions
         else:
             try:
+                # MODIFIED APPROACH: Keep some conversation context but prevent multiple responses
+                # Reset conversation logs if there are too many entries (prevents model confusion)
+                if len(conversation_logs) > 5:  # Only keep a small recent history, not the full history
+                    system_prompt = conversation_logs[0] if conversation_logs else {'role': 'system', 'content': SYSTEM_PROMPT}
+                    conversation_logs.clear()
+                    conversation_logs.append(system_prompt)
+                
+                # Variable to track if we have already sent a response
+                response_sent = False
+                
                 # Handle file attachments
                 if message.attachments:
+                    # File attachment handling code remains unchanged
                     files_content = []
                     for attachment in message.attachments:
                         try:
@@ -116,22 +130,40 @@ Their question or request is: {content}
 
 Please provide a detailed response, including code examples if relevant. Address the user by name in your response."""
                         
-                        conversation_logs.append({'role': 'user', 'content': combined_prompt})
                         async with message.channel.typing():
                             response = await get_ollama_response(combined_prompt)
-                        conversation_logs.append({'role': 'assistant', 'content': response})
-                        await store_user_conversation(message, response, is_bot=True)
-                        await send_in_chunks(message.channel, greeting + response, message)
+                        
+                        if response and isinstance(response, str) and len(response.strip()) > 0:
+                            # Add the new conversation
+                            conversation_logs.append({'role': 'user', 'content': combined_prompt})
+                            conversation_logs.append({'role': 'assistant', 'content': response})
+                            
+                            await store_user_conversation(message, response, is_bot=True)
+                            await send_in_chunks(message.channel, response, message)
+                            response_sent = True
                         return
                 
-                # Regular conversation without files
-                personalized_content = f"{user_name} asks: {content}\n\nProvide a helpful response, addressing them by name."
-                conversation_logs.append({'role': 'user', 'content': personalized_content})
-                async with message.channel.typing():
-                    response = await get_ollama_response(personalized_content)
-                conversation_logs.append({'role': 'assistant', 'content': response})
-                await store_user_conversation(message, response, is_bot=True)
-                await send_in_chunks(message.channel, greeting + response, message)
+                if not response_sent:
+                    # Regular personalized content
+                    personalized_content = f"{user_name} asks: {content}"
+                    
+                    # Add the current conversation 
+                    conversation_logs.append({'role': 'user', 'content': personalized_content})
+                    
+                    # Get a response from the model
+                    async with message.channel.typing():
+                        response = await get_ollama_response(personalized_content)
+                    
+                    # Only continue if we got a valid response
+                    if response and isinstance(response, str) and len(response.strip()) > 0:
+                        # Check for any weird content insertions by limiting to a reasonable response length
+                        if len(response) > 2000:
+                            response = response[:2000] + "..."
+                        
+                        # Add to conversation logs
+                        conversation_logs.append({'role': 'assistant', 'content': response})
+                        await store_user_conversation(message, response, is_bot=True)
+                        await send_in_chunks(message.channel, response, message)
             
             except Exception as e:
                 logging.error(f"Error processing message: {e}")
@@ -256,8 +288,24 @@ Format the response as concise bullet points."""
     except Exception as e:
         logging.error(f"Error in analyze_user_profiles: {e}")
 
+def signal_handler(sig, frame):
+    """Handle interrupt signals to shut down gracefully."""
+    logging.info("Interrupt received, shutting down...")
+    # Cancel all running tasks
+    tasks = [t for t in asyncio.all_tasks() if t is not asyncio.current_task()]
+    for task in tasks:
+        task.cancel()
+    # Run cleanup code if needed
+    logging.info("Bot shutdown complete.")
+    # Exit cleanly
+    asyncio.get_event_loop().stop()
+
 def main():
     """Main function to run the bot."""
+    # Setup signal handlers
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+    
     bot.run(TOKEN)
 
 if __name__ == '__main__':

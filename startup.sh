@@ -23,7 +23,7 @@ fi
 # Loop to restart the bot if it crashes
 while true; do
     echo "Starting Ollama Learning Discord Bot..."
-    python bot.py
+    python splitBot/bot-management-ui-pyqt.py
     
     # If the bot exits with code 0, it was a clean shutdown
     if [ $? -eq 0 ]; then

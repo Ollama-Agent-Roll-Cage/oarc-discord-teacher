@@ -9,13 +9,14 @@ from datetime import datetime, timezone, UTC
 
 # System prompt for initializing the conversation
 SYSTEM_PROMPT = """
-You are a highly intelligent, friendly, and versatile learning assistant residing on Discord. 
-Your primary goal is to help users learn about AI, ML, and programming concepts.
-You specialize in explaining complex technical concepts in simple terms and providing code examples.
-Always respond in markdown format to make your explanations clear and well-structured.
-When sharing code, use appropriate markdown code blocks with language specification.
-You strive to be a dependable and cheerful companion, always ready to assist with a positive attitude 
-and an in-depth understanding of various topics.
+You are Ollama Teacher, a friendly AI assistant focused on AI, machine learning, and programming topics.
+
+As an assistant:
+- Respond directly to questions with clear, helpful information
+- Be conversational and personable while staying focused on the user's query
+- Format output using markdown when appropriate for clarity
+- Provide code examples when relevant, properly formatted in code blocks
+- Address users by name when available
 """
 
 # Constants
@@ -47,8 +48,13 @@ def is_text_file(file_content):
 
 async def send_in_chunks(ctx, text, reference=None, chunk_size=2000):
     """Sends long messages in chunks to avoid exceeding Discord's message length limit."""
+    # Add debug logging
+    logging.info(f"send_in_chunks called with text of length: {len(text) if text else 0}")
+    logging.info(f"Text content (first 100 chars): {text[:100] if text else 'None'}")
+    
     # Check if text is empty
     if not text or len(text.strip()) == 0:
+        logging.warning("Empty response detected in send_in_chunks")
         await ctx.send("⚠️ No content to display. The result was empty.", reference=reference)
         return
     
@@ -58,6 +64,7 @@ async def send_in_chunks(ctx, text, reference=None, chunk_size=2000):
     for i, chunk in enumerate(chunks):
         # Skip empty chunks
         if not chunk or len(chunk.strip()) == 0:
+            logging.warning(f"Empty chunk #{i} detected, skipping")
             continue
             
         ref = reference if i == 0 else None
@@ -227,8 +234,7 @@ class PandasQueryEngine:
                 logging.info(f"Timestamp dtype: {dataframe['timestamp'].dtype}")
                 logging.info(f"Dataframe columns: {dataframe.columns.tolist()}")
             
-            # Convert timestamp strings to datetime objects - with a much more robust approach
-            # First, standardize the timestamps - some have timezone info and some don't
+            # Handle timestamp conversion as before
             try:
                 # Create a custom parser function to handle both formats
                 def parse_timestamp(ts):
@@ -258,50 +264,114 @@ class PandasQueryEngine:
                 dataframe['date'] = datetime.now(UTC).date()
                 dataframe['formatted_time'] = 'Unknown'
             
-            # Log successful conversion
-            if 'date' in dataframe.columns and not dataframe['date'].isna().all():
-                logging.info(f"Date conversion successful. Sample date: {dataframe['date'].iloc[0]}")
+            # Create a prompt that follows the llama-index pattern for PandasQueryEngine
+            # We'll get the first 5 rows as a string to help the model understand the data
+            df_head = dataframe.head(5).to_string()
             
-            today = datetime.now(UTC).date()
+            instruction_str = """
+            1. Convert the query to executable Python code using Pandas.
+            2. The final line of code should be a Python expression that can be called with the `eval()` function.
+            3. The code should represent a solution to the query.
+            4. PRINT ONLY THE EXPRESSION.
+            5. Do not quote the expression.
+            """
             
-            # Common query patterns
-            query_lower = query.lower()
+            prompt = f"""You are working with a pandas dataframe in Python.
+            The name of the dataframe is `df`.
+            This is the result of `print(df.head())`:
+            {df_head}
+
+            Follow these instructions:
+            {instruction_str}
+            Query: {query}
+
+            Expression:"""
             
-            if 'today' in query_lower:
-                result = dataframe[dataframe['date'] == today]
-            elif 'recent' in query_lower or 'show' in query_lower:
-                result = dataframe.head(10)
-            elif 'count' in query_lower:
-                if 'date' in query_lower:
-                    result = dataframe['date'].value_counts().head(10)
-                else:
-                    result = len(dataframe)
-            else:
-                result = dataframe.head(5)
+            # Get the pandas code to execute
+            pandas_instruction = await get_ollama_response(prompt, with_context=False)
+            pandas_instruction = pandas_instruction.strip()
             
-            # Sort by parsed timestamp if available
-            if isinstance(result, pd.DataFrame):
-                if 'parsed_timestamp' in result.columns:
-                    result = result.sort_values('parsed_timestamp', ascending=False)
+            logging.info(f"Generated pandas instruction: {pandas_instruction}")
+            
+            # For safety, check the code doesn't have dangerous operations
+            dangerous_terms = ['import', 'exec', 'eval(', 'os.', 'subprocess', 'sys.', 'shutil', 'open(']
+            if any(term in pandas_instruction for term in dangerous_terms):
+                return {
+                    "error": "Potentially unsafe code detected",
+                    "explanation": "The generated pandas code contains potentially unsafe operations."
+                }
+            
+            # Execute the pandas code
+            try:
+                # Use a copy of the dataframe to avoid modifying the original
+                df = dataframe.copy()
+                # Execute the code and capture the result
+                result = eval(pandas_instruction)
                 
-                # Format the output
-                if 'query' in result.columns:
-                    # For search results, create a more structured table
-                    display_df = result[['query', 'formatted_time']].copy()
-                    display_df.columns = ['Search Query', 'Time']
-                    result_str = "## Recent Searches\n\n"
-                    result_str += display_df.to_string(index=False)
+                # Convert the result to a string for display
+                if isinstance(result, pd.DataFrame):
+                    if 'parsed_timestamp' in result.columns:
+                        result = result.sort_values('parsed_timestamp', ascending=False)
+                    
+                    # Format the output
+                    if 'query' in result.columns:
+                        # For search results, create a more structured table
+                        display_df = result[['query', 'formatted_time']].copy()
+                        display_df.columns = ['Search Query', 'Time']
+                        result_str = "## Recent Searches\n\n"
+                        result_str += display_df.to_string(index=False)
+                    else:
+                        # Generic dataframe display
+                        result_str = result.to_string(index=False)
                 else:
-                    # Generic dataframe display
-                    result_str = result.to_string(index=False)
-            else:
-                result_str = str(result)
-            
-            return {
-                "code": "df.sort_values('timestamp', ascending=False)",
-                "result": result_str,
-                "explanation": f"Found {len(result) if isinstance(result, pd.DataFrame) else 'N/A'} records matching your query."
-            }
+                    result_str = str(result)
+                
+                # Follow the llama-index pattern for returning metadata
+                return {
+                    "pandas_instruction_str": pandas_instruction,
+                    "result": result_str,
+                    "explanation": f"Found {len(result) if isinstance(result, pd.DataFrame) else 'N/A'} records matching your query."
+                }
+            except Exception as e:
+                logging.error(f"Error executing pandas code: {e}")
+                
+                # Try common query patterns as fallback
+                today = datetime.now(UTC).date()
+                query_lower = query.lower()
+                
+                if 'today' in query_lower:
+                    result = dataframe[dataframe['date'] == today]
+                elif 'recent' in query_lower or 'show' in query_lower:
+                    result = dataframe.head(10)
+                elif 'count' in query_lower:
+                    if 'date' in query_lower:
+                        result = dataframe['date'].value_counts().head(10)
+                    else:
+                        result = len(dataframe)
+                else:
+                    result = dataframe.head(5)
+                
+                # Format the result
+                if isinstance(result, pd.DataFrame):
+                    if 'parsed_timestamp' in result.columns:
+                        result = result.sort_values('parsed_timestamp', ascending=False)
+                    
+                    # Format the output
+                    if 'query' in result.columns:
+                        display_df = result[['query', 'formatted_time']].copy()
+                        display_df.columns = ['Search Query', 'Time']
+                        result_str = "## Recent Searches\n\n"
+                        result_str += display_df.to_string(index=False)
+                    else:
+                        result_str = result.to_string(index=False)
+                else:
+                    result_str = str(result)
+                
+                return {
+                    "code": "df.head()",  # Fallback simple code
+                    "result": result_str,
+                    "explanation": f"The original query failed with error: {str(e)}. Showing fallback results."
+                }
                 
         except Exception as e:
             logging.error(f"Error in PandasQueryEngine: {e}")

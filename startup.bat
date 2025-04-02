@@ -26,7 +26,7 @@ if errorlevel 1 (
 
 :loop
 echo Starting Ollama Learning Discord Bot...
-python bot.py
+python splitBot/bot-management-ui-pyqt.py
 
 REM If the bot exits with code 0, it was a clean shutdown
 if %errorlevel% equ 0 (

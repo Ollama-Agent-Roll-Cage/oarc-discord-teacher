@@ -12,9 +12,19 @@ from pathlib import Path
 import aiohttp
 from bs4 import BeautifulSoup
 
+# Import Groq if available
+try:
+    from groq import AsyncGroq, Groq
+    GROQ_AVAILABLE = True
+except ImportError:
+    pass  # No action needed if Groq API is not installed
+    GROQ_AVAILABLE = False
+    logging.warning("Groq package not installed. To use --groq flag, run: pip install groq")
+
 import ollama
 
 from utils import ParquetStorage
+from config import MODEL_NAME as CONFIG_MODEL_NAME
 
 # ---------- Web Crawling Integration ----------
 
@@ -190,40 +200,121 @@ class WebCrawler:
         return "Failed to extract text from the webpage."
 
 # Configuration variables from environment
-MODEL_NAME = os.getenv('OLLAMA_MODEL', 'llama3')  # Model name for the Ollama API
+
+# Import model name from config
+from config import MODEL_NAME as CONFIG_MODEL_NAME
+
+# Update the model selection logic
+
+# Import directly from environment, with fallback to a reliable model
+MODEL_NAME = os.getenv('OLLAMA_MODEL', 'phi3:latest')
+GROQ_API_KEY = os.getenv('GROQ_API_KEY')
+GROQ_MODEL = os.getenv('GROQ_MODEL')
 TEMPERATURE = float(os.getenv('TEMPERATURE', '0.7'))  # Temperature setting for the AI model
 TIMEOUT = float(os.getenv('TIMEOUT', '120.0'))  # Timeout setting for the API call
 DATA_DIR = os.getenv('DATA_DIR', 'data')
 
 # ---------- Ollama Integration ----------
 
-async def get_ollama_response(prompt, with_context=True):
-    """Gets a response from the Ollama model."""
+async def get_ollama_response(prompt, with_context=True, use_groq=False):
+    """Gets a response from the Ollama or Groq model."""
+    # Import from main.py to avoid circular imports
+    from main import conversation_logs
+    
+    # Use simplified prompt for non-context conversations
+    if not with_context:
+        from utils import SYSTEM_PROMPT
+        messages_to_send = [{'role': 'system', 'content': SYSTEM_PROMPT}, 
+                           {'role': 'user', 'content': prompt}]
+    else:
+        # Use existing conversation logs
+        messages_to_send = conversation_logs.copy()  # Simple copy, no filtering needed
+    
     try:
-        # Import from main.py to avoid circular imports
-        from main import conversation_logs
-        
-        if with_context:
-            messages_to_send = conversation_logs.copy()
-        else:
-            from utils import SYSTEM_PROMPT
-            messages_to_send = [{'role': 'system', 'content': SYSTEM_PROMPT}, 
-                               {'role': 'user', 'content': prompt}]
+        if use_groq and GROQ_AVAILABLE:
+            if not GROQ_API_KEY:
+                return "⚠️ Groq API key not found. Please add GROQ_API_KEY to your .env file."
+                
+            logging.info(f"Using Groq model: {GROQ_MODEL}")
             
-        response = await asyncio.wait_for(
-            ollama.AsyncClient(timeout=TIMEOUT).chat(
+            # Create Groq client - using the latest API structure
+            client = Groq(api_key=GROQ_API_KEY)
+            
+            # Format messages for Groq
+            groq_messages = []
+            for msg in messages_to_send:
+                if 'content' in msg and 'role' in msg:
+                    groq_messages.append({
+                        "role": msg['role'],
+                        "content": msg['content']
+                    })
+            
+            # Make API call using streaming for better performance
+            response_text = ""
+            
+            # Using async iteration with stream=True
+            completion = await asyncio.wait_for(
+                client.chat.completions.create(
+                    model=GROQ_MODEL,
+                    messages=groq_messages,
+                    temperature=TEMPERATURE,
+                    max_tokens=1024,
+                    top_p=1,
+                    stream=True,
+                    stop=['User:', 'Human:', '###']
+                ),
+                timeout=TIMEOUT
+            )
+            
+            # Process the streaming response
+            async for chunk in completion:
+                if hasattr(chunk.choices[0].delta, 'content') and chunk.choices[0].delta.content:
+                    response_text += chunk.choices[0].delta.content
+            
+            logging.info(f"Groq response received, length: {len(response_text) if response_text else 0}")
+            if response_text:
+                logging.info(f"Groq response (first 100 chars): {response_text[:100]}")
+                # Verify the response isn't too large
+                if len(response_text) > 4000:
+                    response_text = response_text[:4000] + "...[response truncated due to excessive length]"
+                return response_text
+            else:
+                return "I apologize, but I couldn't generate a response with Groq. Please try again or use a different model."
+        else:
+            # Use the configured model with proper streaming
+            logging.info(f"Using Ollama model: {MODEL_NAME}")
+            
+            # Using the streaming approach correctly with AsyncClient
+            response_text = ""
+            client = ollama.AsyncClient(timeout=TIMEOUT)
+            
+            # Get the stream of responses
+            stream_generator = await client.chat(
                 model=MODEL_NAME,
                 messages=messages_to_send,
-                options={'temperature': TEMPERATURE}
-            ),
-            timeout=TIMEOUT
-        )
-        return response['message']['content']
-    except asyncio.TimeoutError:
-        return "The request timed out. Please try again."
+                options={
+                    'temperature': TEMPERATURE,
+                    'num_predict': 512,  # Limit token generation
+                    'stop': ['User:', 'Human:', '###']  # Stop if model tries to simulate dialogue
+                },
+                stream=True
+            )
+            
+            # Process the streaming response - note the correct async iteration pattern
+            async for chunk in stream_generator:
+                if 'message' in chunk and 'content' in chunk['message']:
+                    response_text += chunk['message']['content']
+            
+            if response_text:
+                # Just return the content, no filtering needed
+                return response_text
+            else:
+                # Simple fallback
+                return "I'm sorry, I couldn't generate a response. Please try rephrasing your question."
+    
     except Exception as e:
-        logging.error(f"An error occurred: {e}")
-        return f"An error occurred: {e}"
+        logging.error(f"Error in get_ollama_response: {e}")
+        return f"I encountered an error: {str(e)}. Please try again."
 
 # ---------- ArXiv Integration ----------
 

@@ -55,9 +55,9 @@ def register_commands(bot, USER_CONVERSATIONS, COMMAND_MEMORY, conversation_logs
 - `!reset` - Clear your conversation history
 
 ## AI-Powered Commands
-- `!arxiv <arxiv_url_or_id> [--memory] <question>` - Learn from ArXiv papers
-- `!ddg <query> <question>` - Search DuckDuckGo and learn
-- `!crawl <url1> [url2 url3...] <question>` - Learn from web pages
+- `!arxiv <arxiv_url_or_id> [--memory] [--groq] <question>` - Learn from ArXiv papers
+- `!ddg <query> [--groq] <question>` - Search DuckDuckGo and learn
+- `!crawl <url1> [url2 url3...] [--groq] <question>` - Learn from web pages
 - `!pandas <query>` - Query stored data
 - `!links [limit]` - Collect and organize links from channel history
 
@@ -71,11 +71,9 @@ https://github.com/Leoleojames1/OllamaDiscordTeacher/tree/master
 - Mention the bot without commands to start a conversation
 - Example: @Ollama Teacher What is machine learning?
 
-## Memory Feature
-The `--memory` flag saves context between queries:
-- Add `--memory` before your question to enable persistent memory
-- Great for follow-up questions about the same topic
-- Use `!reset` to clear saved memory when you're done
+## API Options
+- Add `--groq` to use Groq's API instead of local Ollama
+- Add `--memory` with arxiv command to enable persistent memory
 
 ## Examples
 ```
@@ -123,10 +121,13 @@ The `--memory` flag saves context between queries:
     async def arxiv_search(ctx, arxiv_ids: str, *, question: str = None):
         """Search for multiple ArXiv papers and learn from them."""
         try:
-            # Check for memory flag
+            # Check for flags
             user_key = get_user_key(ctx)
             use_memory = '--memory' in arxiv_ids
-            arxiv_ids = arxiv_ids.replace('--memory', '').strip()
+            use_groq = '--groq' in arxiv_ids
+            
+            # Remove flags from the arxiv_ids string
+            arxiv_ids = arxiv_ids.replace('--memory', '').replace('--groq', '').strip()
             
             async with ctx.typing():
                 # Get previous context if using memory
@@ -168,37 +169,50 @@ The `--memory` flag saves context between queries:
                     
                 if question:
                     # Include previous context in prompt if memory is enabled
-                    combined_prompt = ""
                     if use_memory and previous_context:
-                        combined_prompt = f"""Previous context:
-    {previous_context}
+                        combined_prompt = "Previous conversation context:\n" + previous_context + "\n\n"
+                        combined_prompt += "New information to consider:\n"
+                    else:
+                        combined_prompt = ""
 
-    New papers to analyze:
-    """
-                    
                     combined_prompt += "I want to learn from these research papers:\n\n"
                     for paper in all_papers:
-                        combined_prompt += f"Paper {paper['id']}:\n{paper['content']}\n\n"
+                        combined_prompt += f"--- Paper: {paper['id']} ---\n{paper['formatted_text']}\n\n"
+
                     combined_prompt += f"\nMy question is: {question}\n\nPlease provide a detailed answer using information from all papers."
+
+                    ai_response = await get_ollama_response(combined_prompt, with_context=False, use_groq=use_groq)
                     
+                    # Save context for future use if memory flag is enabled
                     if use_memory:
-                        combined_prompt += "\n\nIncorporate relevant information from previously discussed papers if available."
+                        # Store both the question and response for better continuity
+                        memory_context = f"Question: {question}\n\nResponse: {ai_response}\n\n"
+                        
+                        # Append to existing memory, but limit to prevent excessive token usage
+                        if previous_context:
+                            # Only keep the most recent part if getting too long
+                            if len(previous_context) > 2000:
+                                previous_context = previous_context[-2000:]
+                            COMMAND_MEMORY[user_key]['arxiv'] = previous_context + memory_context
+                        else:
+                            COMMAND_MEMORY[user_key]['arxiv'] = memory_context
                     
-                    ai_response = await get_ollama_response(combined_prompt, with_context=False)
+                    # Format response with appropriate indicators
+                    model_indicator = "🤖 Using Groq API" if use_groq else ""
+                    memory_indicator = "🧠 Using Memory: Previous context incorporated" if use_memory and previous_context else ""
                     
-                    # Store context if using memory
-                    if use_memory:
-                        COMMAND_MEMORY[user_key]['arxiv'] = combined_prompt + f"\n\nAnswer: {ai_response}"
+                    # Combine indicators with newlines if they exist
+                    indicators = "\n\n".join(filter(None, [model_indicator, memory_indicator]))
                     
-                    # Format response with memory indicator
-                    response_text = f"""{'🧠 Using Memory: Previous context incorporated\n\n' if use_memory and previous_context else ''}# ArXiv Paper Analysis
+                    response_text = f"""{indicators + "\n\n" if indicators else ""}# ArXiv Paper Analysis
 
-    **Papers analyzed:** {', '.join(p['id'] for p in all_papers)}
-    {f'**Memory active:** Previous context from {len(previous_context.split()) // 100} discussions' if use_memory and previous_context else ''}
+**Papers analyzed:** {', '.join(p['id'] for p in all_papers)}
+{f'**Memory active:** Previous context from {len(previous_context.split()) // 100} discussions' if use_memory and previous_context else ''}
 
-    {ai_response}
+{ai_response}
 
-    {'> Use !reset to clear your memory context' if use_memory else '> Add --memory flag to enable persistent memory'}"""
+{"Use !reset to clear your memory context" if use_memory else "Add --memory flag to enable persistent memory"}
+{"Add --groq flag to use Groq's API" if not use_groq else ""}"""
                     
                     await send_in_chunks(ctx, response_text, reference=ctx.message)
                 else:
@@ -231,22 +245,47 @@ The `--memory` flag saves context between queries:
     async def duckduckgo_search(ctx, query: str, *, question: str = None):
         """Search using DuckDuckGo and learn from the results."""
         try:
+            # Check for groq flag
+            use_groq = False
+            if '--groq' in query:
+                use_groq = True
+                query = query.replace('--groq', '').strip()
+                
             async with ctx.typing():
+                # Log the search query
+                logging.info(f"DuckDuckGo search: {query}")
+                
+                # Make sure to use quote marks around the query for better results
+                if not (query.startswith('"') and query.endswith('"')):
+                    actual_query = f'"{query}"'
+                else:
+                    actual_query = query
+                    
                 # Perform the search
-                search_results = await DuckDuckGoSearcher.text_search(query)
+                search_results = await DuckDuckGoSearcher.text_search(actual_query)
+                
+                # If the search didn't return useful results, try a more general query
+                if "No results found" in search_results or len(search_results) < 100:
+                    logging.info(f"Retrying search with more general query: {query}")
+                    search_results = await DuckDuckGoSearcher.text_search(query.strip('"'))
                 
                 # If there's a question, use the AI to answer it based on the search results
                 if question:
                     prompt = f"""I searched for information about "{query}" and got these results:
 
-    {search_results}
+{search_results}
 
-    My question is: {question}
+My question is: {question}
 
-    Please provide a detailed answer formatted in markdown, with relevant information from the search results.
-    Include code examples if applicable.
-    """
-                    ai_response = await get_ollama_response(prompt, with_context=False)
+Please provide a concise, accurate response based on the search results.
+If the search results don't contain relevant information about {query}, please explain what {query} is based on your knowledge.
+"""
+                    ai_response = await get_ollama_response(prompt, with_context=False, use_groq=use_groq)
+                    
+                    # Add Groq indicator if used
+                    if use_groq:
+                        ai_response = f"🤖 Using Groq API\n\n{ai_response}"
+                        
                     await send_in_chunks(ctx, ai_response, reference=ctx.message)
                 else:
                     # Just send the search results
@@ -260,6 +299,12 @@ The `--memory` flag saves context between queries:
     async def crawl_url(ctx, urls: str, *, question: str = None):
         """Crawl multiple webpages and learn from them."""
         try:
+            # Check for groq flag
+            use_groq = False
+            if '--groq' in urls:
+                use_groq = True
+                urls = urls.replace('--groq', '').strip()
+                
             async with ctx.typing():
                 # Split URLs by space or comma
                 url_list = re.split(r'[,\s]+', urls.strip())
@@ -310,15 +355,27 @@ The `--memory` flag saves context between queries:
                         combined_prompt += f"From {item['url']}:\n{item['content'][:5000]}...\n\n"
                     combined_prompt += f"\nMy question is: {question}\n\nPlease provide a detailed answer using information from all sources."
                     
-                    ai_response = await get_ollama_response(combined_prompt, with_context=False)
-                    await send_in_chunks(ctx, ai_response, reference=ctx.message)
+                    ai_response = await get_ollama_response(combined_prompt, with_context=False, use_groq=use_groq)
+                    
+                    # Add Groq indicator if used
+                    if use_groq:
+                        response_text = f"🤖 Using Groq API\n\n{ai_response}"
+                    else:
+                        response_text = ai_response
+                        
+                    await send_in_chunks(ctx, response_text, reference=ctx.message)
                 else:
                     # Send summaries of each source
                     for item in all_content:
                         header = f"# 🌐 Summary: {item['url']}\n\n"
-                        summary = await get_ollama_response(f"Summarize this content:\n{item['content'][:7000]}", with_context=False)
+                        summary = await get_ollama_response(f"Summarize this content:\n{item['content'][:7000]}", with_context=False, use_groq=use_groq)
+                        
+                        # Add Groq indicator if used
+                        if use_groq:
+                            summary = f"🤖 Using Groq API\n\n{summary}"
+                            
                         await send_in_chunks(ctx, header + summary, reference=ctx.message)
-                    
+                
         except Exception as e:
             logging.error(f"Error in crawl_url: {e}")
             await ctx.send(f"⚠️ Error: {str(e)}")

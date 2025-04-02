@@ -44,7 +44,7 @@ Ollama Teacher is designed to make advanced AI learning accessible through Disco
 - Support for file attachments to share and analyze code
 - Long message chunking for comprehensive explanations
 - Customizable appearance and behavior
-- Automatic restart and recovery with the startup script
+- Graphical management interface for monitoring and configuration
 
 ## 📋 Commands
 
@@ -57,6 +57,7 @@ All commands require mentioning the bot: `@Ollama Teacher command`
 | `!reset` | Reset your personal context | `@Ollama Teacher !reset` |
 | `!globalReset` | Reset all contexts (admin only) | `@Ollama Teacher !globalReset` |
 | `!learn` | Get default resources | `@Ollama Teacher !learn` |
+| `!profile` | View your learning profile | `@Ollama Teacher !profile` |
 
 ### Learning Commands
 | Command | Description | Example |
@@ -65,6 +66,7 @@ All commands require mentioning the bot: `@Ollama Teacher command`
 | `!ddg <query> <question>` | Search with DuckDuckGo | `@Ollama Teacher !ddg "ollama api" How do I use it?` |
 | `!crawl <url> <question>` | Analyze web content | `@Ollama Teacher !crawl https://pypi.org/project/ollama/ Usage examples?` |
 | `!pandas <query>` | Query stored data | `@Ollama Teacher !pandas Show recent searches` |
+| `!links [limit]` | Collect links from messages | `@Ollama Teacher !links 500` |
 
 ## Technical Architecture
 
@@ -75,6 +77,7 @@ Ollama Teacher combines several technologies to provide a seamless learning expe
 - **BeautifulSoup**: Extracts and structures content from web pages
 - **Pandas & PyArrow**: Manages and queries stored data efficiently
 - **aiohttp**: Handles asynchronous network requests
+- **PyQt6**: Provides the graphical management interface
 
 The bot uses a modular architecture with specialized components:
 - **ArxivSearcher**: Interfaces with ArXiv's API to fetch academic papers
@@ -82,6 +85,7 @@ The bot uses a modular architecture with specialized components:
 - **WebCrawler**: Intelligently extracts content from webpages
 - **PandasQueryEngine**: Converts natural language to data queries
 - **ParquetStorage**: Efficiently stores and manages local data
+- **BotManagerApp**: GUI for monitoring and controlling the bot
 
 ## 🛠️ Setup
 
@@ -89,7 +93,7 @@ The bot uses a modular architecture with specialized components:
 - Python 3.8+
 - Discord Bot Token ([Discord Developer Portal](https://discord.com/developers/applications))
 - [Ollama](https://ollama.ai/download) installed locally
-- Recommended model: llama3.1:8b or faster/smaller models for better response time
+- Recommended model: llama3 or faster/smaller models for better response time
 
 ### Installation
 ```bash
@@ -104,17 +108,38 @@ pip install -r requirements.txt
 
 # Configure .env file
 DISCORD_TOKEN=your_token_here
-OLLAMA_MODEL=llama3.1:8b
+OLLAMA_MODEL=llama3
 TEMPERATURE=0.7
 TIMEOUT=120.0
 DATA_DIR=data
 ```
 
 ### Starting the Bot
-```bash
+```
+# Command line interface
+python main.py
+```
+### GUI Management Interface
+The Ollama Teacher Bot comes with a graphical management interface that provides:
+
+- Real-time bot status monitoring
+- Start/stop/restart controls
+- User and conversation tracking
+- Log viewing and analysis
+- Configuration editing
+- ArXiv paper management
+- Link collection visualization
+
+```
+# Graphical interface
+python bot-management-ui-pyqt.py
+```
+```
+# OR use the startup scripts
 # Linux/Mac
 ./startup.sh
-
+```
+```
 # Windows
 startup.bat
 ```
@@ -204,7 +229,7 @@ For long-term hosting on your local PC:
 ### Environment Variables
 | Variable | Purpose | Default |
 |----------|---------|---------|
-| `OLLAMA_MODEL` | Model selection | llama3.1:8b |
+| `OLLAMA_MODEL` | Model selection | llama3 |
 | `TEMPERATURE` | Response creativity | 0.7 |
 | `TIMEOUT` | Response timeout | 120.0 |
 | `DATA_DIR` | Storage location | data |

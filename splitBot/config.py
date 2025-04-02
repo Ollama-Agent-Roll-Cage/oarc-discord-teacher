@@ -11,15 +11,15 @@ load_dotenv()
 
 # Bot configuration
 DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
-CHANGE_NICKNAME = True  # Set to True to change nickname, False to keep the default
+CHANGE_NICKNAME = True
 
 # Ollama API configuration
-MODEL_NAME = os.getenv('OLLAMA_MODEL', 'llama3')  # Model name for the Ollama API
-TEMPERATURE = float(os.getenv('TEMPERATURE', '0.7'))  # Temperature setting for the AI model
-TIMEOUT = float(os.getenv('TIMEOUT', '120.0'))  # Timeout for API calls
+MODEL_NAME = 'llama3:latest'
+TEMPERATURE = 0.7
+TIMEOUT = 120.0
 
 # Data storage configuration
-DATA_DIR = os.getenv('DATA_DIR', 'data')
+DATA_DIR = 'data'
 MAX_CONVERSATION_LOG_SIZE = 50  # Maximum size of the conversation log
 MAX_TEXT_ATTACHMENT_SIZE = 20000  # Maximum characters for text attachments
 MAX_FILE_SIZE = 2 * 1024 * 1024  # Maximum file size in bytes (2 MB)
