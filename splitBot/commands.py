@@ -145,7 +145,7 @@ https://github.com/Leoleojames1/OllamaDiscordTeacher/tree/master
                         paper_file = f"{DATA_DIR}/papers/{arxiv_id}.parquet"
                         existing_paper = ParquetStorage.load_from_parquet(paper_file)
                         
-                        if existing_paper is not None and len(existing_paper) > 0:
+                        if (existing_paper is not None and len(existing_paper) > 0):
                             paper_info = existing_paper.iloc[0].to_dict()
                             logger.info(f"Using cached paper info for {arxiv_id}")
                         else:
@@ -177,7 +177,7 @@ https://github.com/Leoleojames1/OllamaDiscordTeacher/tree/master
 
                     combined_prompt += "I want to learn from these research papers:\n\n"
                     for paper in all_papers:
-                        combined_prompt += f"--- Paper: {paper['id']} ---\n{paper['formatted_text']}\n\n"
+                        combined_prompt += f"--- Paper: {paper['id']} ---\n{paper['content']}\n\n"
 
                     combined_prompt += f"\nMy question is: {question}\n\nPlease provide a detailed answer using information from all papers."
 
@@ -204,15 +204,28 @@ https://github.com/Leoleojames1/OllamaDiscordTeacher/tree/master
                     # Combine indicators with newlines if they exist
                     indicators = "\n\n".join(filter(None, [model_indicator, memory_indicator]))
                     
-                    response_text = f"""{indicators + "\n\n" if indicators else ""}# ArXiv Paper Analysis
-
-**Papers analyzed:** {', '.join(p['id'] for p in all_papers)}
-{f'**Memory active:** Previous context from {len(previous_context.split()) // 100} discussions' if use_memory and previous_context else ''}
-
-{ai_response}
-
-{"Use !reset to clear your memory context" if use_memory else "Add --memory flag to enable persistent memory"}
-{"Add --groq flag to use Groq's API" if not use_groq else ""}"""
+                    # Start building the response text without the memory and flags parts
+                    response_text = ""
+                    if indicators:
+                        response_text += indicators + "\n\n"
+                    
+                    response_text += f"# ArXiv Paper Analysis\n\n"
+                    response_text += f"**Papers analyzed:** {', '.join(p['id'] for p in all_papers)}\n"
+                    
+                    # Add memory active info if relevant
+                    if use_memory and previous_context:
+                        response_text += f"**Memory active:** Previous context from {len(previous_context.split()) // 100} discussions\n"
+                    
+                    response_text += f"\n{ai_response}\n\n"
+                    
+                    # Add these separately, not in the f-string
+                    if use_memory:
+                        response_text += "Use !reset to clear your memory context\n"
+                    else:
+                        response_text += "Add --memory flag to enable persistent memory\n"
+                    
+                    if not use_groq:
+                        response_text += "Add --groq flag to use Groq API"
                     
                     await send_in_chunks(ctx, response_text, reference=ctx.message)
                 else:
@@ -341,26 +354,16 @@ If the search results don't contain relevant information about {query}, please e
                         package_name = pypi_match.group(1)
                         html_content = await WebCrawler.fetch_url_content(url)
                         if html_content:
-                            pypi_info = await WebCrawler.extract_pypi_content(html_content, package_name)
-                            if pypi_info:
-                                formatted_content = f"# {pypi_info['name']} PyPI Package\n\n"
-                                if pypi_info['metadata']:
-                                    formatted_content += "## Package Information\n\n"
-                                    for section, items in pypi_info['metadata'].items():
-                                        formatted_content += f"### {section}\n"
-                                        for item in items:
-                                            formatted_content += f"- {item}\n"
-                                        formatted_content += "\n"
-                                if pypi_info['documentation']:
-                                    formatted_content += "## Documentation\n\n"
-                                    formatted_content += pypi_info['documentation']
-                                all_content.append({"url": url, "content": formatted_content})
+                            package_data = await WebCrawler.extract_pypi_content(html_content, package_name)
+                            if package_data:
+                                content_text = package_data.get('documentation', 'No documentation available')
+                                all_content.append({'url': url, 'content': content_text})
                     else:
                         # Handle regular URL
                         html_content = await WebCrawler.fetch_url_content(url)
                         if html_content:
-                            webpage_text = await WebCrawler.extract_text_from_html(html_content)
-                            all_content.append({"url": url, "content": webpage_text})
+                            content_text = await WebCrawler.extract_text_from_html(html_content)
+                            all_content.append({'url': url, 'content': content_text})
                 
                 if not all_content:
                     await ctx.send("⚠️ Could not fetch content from any of the provided URLs")
@@ -388,11 +391,12 @@ If the search results don't contain relevant information about {query}, please e
                         header = f"# 🌐 Summary: {item['url']}\n\n"
                         summary = await get_ollama_response(f"Summarize this content:\n{item['content'][:7000]}", with_context=False, use_groq=use_groq)
                         
-                        # Add Groq indicator if used
                         if use_groq:
-                            summary = f"🤖 Using Groq API\n\n{summary}"
-                            
-                        await send_in_chunks(ctx, header + summary, reference=ctx.message)
+                            response_text = f"🤖 Using Groq API\n\n{summary}"
+                        else:
+                            response_text = summary
+                        
+                        await send_in_chunks(ctx, header + response_text, reference=ctx.message)
                 
         except Exception as e:
             logging.error(f"Error in crawl_url: {e}")

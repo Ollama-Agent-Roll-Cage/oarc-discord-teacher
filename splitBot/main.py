@@ -15,9 +15,9 @@ from discord.ext import commands, tasks
 # Import our modules
 from utils import (
     send_in_chunks, get_user_key, store_user_conversation, 
-    process_file_attachment, SYSTEM_PROMPT
+    process_file_attachment, process_image_attachment, SYSTEM_PROMPT
 )
-from services import get_ollama_response
+from services import get_ollama_response, process_image_with_llava
 from commands import register_commands
 
 # Load environment variables from .env file
@@ -74,6 +74,7 @@ register_commands(bot, USER_CONVERSATIONS, COMMAND_MEMORY, conversation_logs, US
 @bot.event
 async def on_message(message: Message):
     """Handles incoming messages."""
+    global conversation_logs
     if message.author == bot.user:
         return
 
@@ -129,72 +130,36 @@ async def on_message(message: Message):
         # Handle conversation for non-command mentions
         else:
             try:
-                # MODIFIED APPROACH: Keep some conversation context but prevent multiple responses
-                # Reset conversation logs if there are too many entries (prevents model confusion)
-                if len(conversation_logs) > 5:  # Only keep a small recent history, not the full history
-                    system_prompt = conversation_logs[0] if conversation_logs else {'role': 'system', 'content': SYSTEM_PROMPT}
-                    conversation_logs.clear()
-                    conversation_logs.append(system_prompt)
+                # Ensure we pass the correct conversation history to the model
+                # Create messages for the current conversation
+                messages_for_model = conversation_logs.copy()
+                messages_for_model.append({'role': 'user', 'content': f"{user_name} asks: {content}"})
                 
-                # Variable to track if we have already sent a response
-                response_sent = False
+                # Get a response from the model with conversation history
+                async with message.channel.typing():
+                    response = await get_ollama_response(
+                        content,
+                        with_context=True,
+                        conversation_history=messages_for_model  # Pass full conversation
+                    )
                 
-                # Handle file attachments
-                if message.attachments:
-                    # File attachment handling code remains unchanged
-                    files_content = []
-                    for attachment in message.attachments:
-                        try:
-                            file_content = await process_file_attachment(attachment)
-                            files_content.append(f"File: {attachment.filename}\n{file_content}")
-                        except ValueError as e:
-                            await message.channel.send(f"⚠️ {user_name}, there was an error with {attachment.filename}: {str(e)}")
-                            continue
+                # Only continue if we got a valid response
+                if response and isinstance(response, str) and len(response.strip()) > 0:
+                    # Check for any weird content insertions by limiting to a reasonable response length
+                    if len(response) > 2000:
+                        response = response[:2000] + "..."
                     
-                    if files_content:
-                        # Combine file contents with the question
-                        combined_prompt = f"""The user {user_name} has provided these file(s) to analyze:
-
-{chr(10).join(files_content)}
-
-Their question or request is: {content}
-
-Please provide a detailed response, including code examples if relevant. Address the user by name in your response."""
-                        
-                        async with message.channel.typing():
-                            response = await get_ollama_response(combined_prompt)
-                        
-                        if response and isinstance(response, str) and len(response.strip()) > 0:
-                            # Add the new conversation
-                            conversation_logs.append({'role': 'user', 'content': combined_prompt})
-                            conversation_logs.append({'role': 'assistant', 'content': response})
-                            
-                            await store_user_conversation(message, response, is_bot=True)
-                            await send_in_chunks(message.channel, response, message)
-                            response_sent = True
-                        return
-                
-                if not response_sent:
-                    # Regular personalized content
-                    personalized_content = f"{user_name} asks: {content}"
+                    # Add to conversation logs
+                    conversation_logs.append({'role': 'user', 'content': f"{user_name} asks: {content}"})
+                    conversation_logs.append({'role': 'assistant', 'content': response})
                     
-                    # Add the current conversation 
-                    conversation_logs.append({'role': 'user', 'content': personalized_content})
+                    # Store in user history
+                    await store_user_conversation(message, response, is_bot=True)
+                    await send_in_chunks(message.channel, response, message)
                     
-                    # Get a response from the model
-                    async with message.channel.typing():
-                        response = await get_ollama_response(personalized_content)
-                    
-                    # Only continue if we got a valid response
-                    if response and isinstance(response, str) and len(response.strip()) > 0:
-                        # Check for any weird content insertions by limiting to a reasonable response length
-                        if len(response) > 2000:
-                            response = response[:2000] + "..."
-                        
-                        # Add to conversation logs
-                        conversation_logs.append({'role': 'assistant', 'content': response})
-                        await store_user_conversation(message, response, is_bot=True)
-                        await send_in_chunks(message.channel, response, message)
+                    # Also update the per-user conversation history
+                    USER_CONVERSATIONS[user_key].append({'role': 'user', 'content': content, 'timestamp': datetime.now(UTC).isoformat()})
+                    USER_CONVERSATIONS[user_key].append({'role': 'assistant', 'content': response, 'timestamp': datetime.now(UTC).isoformat()})
             
             except Exception as e:
                 logging.error(f"Error processing message: {e}")

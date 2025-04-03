@@ -6,6 +6,7 @@ import pyarrow as pa
 import pyarrow.parquet as pq
 from pathlib import Path
 from datetime import datetime, timezone, UTC
+from tabulate import tabulate  # Add this import
 
 # System prompt for initializing the conversation
 SYSTEM_PROMPT = """

@@ -1850,3 +1850,948 @@
 2025-04-03 00:17:20,270 - BotManager - INFO - Stopping Discord bot...
 2025-04-03 00:17:20,443 - BotManager - INFO - Bot stopped successfully.
 2025-04-03 00:17:21,424 - BotManager - INFO - Bot process exited with code: 1
+2025-04-03 00:53:26,413 - BotManager - INFO - Loading data from data
+2025-04-03 00:53:26,413 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 00:53:26,413 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 00:53:26,414 - BotManager - INFO - Found 0 files in data\papers
+2025-04-03 00:53:26,414 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 00:53:26,414 - BotManager - INFO - Found 10 files in data\searches
+2025-04-03 00:53:26,414 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 00:53:26,416 - BotManager - INFO - Found 2 files in data\crawls
+2025-04-03 00:53:26,416 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 00:53:26,416 - BotManager - INFO - Found 0 files in data\links
+2025-04-03 00:53:26,417 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 00:53:26,417 - BotManager - INFO - Found 6 files in data\user_profiles
+2025-04-03 00:53:26,418 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 00:53:26,418 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 00:53:26,496 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-03 00:53:26,497 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-03 00:53:26,520 - BotManager - INFO - Updated models display - Base: llama3.1:8b, Vision: llava
+2025-04-03 00:53:26,717 - BotManager - INFO - Base model changed to: 
+2025-04-03 00:53:27,982 - BotManager - INFO - Vision model changed to: 
+2025-04-03 00:53:28,035 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 00:53:28,038 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 00:53:28,076 - BotManager - INFO - Base model changed to: 
+2025-04-03 00:53:28,088 - BotManager - INFO - Base model changed to: llama-guard3:8b
+2025-04-03 00:53:28,088 - BotManager - INFO - Available models: llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 00:53:28,099 - BotManager - INFO - Vision model changed to: 
+2025-04-03 00:53:28,111 - BotManager - INFO - Vision model changed to: llama-guard3:8b
+2025-04-03 00:53:28,112 - BotManager - INFO - Loaded 57 vision models
+2025-04-03 00:53:57,420 - BotManager - INFO - Base model changed to: borch/phi3_speed_chat:latest
+2025-04-03 00:54:18,311 - BotManager - INFO - Vision model changed to: llava:latest
+2025-04-03 00:54:30,134 - BotManager - INFO - Updated models display - Base: borch/phi3_speed_chat:latest, Vision: llava:latest
+2025-04-03 00:54:30,136 - BotManager - INFO - Starting with model: borch/phi3_speed_chat:latest
+2025-04-03 00:54:30,144 - BotManager - INFO - Bot started with PID: 48908
+2025-04-03 00:54:33,294 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-03 00:54:33,297 - BotManager - INFO - [2025-04-03 00:54:33] [INFO    ] discord.client: logging in using static token
+2025-04-03 00:54:33,297 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-03 00:54:33,549 - BotManager - INFO - Traceback (most recent call last):
+2025-04-03 00:54:33,550 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\http.py", line 828, in static_login
+2025-04-03 00:54:33,576 - BotManager - INFO - data = await self.request(Route('GET', '/users/@me'))
+2025-04-03 00:54:33,578 - BotManager - INFO - ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-03 00:54:33,579 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\http.py", line 762, in request
+2025-04-03 00:54:33,581 - BotManager - INFO - raise HTTPException(response, data)
+2025-04-03 00:54:33,582 - BotManager - INFO - discord.errors.HTTPException: 401 Unauthorized (error code: 0): 401: Unauthorized
+2025-04-03 00:54:33,583 - BotManager - INFO - 
+2025-04-03 00:54:33,584 - BotManager - INFO - The above exception was the direct cause of the following exception:
+2025-04-03 00:54:33,586 - BotManager - INFO - 
+2025-04-03 00:54:33,586 - BotManager - INFO - Traceback (most recent call last):
+2025-04-03 00:54:33,587 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\main.py", line 343, in <module>
+2025-04-03 00:54:33,588 - BotManager - INFO - main()
+2025-04-03 00:54:33,590 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\main.py", line 340, in main
+2025-04-03 00:54:33,591 - BotManager - INFO - bot.run(TOKEN)
+2025-04-03 00:54:33,592 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 906, in run
+2025-04-03 00:54:33,592 - BotManager - INFO - asyncio.run(runner())
+2025-04-03 00:54:33,595 - BotManager - INFO - File "C:\Users\ADA\miniconda3\Lib\asyncio\runners.py", line 194, in run
+2025-04-03 00:54:33,598 - BotManager - INFO - return runner.run(main)
+2025-04-03 00:54:33,600 - BotManager - INFO - ^^^^^^^^^^^^^^^^
+2025-04-03 00:54:33,601 - BotManager - INFO - File "C:\Users\ADA\miniconda3\Lib\asyncio\runners.py", line 118, in run
+2025-04-03 00:54:33,602 - BotManager - INFO - return self._loop.run_until_complete(task)
+2025-04-03 00:54:33,603 - BotManager - INFO - ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-03 00:54:33,604 - BotManager - INFO - File "C:\Users\ADA\miniconda3\Lib\asyncio\base_events.py", line 685, in run_until_complete
+2025-04-03 00:54:33,606 - BotManager - INFO - return future.result()
+2025-04-03 00:54:33,608 - BotManager - INFO - ^^^^^^^^^^^^^^^
+2025-04-03 00:54:33,609 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 895, in runner
+2025-04-03 00:54:33,609 - BotManager - INFO - await self.start(token, reconnect=reconnect)
+2025-04-03 00:54:33,612 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 823, in start
+2025-04-03 00:54:33,613 - BotManager - INFO - await self.login(token)
+2025-04-03 00:54:33,614 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 652, in login
+2025-04-03 00:54:33,615 - BotManager - INFO - data = await self.http.static_login(token)
+2025-04-03 00:54:33,616 - BotManager - INFO - ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-03 00:54:33,617 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\http.py", line 832, in static_login
+2025-04-03 00:54:33,618 - BotManager - INFO - raise LoginFailure('Improper token has been passed.') from exc
+2025-04-03 00:54:33,619 - BotManager - INFO - discord.errors.LoginFailure: Improper token has been passed.
+2025-04-03 00:54:33,858 - BotManager - INFO - Bot process exited with code: 1
+2025-04-03 00:56:37,498 - BotManager - INFO - Loading data from data
+2025-04-03 00:56:37,499 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 00:56:37,499 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 00:56:37,499 - BotManager - INFO - Found 0 files in data\papers
+2025-04-03 00:56:37,500 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 00:56:37,500 - BotManager - INFO - Found 10 files in data\searches
+2025-04-03 00:56:37,501 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 00:56:37,501 - BotManager - INFO - Found 2 files in data\crawls
+2025-04-03 00:56:37,501 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 00:56:37,502 - BotManager - INFO - Found 0 files in data\links
+2025-04-03 00:56:37,502 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 00:56:37,502 - BotManager - INFO - Found 6 files in data\user_profiles
+2025-04-03 00:56:37,502 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 00:56:37,503 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 00:56:37,506 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-03 00:56:37,508 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-03 00:56:37,532 - BotManager - INFO - Updated models display - Base: llama3.1:8b, Vision: llava:latest
+2025-04-03 00:56:37,726 - BotManager - INFO - Base model changed to: 
+2025-04-03 00:56:38,653 - BotManager - INFO - Vision model changed to: 
+2025-04-03 00:56:38,694 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 00:56:38,695 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 00:56:38,710 - BotManager - INFO - Vision model changed to: 
+2025-04-03 00:56:38,715 - BotManager - INFO - Vision model changed to: llama-guard3:8b
+2025-04-03 00:56:38,716 - BotManager - INFO - Loaded 57 vision models
+2025-04-03 00:56:38,727 - BotManager - INFO - Base model changed to: 
+2025-04-03 00:56:38,736 - BotManager - INFO - Base model changed to: llama-guard3:8b
+2025-04-03 00:56:38,736 - BotManager - INFO - Available models: llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 00:56:52,014 - BotManager - INFO - Vision model changed to: llava:latest
+2025-04-03 00:57:14,642 - BotManager - INFO - Base model changed to: phi3:latest
+2025-04-03 00:57:20,614 - BotManager - INFO - Updated models display - Base: phi3:latest, Vision: llava:latest
+2025-04-03 00:57:20,614 - BotManager - INFO - Starting with model: phi3:latest
+2025-04-03 00:57:20,622 - BotManager - INFO - Bot started with PID: 19808
+2025-04-03 00:57:23,272 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-03 00:57:23,274 - BotManager - INFO - [2025-04-03 00:57:23] [INFO    ] discord.client: logging in using static token
+2025-04-03 00:57:23,274 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-03 00:57:23,439 - BotManager - INFO - Traceback (most recent call last):
+2025-04-03 00:57:23,440 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\http.py", line 828, in static_login
+2025-04-03 00:57:23,441 - BotManager - INFO - data = await self.request(Route('GET', '/users/@me'))
+2025-04-03 00:57:23,441 - BotManager - INFO - ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-03 00:57:23,441 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\http.py", line 762, in request
+2025-04-03 00:57:23,442 - BotManager - INFO - raise HTTPException(response, data)
+2025-04-03 00:57:23,444 - BotManager - INFO - discord.errors.HTTPException: 401 Unauthorized (error code: 0): 401: Unauthorized
+2025-04-03 00:57:23,444 - BotManager - INFO - 
+2025-04-03 00:57:23,445 - BotManager - INFO - The above exception was the direct cause of the following exception:
+2025-04-03 00:57:23,445 - BotManager - INFO - 
+2025-04-03 00:57:23,446 - BotManager - INFO - Traceback (most recent call last):
+2025-04-03 00:57:23,447 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\main.py", line 343, in <module>
+2025-04-03 00:57:23,447 - BotManager - INFO - main()
+2025-04-03 00:57:23,448 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\main.py", line 340, in main
+2025-04-03 00:57:23,448 - BotManager - INFO - bot.run(TOKEN)
+2025-04-03 00:57:23,449 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 906, in run
+2025-04-03 00:57:23,455 - BotManager - INFO - asyncio.run(runner())
+2025-04-03 00:57:23,456 - BotManager - INFO - File "C:\Users\ADA\miniconda3\Lib\asyncio\runners.py", line 194, in run
+2025-04-03 00:57:23,457 - BotManager - INFO - return runner.run(main)
+2025-04-03 00:57:23,458 - BotManager - INFO - ^^^^^^^^^^^^^^^^
+2025-04-03 00:57:23,459 - BotManager - INFO - File "C:\Users\ADA\miniconda3\Lib\asyncio\runners.py", line 118, in run
+2025-04-03 00:57:23,460 - BotManager - INFO - return self._loop.run_until_complete(task)
+2025-04-03 00:57:23,461 - BotManager - INFO - ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-03 00:57:23,462 - BotManager - INFO - File "C:\Users\ADA\miniconda3\Lib\asyncio\base_events.py", line 685, in run_until_complete
+2025-04-03 00:57:23,465 - BotManager - INFO - return future.result()
+2025-04-03 00:57:23,466 - BotManager - INFO - ^^^^^^^^^^^^^^^
+2025-04-03 00:57:23,467 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 895, in runner
+2025-04-03 00:57:23,467 - BotManager - INFO - await self.start(token, reconnect=reconnect)
+2025-04-03 00:57:23,468 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 823, in start
+2025-04-03 00:57:23,469 - BotManager - INFO - await self.login(token)
+2025-04-03 00:57:23,470 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 652, in login
+2025-04-03 00:57:23,470 - BotManager - INFO - data = await self.http.static_login(token)
+2025-04-03 00:57:23,471 - BotManager - INFO - ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-03 00:57:23,471 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\http.py", line 832, in static_login
+2025-04-03 00:57:23,472 - BotManager - INFO - raise LoginFailure('Improper token has been passed.') from exc
+2025-04-03 00:57:23,472 - BotManager - INFO - discord.errors.LoginFailure: Improper token has been passed.
+2025-04-03 00:57:23,680 - BotManager - INFO - Bot process exited with code: 1
+2025-04-03 00:57:55,960 - BotManager - INFO - Loading data from data
+2025-04-03 00:57:55,960 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 00:57:55,961 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 00:57:55,962 - BotManager - INFO - Found 0 files in data\papers
+2025-04-03 00:57:55,962 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 00:57:55,962 - BotManager - INFO - Found 10 files in data\searches
+2025-04-03 00:57:55,963 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 00:57:55,963 - BotManager - INFO - Found 2 files in data\crawls
+2025-04-03 00:57:55,963 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 00:57:55,964 - BotManager - INFO - Found 0 files in data\links
+2025-04-03 00:57:55,964 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 00:57:55,964 - BotManager - INFO - Found 6 files in data\user_profiles
+2025-04-03 00:57:55,964 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 00:57:55,966 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 00:57:55,970 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-03 00:57:55,970 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-03 00:57:55,996 - BotManager - INFO - Updated models display - Base: llama3.1:8b, Vision: llava:latest
+2025-04-03 00:57:56,232 - BotManager - INFO - Vision model changed to: 
+2025-04-03 00:57:56,250 - BotManager - INFO - Base model changed to: 
+2025-04-03 00:57:57,202 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 00:57:57,214 - BotManager - INFO - Vision model changed to: 
+2025-04-03 00:57:57,219 - BotManager - INFO - Vision model changed to: llama-guard3:8b
+2025-04-03 00:57:57,219 - BotManager - INFO - Loaded 57 vision models
+2025-04-03 00:57:57,239 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 00:57:57,251 - BotManager - INFO - Base model changed to: 
+2025-04-03 00:57:57,256 - BotManager - INFO - Base model changed to: llama-guard3:8b
+2025-04-03 00:57:57,257 - BotManager - INFO - Available models: llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 00:58:08,837 - BotManager - INFO - Vision model changed to: llava:latest
+2025-04-03 00:58:17,848 - BotManager - INFO - Base model changed to: llama3.2:3b
+2025-04-03 00:58:19,429 - BotManager - INFO - Updated models display - Base: llama3.2:3b, Vision: llava:latest
+2025-04-03 00:58:19,430 - BotManager - INFO - Starting with model: llama3.2:3b
+2025-04-03 00:58:19,437 - BotManager - INFO - Bot started with PID: 40744
+2025-04-03 00:58:22,034 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-03 00:58:22,039 - BotManager - INFO - [2025-04-03 00:58:22] [INFO    ] discord.client: logging in using static token
+2025-04-03 00:58:22,040 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-03 00:58:22,219 - BotManager - INFO - Traceback (most recent call last):
+2025-04-03 00:58:22,219 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\http.py", line 828, in static_login
+2025-04-03 00:58:22,220 - BotManager - INFO - data = await self.request(Route('GET', '/users/@me'))
+2025-04-03 00:58:22,222 - BotManager - INFO - ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-03 00:58:22,222 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\http.py", line 762, in request
+2025-04-03 00:58:22,224 - BotManager - INFO - raise HTTPException(response, data)
+2025-04-03 00:58:22,226 - BotManager - INFO - discord.errors.HTTPException: 401 Unauthorized (error code: 0): 401: Unauthorized
+2025-04-03 00:58:22,227 - BotManager - INFO - 
+2025-04-03 00:58:22,227 - BotManager - INFO - The above exception was the direct cause of the following exception:
+2025-04-03 00:58:22,228 - BotManager - INFO - 
+2025-04-03 00:58:22,229 - BotManager - INFO - Traceback (most recent call last):
+2025-04-03 00:58:22,229 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\main.py", line 343, in <module>
+2025-04-03 00:58:22,230 - BotManager - INFO - main()
+2025-04-03 00:58:22,231 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\main.py", line 340, in main
+2025-04-03 00:58:22,232 - BotManager - INFO - bot.run(TOKEN)
+2025-04-03 00:58:22,232 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 906, in run
+2025-04-03 00:58:22,232 - BotManager - INFO - asyncio.run(runner())
+2025-04-03 00:58:22,233 - BotManager - INFO - File "C:\Users\ADA\miniconda3\Lib\asyncio\runners.py", line 194, in run
+2025-04-03 00:58:22,234 - BotManager - INFO - return runner.run(main)
+2025-04-03 00:58:22,235 - BotManager - INFO - ^^^^^^^^^^^^^^^^
+2025-04-03 00:58:22,236 - BotManager - INFO - File "C:\Users\ADA\miniconda3\Lib\asyncio\runners.py", line 118, in run
+2025-04-03 00:58:22,236 - BotManager - INFO - return self._loop.run_until_complete(task)
+2025-04-03 00:58:22,237 - BotManager - INFO - ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-03 00:58:22,238 - BotManager - INFO - File "C:\Users\ADA\miniconda3\Lib\asyncio\base_events.py", line 685, in run_until_complete
+2025-04-03 00:58:22,247 - BotManager - INFO - return future.result()
+2025-04-03 00:58:22,248 - BotManager - INFO - ^^^^^^^^^^^^^^^
+2025-04-03 00:58:22,248 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 895, in runner
+2025-04-03 00:58:22,249 - BotManager - INFO - await self.start(token, reconnect=reconnect)
+2025-04-03 00:58:22,249 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 823, in start
+2025-04-03 00:58:22,250 - BotManager - INFO - await self.login(token)
+2025-04-03 00:58:22,251 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 652, in login
+2025-04-03 00:58:22,251 - BotManager - INFO - data = await self.http.static_login(token)
+2025-04-03 00:58:22,252 - BotManager - INFO - ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-03 00:58:22,252 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\http.py", line 832, in static_login
+2025-04-03 00:58:22,254 - BotManager - INFO - raise LoginFailure('Improper token has been passed.') from exc
+2025-04-03 00:58:22,255 - BotManager - INFO - discord.errors.LoginFailure: Improper token has been passed.
+2025-04-03 00:58:22,634 - BotManager - INFO - Bot process exited with code: 1
+2025-04-03 00:59:00,714 - BotManager - INFO - Loading data from data
+2025-04-03 00:59:00,716 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 00:59:00,716 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 00:59:00,717 - BotManager - INFO - Found 0 files in data\papers
+2025-04-03 00:59:00,717 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 00:59:00,717 - BotManager - INFO - Found 10 files in data\searches
+2025-04-03 00:59:00,718 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 00:59:00,718 - BotManager - INFO - Found 2 files in data\crawls
+2025-04-03 00:59:00,718 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 00:59:00,719 - BotManager - INFO - Found 0 files in data\links
+2025-04-03 00:59:00,719 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 00:59:00,719 - BotManager - INFO - Found 6 files in data\user_profiles
+2025-04-03 00:59:00,720 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 00:59:00,720 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 00:59:00,724 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-03 00:59:00,724 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-03 00:59:00,746 - BotManager - INFO - Updated models display - Base: llama3.1:8b, Vision: llava:latest
+2025-04-03 00:59:00,934 - BotManager - INFO - Base model changed to: 
+2025-04-03 00:59:01,855 - BotManager - INFO - Vision model changed to: 
+2025-04-03 00:59:01,897 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 00:59:01,898 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 00:59:01,917 - BotManager - INFO - Vision model changed to: 
+2025-04-03 00:59:01,919 - BotManager - INFO - Vision model changed to: llama-guard3:8b
+2025-04-03 00:59:01,920 - BotManager - INFO - Loaded 57 vision models
+2025-04-03 00:59:01,929 - BotManager - INFO - Base model changed to: 
+2025-04-03 00:59:01,939 - BotManager - INFO - Base model changed to: llama-guard3:8b
+2025-04-03 00:59:01,940 - BotManager - INFO - Available models: llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 00:59:20,787 - BotManager - INFO - Base model changed to: phi3:latest
+2025-04-03 00:59:35,150 - BotManager - INFO - Vision model changed to: llava:latest
+2025-04-03 00:59:37,111 - BotManager - INFO - Updated models display - Base: phi3:latest, Vision: llava:latest
+2025-04-03 00:59:37,112 - BotManager - INFO - Starting with model: phi3:latest
+2025-04-03 00:59:37,120 - BotManager - INFO - Bot started with PID: 45300
+2025-04-03 00:59:39,761 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-03 00:59:39,764 - BotManager - INFO - [2025-04-03 00:59:39] [INFO    ] discord.client: logging in using static token
+2025-04-03 00:59:39,764 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-03 00:59:39,930 - BotManager - INFO - Traceback (most recent call last):
+2025-04-03 00:59:39,931 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\http.py", line 828, in static_login
+2025-04-03 00:59:39,932 - BotManager - INFO - data = await self.request(Route('GET', '/users/@me'))
+2025-04-03 00:59:39,932 - BotManager - INFO - ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-03 00:59:39,933 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\http.py", line 762, in request
+2025-04-03 00:59:39,934 - BotManager - INFO - raise HTTPException(response, data)
+2025-04-03 00:59:39,936 - BotManager - INFO - discord.errors.HTTPException: 401 Unauthorized (error code: 0): 401: Unauthorized
+2025-04-03 00:59:39,937 - BotManager - INFO - 
+2025-04-03 00:59:39,937 - BotManager - INFO - The above exception was the direct cause of the following exception:
+2025-04-03 00:59:39,938 - BotManager - INFO - 
+2025-04-03 00:59:39,938 - BotManager - INFO - Traceback (most recent call last):
+2025-04-03 00:59:39,939 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\main.py", line 343, in <module>
+2025-04-03 00:59:39,940 - BotManager - INFO - main()
+2025-04-03 00:59:39,942 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\main.py", line 340, in main
+2025-04-03 00:59:39,947 - BotManager - INFO - bot.run(TOKEN)
+2025-04-03 00:59:39,949 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 906, in run
+2025-04-03 00:59:39,950 - BotManager - INFO - asyncio.run(runner())
+2025-04-03 00:59:39,951 - BotManager - INFO - File "C:\Users\ADA\miniconda3\Lib\asyncio\runners.py", line 194, in run
+2025-04-03 00:59:39,952 - BotManager - INFO - return runner.run(main)
+2025-04-03 00:59:39,952 - BotManager - INFO - ^^^^^^^^^^^^^^^^
+2025-04-03 00:59:39,953 - BotManager - INFO - File "C:\Users\ADA\miniconda3\Lib\asyncio\runners.py", line 118, in run
+2025-04-03 00:59:39,954 - BotManager - INFO - return self._loop.run_until_complete(task)
+2025-04-03 00:59:39,956 - BotManager - INFO - ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-03 00:59:39,957 - BotManager - INFO - File "C:\Users\ADA\miniconda3\Lib\asyncio\base_events.py", line 685, in run_until_complete
+2025-04-03 00:59:39,959 - BotManager - INFO - return future.result()
+2025-04-03 00:59:39,960 - BotManager - INFO - ^^^^^^^^^^^^^^^
+2025-04-03 00:59:39,961 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 895, in runner
+2025-04-03 00:59:39,962 - BotManager - INFO - await self.start(token, reconnect=reconnect)
+2025-04-03 00:59:39,964 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 823, in start
+2025-04-03 00:59:39,964 - BotManager - INFO - await self.login(token)
+2025-04-03 00:59:39,965 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 652, in login
+2025-04-03 00:59:39,966 - BotManager - INFO - data = await self.http.static_login(token)
+2025-04-03 00:59:39,966 - BotManager - INFO - ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-03 00:59:39,967 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\http.py", line 832, in static_login
+2025-04-03 00:59:39,968 - BotManager - INFO - raise LoginFailure('Improper token has been passed.') from exc
+2025-04-03 00:59:39,970 - BotManager - INFO - discord.errors.LoginFailure: Improper token has been passed.
+2025-04-03 00:59:40,182 - BotManager - INFO - Bot process exited with code: 1
+2025-04-03 01:03:01,900 - BotManager - INFO - Loading data from data
+2025-04-03 01:03:01,901 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 01:03:01,901 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 01:03:01,901 - BotManager - INFO - Found 0 files in data\papers
+2025-04-03 01:03:01,902 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 01:03:01,902 - BotManager - INFO - Found 10 files in data\searches
+2025-04-03 01:03:01,902 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 01:03:01,903 - BotManager - INFO - Found 2 files in data\crawls
+2025-04-03 01:03:01,903 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 01:03:01,904 - BotManager - INFO - Found 0 files in data\links
+2025-04-03 01:03:01,904 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 01:03:01,904 - BotManager - INFO - Found 6 files in data\user_profiles
+2025-04-03 01:03:01,904 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 01:03:01,904 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 01:03:01,907 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-03 01:03:01,907 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-03 01:03:01,932 - BotManager - INFO - Updated models display - Base: llama3.1:8b, Vision: llava:latest
+2025-04-03 01:03:02,130 - BotManager - INFO - Base model changed to: 
+2025-04-03 01:03:02,984 - BotManager - INFO - Vision model changed to: 
+2025-04-03 01:03:03,034 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 01:03:03,034 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 01:03:03,050 - BotManager - INFO - Base model changed to: 
+2025-04-03 01:03:03,062 - BotManager - INFO - Base model changed to: llama-guard3:8b
+2025-04-03 01:03:03,062 - BotManager - INFO - Available models: llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 01:03:03,072 - BotManager - INFO - Vision model changed to: 
+2025-04-03 01:03:03,086 - BotManager - INFO - Vision model changed to: llama-guard3:8b
+2025-04-03 01:03:03,087 - BotManager - INFO - Loaded 57 vision models
+2025-04-03 01:03:17,518 - BotManager - INFO - Base model changed to: qwen2.5-coder:latest
+2025-04-03 01:06:25,849 - BotManager - INFO - Vision model changed to: 
+2025-04-03 01:06:25,883 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 01:06:25,896 - BotManager - INFO - Vision model changed to: 
+2025-04-03 01:06:25,899 - BotManager - INFO - Vision model changed to: gemma3:4b
+2025-04-03 01:06:25,900 - BotManager - INFO - Loaded 58 vision models
+2025-04-03 01:06:26,714 - BotManager - INFO - Vision model changed to: 
+2025-04-03 01:06:26,748 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 01:06:26,755 - BotManager - INFO - Vision model changed to: 
+2025-04-03 01:06:26,760 - BotManager - INFO - Vision model changed to: gemma3:4b
+2025-04-03 01:06:26,761 - BotManager - INFO - Loaded 58 vision models
+2025-04-03 01:06:37,650 - BotManager - INFO - Updated models display - Base: qwen2.5-coder:latest, Vision: gemma3:4b
+2025-04-03 01:06:37,651 - BotManager - INFO - Starting with model: qwen2.5-coder:latest
+2025-04-03 01:06:37,659 - BotManager - INFO - Bot started with PID: 44376
+2025-04-03 01:06:40,711 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-03 01:06:40,713 - BotManager - INFO - [2025-04-03 01:06:40] [INFO    ] discord.client: logging in using static token
+2025-04-03 01:06:40,714 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-03 01:06:40,891 - BotManager - INFO - Traceback (most recent call last):
+2025-04-03 01:06:40,892 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\http.py", line 828, in static_login
+2025-04-03 01:06:40,893 - BotManager - INFO - data = await self.request(Route('GET', '/users/@me'))
+2025-04-03 01:06:40,894 - BotManager - INFO - ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-03 01:06:40,895 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\http.py", line 762, in request
+2025-04-03 01:06:40,896 - BotManager - INFO - raise HTTPException(response, data)
+2025-04-03 01:06:40,896 - BotManager - INFO - discord.errors.HTTPException: 401 Unauthorized (error code: 0): 401: Unauthorized
+2025-04-03 01:06:40,897 - BotManager - INFO - 
+2025-04-03 01:06:40,898 - BotManager - INFO - The above exception was the direct cause of the following exception:
+2025-04-03 01:06:40,898 - BotManager - INFO - 
+2025-04-03 01:06:40,898 - BotManager - INFO - Traceback (most recent call last):
+2025-04-03 01:06:40,900 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\main.py", line 343, in <module>
+2025-04-03 01:06:40,902 - BotManager - INFO - main()
+2025-04-03 01:06:40,903 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\main.py", line 340, in main
+2025-04-03 01:06:40,905 - BotManager - INFO - bot.run(TOKEN)
+2025-04-03 01:06:40,910 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 906, in run
+2025-04-03 01:06:40,911 - BotManager - INFO - asyncio.run(runner())
+2025-04-03 01:06:40,911 - BotManager - INFO - File "C:\Users\ADA\miniconda3\Lib\asyncio\runners.py", line 194, in run
+2025-04-03 01:06:40,912 - BotManager - INFO - return runner.run(main)
+2025-04-03 01:06:40,916 - BotManager - INFO - ^^^^^^^^^^^^^^^^
+2025-04-03 01:06:40,917 - BotManager - INFO - File "C:\Users\ADA\miniconda3\Lib\asyncio\runners.py", line 118, in run
+2025-04-03 01:06:40,918 - BotManager - INFO - return self._loop.run_until_complete(task)
+2025-04-03 01:06:40,918 - BotManager - INFO - ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-03 01:06:40,919 - BotManager - INFO - File "C:\Users\ADA\miniconda3\Lib\asyncio\base_events.py", line 685, in run_until_complete
+2025-04-03 01:06:40,919 - BotManager - INFO - return future.result()
+2025-04-03 01:06:40,920 - BotManager - INFO - ^^^^^^^^^^^^^^^
+2025-04-03 01:06:40,920 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 895, in runner
+2025-04-03 01:06:40,922 - BotManager - INFO - await self.start(token, reconnect=reconnect)
+2025-04-03 01:06:40,922 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 823, in start
+2025-04-03 01:06:40,924 - BotManager - INFO - await self.login(token)
+2025-04-03 01:06:40,925 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\client.py", line 652, in login
+2025-04-03 01:06:40,926 - BotManager - INFO - data = await self.http.static_login(token)
+2025-04-03 01:06:40,927 - BotManager - INFO - ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2025-04-03 01:06:40,928 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\venv\Lib\site-packages\discord\http.py", line 832, in static_login
+2025-04-03 01:06:40,928 - BotManager - INFO - raise LoginFailure('Improper token has been passed.') from exc
+2025-04-03 01:06:40,929 - BotManager - INFO - discord.errors.LoginFailure: Improper token has been passed.
+2025-04-03 01:06:41,397 - BotManager - INFO - Bot process exited with code: 1
+2025-04-03 01:12:14,814 - BotManager - INFO - Loading data from data
+2025-04-03 01:12:14,814 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 01:12:14,814 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 01:12:14,814 - BotManager - INFO - Found 0 files in data\papers
+2025-04-03 01:12:14,815 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 01:12:14,815 - BotManager - INFO - Found 0 files in data\searches
+2025-04-03 01:12:14,815 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 01:12:14,815 - BotManager - INFO - Found 0 files in data\crawls
+2025-04-03 01:12:14,816 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 01:12:14,816 - BotManager - INFO - Found 0 files in data\links
+2025-04-03 01:12:14,816 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 01:12:14,816 - BotManager - INFO - Found 0 files in data\user_profiles
+2025-04-03 01:12:14,817 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 01:12:14,817 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 01:12:14,818 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-03 01:12:14,818 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-03 01:12:14,841 - BotManager - INFO - Updated models display - Base: qwen2.5-coder:latest, Vision: gemma3:4b
+2025-04-03 01:12:15,051 - BotManager - INFO - Base model changed to: 
+2025-04-03 01:12:15,904 - BotManager - INFO - Vision model changed to: 
+2025-04-03 01:12:15,932 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 01:12:15,942 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 01:12:15,951 - BotManager - INFO - Base model changed to: 
+2025-04-03 01:12:15,960 - BotManager - INFO - Base model changed to: gemma3:4b
+2025-04-03 01:12:15,961 - BotManager - INFO - Available models: gemma3:4b, llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 01:12:15,974 - BotManager - INFO - Vision model changed to: 
+2025-04-03 01:12:15,984 - BotManager - INFO - Vision model changed to: gemma3:4b
+2025-04-03 01:12:15,984 - BotManager - INFO - Loaded 58 vision models
+2025-04-03 01:12:33,806 - BotManager - INFO - Base model changed to: qwen2.5-coder:latest
+2025-04-03 01:12:37,167 - BotManager - INFO - Updated models display - Base: qwen2.5-coder:latest, Vision: gemma3:4b
+2025-04-03 01:12:37,168 - BotManager - INFO - Starting with model: qwen2.5-coder:latest
+2025-04-03 01:12:37,176 - BotManager - INFO - Bot started with PID: 54092
+2025-04-03 01:12:39,668 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-03 01:12:39,671 - BotManager - INFO - [2025-04-03 01:12:39] [INFO    ] discord.client: logging in using static token
+2025-04-03 01:12:39,671 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-03 01:12:40,308 - BotManager - INFO - [2025-04-03 01:12:40] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 6fa0c568703a4677c04b4658deab6282).
+2025-04-03 01:12:40,309 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 6fa0c568703a4677c04b4658deab6282).
+2025-04-03 01:23:29,500 - BotManager - INFO - ERROR:root:Error collecting links: 'DMChannel' object has no attribute 'name'
+2025-04-03 01:28:14,053 - BotManager - INFO - ERROR:root:Error in arxiv_search: 'formatted_text'
+2025-04-03 01:28:34,797 - BotManager - INFO - ERROR:root:Error in arxiv_search: 'formatted_text'
+2025-04-03 02:00:30,918 - BotManager - INFO - Stopping Discord bot...
+2025-04-03 02:00:31,337 - BotManager - INFO - Bot stopped successfully.
+2025-04-03 02:00:31,409 - BotManager - INFO - Bot process exited with code: 1
+2025-04-03 02:13:36,585 - BotManager - INFO - Loading data from data
+2025-04-03 02:13:36,586 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 02:13:36,586 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 02:13:36,587 - BotManager - INFO - Found 2 files in data\papers
+2025-04-03 02:13:36,587 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 02:13:36,588 - BotManager - INFO - Found 3 files in data\searches
+2025-04-03 02:13:36,588 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 02:13:36,589 - BotManager - INFO - Found 2 files in data\crawls
+2025-04-03 02:13:36,589 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 02:13:36,589 - BotManager - INFO - Found 0 files in data\links
+2025-04-03 02:13:36,589 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 02:13:36,590 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-03 02:13:36,590 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 02:13:36,590 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 02:13:37,241 - BotManager - INFO - Loaded 1 papers from 1 paper files
+2025-04-03 02:13:37,242 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-03 02:13:37,260 - BotManager - INFO - Updated models display - Base: qwen2.5-coder:latest, Vision: gemma3:4b
+2025-04-03 02:13:37,444 - BotManager - INFO - Base model changed to: 
+2025-04-03 02:13:38,297 - BotManager - INFO - Vision model changed to: 
+2025-04-03 02:13:38,345 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 02:13:38,346 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 02:13:38,363 - BotManager - INFO - Vision model changed to: 
+2025-04-03 02:13:38,365 - BotManager - INFO - Vision model changed to: gemma3:4b
+2025-04-03 02:13:38,366 - BotManager - INFO - Loaded 58 vision models
+2025-04-03 02:13:38,376 - BotManager - INFO - Base model changed to: 
+2025-04-03 02:13:38,386 - BotManager - INFO - Base model changed to: gemma3:4b
+2025-04-03 02:13:38,386 - BotManager - INFO - Available models: gemma3:4b, llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 02:13:48,094 - BotManager - INFO - Base model changed to: qwen2.5-coder:latest
+2025-04-03 02:13:51,860 - BotManager - INFO - Updated models display - Base: qwen2.5-coder:latest, Vision: gemma3:4b
+2025-04-03 02:13:51,862 - BotManager - INFO - Starting with model: qwen2.5-coder:latest
+2025-04-03 02:13:51,869 - BotManager - INFO - Bot started with PID: 46948
+2025-04-03 02:13:54,458 - BotManager - INFO - Traceback (most recent call last):
+2025-04-03 02:13:54,482 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\main.py", line 21, in <module>
+2025-04-03 02:13:54,483 - BotManager - INFO - from commands import register_commands
+2025-04-03 02:13:54,484 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\commands.py", line 215
+2025-04-03 02:13:54,485 - BotManager - INFO - {"Add --groq flag to use Groq's API" if not use_groq else ""}"""
+2025-04-03 02:13:54,486 - BotManager - INFO - ^
+2025-04-03 02:13:54,487 - BotManager - INFO - SyntaxError: f-string expression part cannot include a backslash
+2025-04-03 02:13:54,709 - BotManager - INFO - Bot process exited with code: 1
+2025-04-03 02:16:17,545 - BotManager - INFO - Loading data from data
+2025-04-03 02:16:17,545 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 02:16:17,546 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 02:16:17,546 - BotManager - INFO - Found 2 files in data\papers
+2025-04-03 02:16:17,546 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 02:16:17,547 - BotManager - INFO - Found 3 files in data\searches
+2025-04-03 02:16:17,547 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 02:16:17,547 - BotManager - INFO - Found 2 files in data\crawls
+2025-04-03 02:16:17,547 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 02:16:17,548 - BotManager - INFO - Found 0 files in data\links
+2025-04-03 02:16:17,548 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 02:16:17,548 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-03 02:16:17,548 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 02:16:17,549 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 02:16:17,618 - BotManager - INFO - Loaded 1 papers from 1 paper files
+2025-04-03 02:16:17,619 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-03 02:16:17,646 - BotManager - INFO - Updated models display - Base: qwen2.5-coder:latest, Vision: gemma3:4b
+2025-04-03 02:16:17,837 - BotManager - INFO - Base model changed to: 
+2025-04-03 02:16:18,558 - BotManager - INFO - Vision model changed to: 
+2025-04-03 02:16:18,600 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 02:16:18,603 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 02:16:18,614 - BotManager - INFO - Vision model changed to: 
+2025-04-03 02:16:18,616 - BotManager - INFO - Vision model changed to: gemma3:4b
+2025-04-03 02:16:18,617 - BotManager - INFO - Loaded 58 vision models
+2025-04-03 02:16:18,620 - BotManager - INFO - Base model changed to: 
+2025-04-03 02:16:18,622 - BotManager - INFO - Base model changed to: gemma3:4b
+2025-04-03 02:16:18,622 - BotManager - INFO - Available models: gemma3:4b, llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 02:16:29,768 - BotManager - INFO - Base model changed to: qwen2.5-coder:latest
+2025-04-03 02:16:41,701 - BotManager - INFO - Updated models display - Base: qwen2.5-coder:latest, Vision: gemma3:4b
+2025-04-03 02:16:41,701 - BotManager - INFO - Starting with model: qwen2.5-coder:latest
+2025-04-03 02:16:41,709 - BotManager - INFO - Bot started with PID: 48812
+2025-04-03 02:16:43,852 - BotManager - INFO - Traceback (most recent call last):
+2025-04-03 02:16:43,852 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\main.py", line 21, in <module>
+2025-04-03 02:16:43,854 - BotManager - INFO - from commands import register_commands
+2025-04-03 02:16:43,854 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\commands.py", line 215
+2025-04-03 02:16:43,855 - BotManager - INFO - {"Add --groq flag to use Groq API" if not use_groq else ""}"""
+2025-04-03 02:16:43,855 - BotManager - INFO - ^
+2025-04-03 02:16:43,856 - BotManager - INFO - SyntaxError: f-string expression part cannot include a backslash
+2025-04-03 02:16:44,057 - BotManager - INFO - Bot process exited with code: 1
+2025-04-03 02:18:59,924 - BotManager - INFO - Loading data from data
+2025-04-03 02:18:59,925 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 02:18:59,925 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 02:18:59,926 - BotManager - INFO - Found 2 files in data\papers
+2025-04-03 02:18:59,926 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 02:18:59,926 - BotManager - INFO - Found 3 files in data\searches
+2025-04-03 02:18:59,927 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 02:18:59,927 - BotManager - INFO - Found 2 files in data\crawls
+2025-04-03 02:18:59,927 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 02:18:59,928 - BotManager - INFO - Found 0 files in data\links
+2025-04-03 02:18:59,928 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 02:18:59,928 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-03 02:18:59,929 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 02:18:59,929 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 02:18:59,964 - BotManager - INFO - Loaded 1 papers from 1 paper files
+2025-04-03 02:18:59,964 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-03 02:18:59,986 - BotManager - INFO - Updated models display - Base: qwen2.5-coder:latest, Vision: gemma3:4b
+2025-04-03 02:19:00,194 - BotManager - INFO - Base model changed to: 
+2025-04-03 02:19:00,899 - BotManager - INFO - Vision model changed to: 
+2025-04-03 02:19:00,948 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 02:19:00,949 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 02:19:00,960 - BotManager - INFO - Vision model changed to: 
+2025-04-03 02:19:00,964 - BotManager - INFO - Vision model changed to: gemma3:4b
+2025-04-03 02:19:00,964 - BotManager - INFO - Loaded 58 vision models
+2025-04-03 02:19:00,967 - BotManager - INFO - Base model changed to: 
+2025-04-03 02:19:00,970 - BotManager - INFO - Base model changed to: gemma3:4b
+2025-04-03 02:19:00,971 - BotManager - INFO - Available models: gemma3:4b, llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 02:20:15,445 - BotManager - INFO - Base model changed to: qwen2.5-coder:latest
+2025-04-03 02:20:41,088 - BotManager - INFO - Updated models display - Base: qwen2.5-coder:latest, Vision: gemma3:4b
+2025-04-03 02:20:41,089 - BotManager - INFO - Starting with model: qwen2.5-coder:latest
+2025-04-03 02:20:41,096 - BotManager - INFO - Bot started with PID: 47264
+2025-04-03 02:20:43,324 - BotManager - INFO - Traceback (most recent call last):
+2025-04-03 02:20:43,325 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\main.py", line 21, in <module>
+2025-04-03 02:20:43,326 - BotManager - INFO - from commands import register_commands
+2025-04-03 02:20:43,326 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\commands.py", line 215
+2025-04-03 02:20:43,327 - BotManager - INFO - {"Add --groq flag to use Groq API" if not use_groq else ""}"""
+2025-04-03 02:20:43,327 - BotManager - INFO - ^
+2025-04-03 02:20:43,328 - BotManager - INFO - SyntaxError: f-string expression part cannot include a backslash
+2025-04-03 02:20:43,529 - BotManager - INFO - Bot process exited with code: 1
+2025-04-03 02:23:56,414 - BotManager - INFO - Loading data from data
+2025-04-03 02:23:56,414 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 02:23:56,414 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 02:23:56,415 - BotManager - INFO - Found 2 files in data\papers
+2025-04-03 02:23:56,415 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 02:23:56,416 - BotManager - INFO - Found 3 files in data\searches
+2025-04-03 02:23:56,416 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 02:23:56,416 - BotManager - INFO - Found 2 files in data\crawls
+2025-04-03 02:23:56,416 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 02:23:56,417 - BotManager - INFO - Found 0 files in data\links
+2025-04-03 02:23:56,417 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 02:23:56,417 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-03 02:23:56,418 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 02:23:56,418 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 02:23:56,458 - BotManager - INFO - Loaded 1 papers from 1 paper files
+2025-04-03 02:23:56,458 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-03 02:23:56,481 - BotManager - INFO - Updated models display - Base: qwen2.5-coder:latest, Vision: gemma3:4b
+2025-04-03 02:23:56,663 - BotManager - INFO - Base model changed to: 
+2025-04-03 02:23:57,364 - BotManager - INFO - Vision model changed to: 
+2025-04-03 02:23:57,484 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 02:23:57,489 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 02:23:57,493 - BotManager - INFO - Base model changed to: 
+2025-04-03 02:23:57,511 - BotManager - INFO - Base model changed to: gemma3:4b
+2025-04-03 02:23:57,512 - BotManager - INFO - Available models: gemma3:4b, llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 02:23:57,529 - BotManager - INFO - Vision model changed to: 
+2025-04-03 02:23:57,546 - BotManager - INFO - Vision model changed to: gemma3:4b
+2025-04-03 02:23:57,546 - BotManager - INFO - Loaded 58 vision models
+2025-04-03 02:30:05,062 - BotManager - INFO - Loading data from data
+2025-04-03 02:30:05,063 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 02:30:05,063 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 02:30:05,064 - BotManager - INFO - Found 2 files in data\papers
+2025-04-03 02:30:05,064 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 02:30:05,064 - BotManager - INFO - Found 3 files in data\searches
+2025-04-03 02:30:05,065 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 02:30:05,065 - BotManager - INFO - Found 2 files in data\crawls
+2025-04-03 02:30:05,065 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 02:30:05,066 - BotManager - INFO - Found 0 files in data\links
+2025-04-03 02:30:05,066 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 02:30:05,066 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-03 02:30:05,066 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 02:30:05,067 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 02:30:05,104 - BotManager - INFO - Loaded 1 papers from 1 paper files
+2025-04-03 02:30:05,105 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-03 02:30:05,130 - BotManager - INFO - Updated models display - Base: gemma3:4b, Vision: gemma3:4b
+2025-04-03 02:30:05,316 - BotManager - INFO - Base model changed to: 
+2025-04-03 02:30:06,020 - BotManager - INFO - Vision model changed to: 
+2025-04-03 02:30:06,065 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 02:30:06,066 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 02:30:06,076 - BotManager - INFO - Vision model changed to: 
+2025-04-03 02:30:06,079 - BotManager - INFO - Vision model changed to: gemma3:4b
+2025-04-03 02:30:06,079 - BotManager - INFO - Loaded 58 vision models
+2025-04-03 02:30:06,082 - BotManager - INFO - Base model changed to: 
+2025-04-03 02:30:06,085 - BotManager - INFO - Base model changed to: gemma3:4b
+2025-04-03 02:30:06,085 - BotManager - INFO - Available models: gemma3:4b, llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 02:30:30,140 - BotManager - INFO - Base model changed to: qwen2.5-coder:latest
+2025-04-03 02:30:33,125 - BotManager - INFO - Updated models display - Base: qwen2.5-coder:latest, Vision: gemma3:4b
+2025-04-03 02:30:33,126 - BotManager - INFO - Starting with model: qwen2.5-coder:latest
+2025-04-03 02:30:33,134 - BotManager - INFO - Bot started with PID: 45264
+2025-04-03 02:30:35,240 - BotManager - INFO - Traceback (most recent call last):
+2025-04-03 02:30:35,240 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\main.py", line 21, in <module>
+2025-04-03 02:30:35,241 - BotManager - INFO - from commands import register_commands
+2025-04-03 02:30:35,242 - BotManager - INFO - File "M:\PHOTO_HDD_AUTUMN_GAN\OllamaTeacher\splitBot\commands.py", line 214
+2025-04-03 02:30:35,242 - BotManager - INFO - """
+2025-04-03 02:30:35,243 - BotManager - INFO - ^
+2025-04-03 02:30:35,244 - BotManager - INFO - SyntaxError: f-string expression part cannot include a backslash
+2025-04-03 02:30:35,461 - BotManager - INFO - Bot process exited with code: 1
+2025-04-03 02:34:23,330 - BotManager - INFO - Loading data from data
+2025-04-03 02:34:23,330 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 02:34:23,331 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 02:34:23,331 - BotManager - INFO - Found 2 files in data\papers
+2025-04-03 02:34:23,332 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 02:34:23,332 - BotManager - INFO - Found 3 files in data\searches
+2025-04-03 02:34:23,333 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 02:34:23,333 - BotManager - INFO - Found 2 files in data\crawls
+2025-04-03 02:34:23,333 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 02:34:23,334 - BotManager - INFO - Found 0 files in data\links
+2025-04-03 02:34:23,334 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 02:34:23,334 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-03 02:34:23,335 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 02:34:23,335 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 02:34:23,370 - BotManager - INFO - Loaded 1 papers from 1 paper files
+2025-04-03 02:34:23,372 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-03 02:34:23,397 - BotManager - INFO - Updated models display - Base: qwen2.5-coder:latest, Vision: gemma3:4b
+2025-04-03 02:34:23,592 - BotManager - INFO - Base model changed to: 
+2025-04-03 02:34:24,320 - BotManager - INFO - Vision model changed to: 
+2025-04-03 02:34:24,363 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 02:34:24,363 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 02:34:24,375 - BotManager - INFO - Vision model changed to: 
+2025-04-03 02:34:24,378 - BotManager - INFO - Vision model changed to: gemma3:4b
+2025-04-03 02:34:24,379 - BotManager - INFO - Loaded 58 vision models
+2025-04-03 02:34:24,381 - BotManager - INFO - Base model changed to: 
+2025-04-03 02:34:24,385 - BotManager - INFO - Base model changed to: gemma3:4b
+2025-04-03 02:34:24,386 - BotManager - INFO - Available models: gemma3:4b, llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 02:34:28,750 - BotManager - INFO - Base model changed to: qwen2.5-coder:latest
+2025-04-03 02:34:31,330 - BotManager - INFO - Updated models display - Base: qwen2.5-coder:latest, Vision: gemma3:4b
+2025-04-03 02:34:31,331 - BotManager - INFO - Starting with model: qwen2.5-coder:latest
+2025-04-03 02:34:31,342 - BotManager - INFO - Bot started with PID: 51892
+2025-04-03 02:34:33,788 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-03 02:34:33,792 - BotManager - INFO - [2025-04-03 02:34:33] [INFO    ] discord.client: logging in using static token
+2025-04-03 02:34:33,792 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-03 02:34:34,471 - BotManager - INFO - [2025-04-03 02:34:34] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 8f374c685d136847f39eac31e12e1eee).
+2025-04-03 02:34:34,473 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 8f374c685d136847f39eac31e12e1eee).
+2025-04-03 02:35:08,693 - BotManager - INFO - ERROR:root:Error processing message: cannot access local variable 'conversation_logs' where it is not associated with a value
+2025-04-03 02:40:13,158 - BotManager - INFO - Loading data from data
+2025-04-03 02:40:13,159 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 02:40:13,159 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 02:40:13,159 - BotManager - INFO - Found 2 files in data\papers
+2025-04-03 02:40:13,160 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 02:40:13,160 - BotManager - INFO - Found 3 files in data\searches
+2025-04-03 02:40:13,160 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 02:40:13,161 - BotManager - INFO - Found 2 files in data\crawls
+2025-04-03 02:40:13,161 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 02:40:13,161 - BotManager - INFO - Found 0 files in data\links
+2025-04-03 02:40:13,162 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 02:40:13,162 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-03 02:40:13,162 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 02:40:13,163 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 02:40:13,196 - BotManager - INFO - Loaded 1 papers from 1 paper files
+2025-04-03 02:40:13,197 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-03 02:40:13,220 - BotManager - INFO - Updated models display - Base: qwen2.5-coder:latest, Vision: gemma3:4b
+2025-04-03 02:40:13,404 - BotManager - INFO - Base model changed to: 
+2025-04-03 02:40:14,334 - BotManager - INFO - Vision model changed to: 
+2025-04-03 02:40:14,380 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 02:40:14,382 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 02:40:14,389 - BotManager - INFO - Base model changed to: 
+2025-04-03 02:40:14,392 - BotManager - INFO - Base model changed to: gemma3:4b
+2025-04-03 02:40:14,392 - BotManager - INFO - Available models: gemma3:4b, llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 02:40:14,394 - BotManager - INFO - Vision model changed to: 
+2025-04-03 02:40:14,397 - BotManager - INFO - Vision model changed to: gemma3:4b
+2025-04-03 02:40:14,397 - BotManager - INFO - Loaded 58 vision models
+2025-04-03 02:40:18,753 - BotManager - INFO - Base model changed to: qwen2.5-coder:latest
+2025-04-03 02:40:22,827 - BotManager - INFO - Updated models display - Base: qwen2.5-coder:latest, Vision: gemma3:4b
+2025-04-03 02:40:22,828 - BotManager - INFO - Starting with model: qwen2.5-coder:latest
+2025-04-03 02:40:22,835 - BotManager - INFO - Bot started with PID: 46160
+2025-04-03 02:40:25,590 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-03 02:40:25,592 - BotManager - INFO - [2025-04-03 02:40:25] [INFO    ] discord.client: logging in using static token
+2025-04-03 02:40:25,593 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-03 02:40:26,381 - BotManager - INFO - [2025-04-03 02:40:26] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 1a0d5fa42f11b8761ef404f72e956330).
+2025-04-03 02:40:26,381 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 1a0d5fa42f11b8761ef404f72e956330).
+2025-04-03 02:48:44,827 - BotManager - ERROR - Error viewing paper details: '_iLocIndexer' object has no attribute 'to_dict'
+2025-04-03 03:23:14,403 - BotManager - INFO - Loading data from data
+2025-04-03 03:23:14,403 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 03:23:14,404 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 03:23:14,404 - BotManager - INFO - Found 2 files in data\papers
+2025-04-03 03:23:14,404 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 03:23:14,405 - BotManager - INFO - Found 6 files in data\searches
+2025-04-03 03:23:14,405 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 03:23:14,406 - BotManager - INFO - Found 6 files in data\crawls
+2025-04-03 03:23:14,406 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 03:23:14,407 - BotManager - INFO - Found 0 files in data\links
+2025-04-03 03:23:14,407 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 03:23:14,407 - BotManager - INFO - Found 4 files in data\user_profiles
+2025-04-03 03:23:14,408 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 03:23:14,410 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 03:23:14,455 - BotManager - INFO - Loaded 1 papers from 1 paper files
+2025-04-03 03:23:14,456 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-03 03:23:14,488 - BotManager - INFO - Updated models display - Base: qwen2.5-coder:latest, Vision: gemma3:4b
+2025-04-03 03:23:14,865 - BotManager - INFO - Vision model changed to: 
+2025-04-03 03:23:14,883 - BotManager - INFO - Base model changed to: 
+2025-04-03 03:23:15,655 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 03:23:15,657 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 03:23:15,666 - BotManager - INFO - Base model changed to: 
+2025-04-03 03:23:15,670 - BotManager - INFO - Base model changed to: gemma3:4b
+2025-04-03 03:23:15,670 - BotManager - INFO - Available models: gemma3:4b, llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 03:23:15,673 - BotManager - INFO - Vision model changed to: 
+2025-04-03 03:23:15,677 - BotManager - INFO - Vision model changed to: gemma3:4b
+2025-04-03 03:23:15,677 - BotManager - INFO - Loaded 58 vision models
+2025-04-03 03:23:26,346 - BotManager - INFO - Base model changed to: llama3.1:8b
+2025-04-03 03:23:32,499 - BotManager - INFO - Updated models display - Base: llama3.1:8b, Vision: gemma3:4b
+2025-04-03 03:23:32,500 - BotManager - INFO - Starting with model: llama3.1:8b
+2025-04-03 03:23:32,507 - BotManager - INFO - Bot started with PID: 36364
+2025-04-03 03:23:34,813 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-03 03:23:34,818 - BotManager - INFO - [2025-04-03 03:23:34] [INFO    ] discord.client: logging in using static token
+2025-04-03 03:23:34,818 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-03 03:23:35,520 - BotManager - INFO - [2025-04-03 03:23:35] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 5210d2e9c164e7ab231b8e4e6592f896).
+2025-04-03 03:23:35,520 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 5210d2e9c164e7ab231b8e4e6592f896).
+2025-04-03 03:35:04,054 - BotManager - INFO - ERROR:root:Error in arxiv_search: 'formatted_text'
+2025-04-03 03:35:30,771 - BotManager - INFO - ERROR:root:Error in get_ollama_response: name 'SYSTEM_PROMPT' is not defined
+2025-04-03 03:45:07,561 - BotManager - INFO - Loaded 2 papers from 2 paper files
+2025-04-03 03:45:09,114 - BotManager - ERROR - Error viewing paper details: '_iLocIndexer' object has no attribute 'to_dict'
+2025-04-03 03:53:37,548 - BotManager - INFO - ERROR:root:Error in get_ollama_response: name 'SYSTEM_PROMPT' is not defined
+2025-04-03 04:07:18,615 - BotManager - INFO - Loading data from data
+2025-04-03 04:07:18,616 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 04:07:18,617 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 04:07:18,617 - BotManager - INFO - Found 3 files in data\papers
+2025-04-03 04:07:18,618 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 04:07:18,618 - BotManager - INFO - Found 6 files in data\searches
+2025-04-03 04:07:18,618 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 04:07:18,619 - BotManager - INFO - Found 7 files in data\crawls
+2025-04-03 04:07:18,619 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 04:07:18,620 - BotManager - INFO - Found 0 files in data\links
+2025-04-03 04:07:18,620 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 04:07:18,620 - BotManager - INFO - Found 4 files in data\user_profiles
+2025-04-03 04:07:18,621 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 04:07:18,621 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 04:07:18,669 - BotManager - INFO - Loaded 2 papers from 2 paper files
+2025-04-03 04:07:18,670 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-03 04:07:18,691 - BotManager - INFO - Updated models display - Base: llama3.1:8b, Vision: gemma3:4b
+2025-04-03 04:07:18,887 - BotManager - INFO - Base model changed to: 
+2025-04-03 04:07:19,604 - BotManager - INFO - Vision model changed to: 
+2025-04-03 04:07:19,654 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 04:07:19,655 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 04:07:19,661 - BotManager - INFO - Vision model changed to: 
+2025-04-03 04:07:19,664 - BotManager - INFO - Vision model changed to: gemma3:4b
+2025-04-03 04:07:19,665 - BotManager - INFO - Loaded 58 vision models
+2025-04-03 04:07:19,667 - BotManager - INFO - Base model changed to: 
+2025-04-03 04:07:19,670 - BotManager - INFO - Base model changed to: gemma3:4b
+2025-04-03 04:07:19,671 - BotManager - INFO - Available models: gemma3:4b, llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 04:07:32,465 - BotManager - INFO - Base model changed to: phi3:latest
+2025-04-03 04:07:37,064 - BotManager - INFO - Updated models display - Base: phi3:latest, Vision: gemma3:4b
+2025-04-03 04:07:37,064 - BotManager - INFO - Starting with model: phi3:latest
+2025-04-03 04:07:37,071 - BotManager - INFO - Bot started with PID: 16480
+2025-04-03 04:07:39,311 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-03 04:07:39,314 - BotManager - INFO - [2025-04-03 04:07:39] [INFO    ] discord.client: logging in using static token
+2025-04-03 04:07:39,315 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-03 04:07:40,023 - BotManager - INFO - [2025-04-03 04:07:40] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 8414dfe968e0ce55676463b31b4a8150).
+2025-04-03 04:07:40,024 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 8414dfe968e0ce55676463b31b4a8150).
+2025-04-03 04:37:42,055 - BotManager - INFO - ERROR:root:Error in get_ollama_response: name 'SYSTEM_PROMPT' is not defined
+2025-04-03 05:07:42,045 - BotManager - INFO - ERROR:root:Error in get_ollama_response: name 'SYSTEM_PROMPT' is not defined
+2025-04-03 05:09:40,159 - BotManager - INFO - Loading data from data
+2025-04-03 05:09:40,160 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 05:09:40,160 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 05:09:40,161 - BotManager - INFO - Found 3 files in data\papers
+2025-04-03 05:09:40,161 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 05:09:40,161 - BotManager - INFO - Found 6 files in data\searches
+2025-04-03 05:09:40,161 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 05:09:40,162 - BotManager - INFO - Found 7 files in data\crawls
+2025-04-03 05:09:40,162 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 05:09:40,162 - BotManager - INFO - Found 0 files in data\links
+2025-04-03 05:09:40,162 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 05:09:40,163 - BotManager - INFO - Found 4 files in data\user_profiles
+2025-04-03 05:09:40,163 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 05:09:40,163 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 05:09:40,200 - BotManager - INFO - Loaded 2 papers from 2 paper files
+2025-04-03 05:09:40,201 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-03 05:09:40,223 - BotManager - INFO - Updated models display - Base: phi3:latest, Vision: gemma3:4b
+2025-04-03 05:09:40,416 - BotManager - INFO - Base model changed to: 
+2025-04-03 05:09:41,186 - BotManager - INFO - Vision model changed to: 
+2025-04-03 05:09:41,230 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 05:09:41,231 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 05:09:41,236 - BotManager - INFO - Base model changed to: 
+2025-04-03 05:09:41,238 - BotManager - INFO - Base model changed to: granite3-dense:8b
+2025-04-03 05:09:41,238 - BotManager - INFO - Available models: granite3-dense:8b, granite3-guardian:latest, gemma3:4b, llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 05:09:41,250 - BotManager - INFO - Vision model changed to: 
+2025-04-03 05:09:41,260 - BotManager - INFO - Vision model changed to: granite3-dense:8b
+2025-04-03 05:09:41,261 - BotManager - INFO - Loaded 60 vision models
+2025-04-03 05:09:57,304 - BotManager - INFO - Vision model changed to: gemma3:4b
+2025-04-03 05:11:44,229 - BotManager - INFO - Loading data from data
+2025-04-03 05:11:44,230 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 05:11:44,230 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 05:11:44,231 - BotManager - INFO - Found 3 files in data\papers
+2025-04-03 05:11:44,231 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 05:11:44,231 - BotManager - INFO - Found 6 files in data\searches
+2025-04-03 05:11:44,232 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 05:11:44,232 - BotManager - INFO - Found 7 files in data\crawls
+2025-04-03 05:11:44,232 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 05:11:44,232 - BotManager - INFO - Found 0 files in data\links
+2025-04-03 05:11:44,233 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 05:11:44,233 - BotManager - INFO - Found 4 files in data\user_profiles
+2025-04-03 05:11:44,233 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 05:11:44,234 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 05:11:44,276 - BotManager - INFO - Loaded 2 papers from 2 paper files
+2025-04-03 05:11:44,277 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-03 05:11:44,302 - BotManager - INFO - Updated models display - Base: granite3-dense:8b, Vision: gemma3:4b
+2025-04-03 05:11:44,503 - BotManager - INFO - Vision model changed to: 
+2025-04-03 05:11:44,506 - BotManager - INFO - Base model changed to: 
+2025-04-03 05:11:45,257 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 05:11:45,258 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 05:11:45,267 - BotManager - INFO - Vision model changed to: 
+2025-04-03 05:11:45,270 - BotManager - INFO - Vision model changed to: granite3-dense:8b
+2025-04-03 05:11:45,270 - BotManager - INFO - Loaded 60 vision models
+2025-04-03 05:11:45,281 - BotManager - INFO - Base model changed to: 
+2025-04-03 05:11:45,290 - BotManager - INFO - Base model changed to: granite3-dense:8b
+2025-04-03 05:11:45,290 - BotManager - INFO - Available models: granite3-dense:8b, granite3-guardian:latest, gemma3:4b, llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 05:11:55,856 - BotManager - INFO - Base model changed to: phi3:latest
+2025-04-03 05:11:58,325 - BotManager - INFO - Vision model changed to: gemma3:4b
+2025-04-03 05:12:04,261 - BotManager - INFO - Updated models display - Base: phi3:latest, Vision: gemma3:4b
+2025-04-03 05:12:04,261 - BotManager - INFO - Starting with model: phi3:latest
+2025-04-03 05:12:04,271 - BotManager - INFO - Bot started with PID: 38308
+2025-04-03 05:12:07,157 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-03 05:12:07,164 - BotManager - INFO - [2025-04-03 05:12:07] [INFO    ] discord.client: logging in using static token
+2025-04-03 05:12:07,165 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-03 05:12:07,855 - BotManager - INFO - [2025-04-03 05:12:07] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: f0849f32ee2e3ed1b8fb886c02fec15f).
+2025-04-03 05:12:07,857 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: f0849f32ee2e3ed1b8fb886c02fec15f).
+2025-04-03 05:12:29,855 - BotManager - INFO - Base model changed to: granite3-dense:8b
+2025-04-03 05:12:34,046 - BotManager - INFO - Stopping Discord bot...
+2025-04-03 05:12:34,443 - BotManager - INFO - Bot stopped successfully.
+2025-04-03 05:12:34,452 - BotManager - INFO - Bot process exited with code: 1
+2025-04-03 05:12:36,456 - BotManager - INFO - Updated models display - Base: granite3-dense:8b, Vision: gemma3:4b
+2025-04-03 05:12:36,457 - BotManager - INFO - Starting with model: granite3-dense:8b
+2025-04-03 05:12:36,463 - BotManager - INFO - Bot started with PID: 55432
+2025-04-03 05:12:38,705 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-03 05:12:38,708 - BotManager - INFO - [2025-04-03 05:12:38] [INFO    ] discord.client: logging in using static token
+2025-04-03 05:12:38,708 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-03 05:12:39,400 - BotManager - INFO - [2025-04-03 05:12:39] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: c64bfb6d1fc92c2ac260378c9bd117ee).
+2025-04-03 05:12:39,401 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: c64bfb6d1fc92c2ac260378c9bd117ee).
+2025-04-03 05:15:36,219 - BotManager - INFO - Vision model changed to: 
+2025-04-03 05:15:36,255 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 05:15:36,262 - BotManager - INFO - Vision model changed to: 
+2025-04-03 05:15:36,264 - BotManager - INFO - Vision model changed to: granite3.2-vision:latest
+2025-04-03 05:15:36,264 - BotManager - INFO - Loaded 61 vision models
+2025-04-03 05:15:40,321 - BotManager - INFO - Stopping Discord bot...
+2025-04-03 05:15:40,761 - BotManager - INFO - Bot stopped successfully.
+2025-04-03 05:15:40,762 - BotManager - INFO - Bot process exited with code: 1
+2025-04-03 05:15:42,605 - BotManager - INFO - Updated models display - Base: granite3-dense:8b, Vision: granite3.2-vision:latest
+2025-04-03 05:15:42,606 - BotManager - INFO - Starting with model: granite3-dense:8b
+2025-04-03 05:15:42,609 - BotManager - INFO - Bot started with PID: 14352
+2025-04-03 05:15:44,819 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-03 05:15:44,822 - BotManager - INFO - [2025-04-03 05:15:44] [INFO    ] discord.client: logging in using static token
+2025-04-03 05:15:44,824 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-03 05:15:45,639 - BotManager - INFO - [2025-04-03 05:15:45] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 82f152eda7581a278351b38c8dc4fc12).
+2025-04-03 05:15:45,640 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 82f152eda7581a278351b38c8dc4fc12).
+2025-04-03 05:18:49,540 - BotManager - INFO - Base model changed to: 
+2025-04-03 05:18:49,578 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 05:18:49,589 - BotManager - INFO - Base model changed to: 
+2025-04-03 05:18:49,593 - BotManager - INFO - Base model changed to: granite3-dense:2b
+2025-04-03 05:18:49,593 - BotManager - INFO - Available models: granite3-dense:2b, granite3.2-vision:latest, granite3-dense:8b, granite3-guardian:latest, gemma3:4b, llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 05:18:55,822 - BotManager - INFO - Stopping Discord bot...
+2025-04-03 05:18:56,235 - BotManager - INFO - Bot stopped successfully.
+2025-04-03 05:18:56,236 - BotManager - INFO - Bot process exited with code: 1
+2025-04-03 05:19:03,461 - BotManager - INFO - Updated models display - Base: granite3-dense:2b, Vision: granite3.2-vision:latest
+2025-04-03 05:19:03,462 - BotManager - INFO - Starting with model: granite3-dense:2b
+2025-04-03 05:19:03,466 - BotManager - INFO - Bot started with PID: 16824
+2025-04-03 05:19:05,753 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-03 05:19:05,760 - BotManager - INFO - [2025-04-03 05:19:05] [INFO    ] discord.client: logging in using static token
+2025-04-03 05:19:05,761 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-03 05:19:06,627 - BotManager - INFO - [2025-04-03 05:19:06] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 7d400fa0cb16fb756494ef4774092e45).
+2025-04-03 05:19:06,628 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 7d400fa0cb16fb756494ef4774092e45).
+2025-04-03 05:31:12,035 - BotManager - INFO - Vision model changed to: gemma3:4b
+2025-04-03 05:32:12,399 - BotManager - INFO - Stopping Discord bot...
+2025-04-03 05:32:12,960 - BotManager - INFO - Bot stopped successfully.
+2025-04-03 05:32:12,962 - BotManager - INFO - Bot process exited with code: 1
+2025-04-03 05:32:24,502 - BotManager - INFO - Updated models display - Base: granite3-dense:2b, Vision: gemma3:4b
+2025-04-03 05:32:24,502 - BotManager - INFO - Starting with model: granite3-dense:2b
+2025-04-03 05:32:24,506 - BotManager - INFO - Bot started with PID: 53980
+2025-04-03 05:32:26,494 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-03 05:32:26,500 - BotManager - INFO - [2025-04-03 05:32:26] [INFO    ] discord.client: logging in using static token
+2025-04-03 05:32:26,501 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-03 05:32:27,144 - BotManager - INFO - [2025-04-03 05:32:27] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 7d068092f3c8266ddafe9804d837e1ab).
+2025-04-03 05:32:27,144 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 7d068092f3c8266ddafe9804d837e1ab).
+2025-04-03 07:18:50,569 - BotManager - INFO - [2025-04-03 07:18:50] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session 7d068092f3c8266ddafe9804d837e1ab.
+2025-04-03 07:18:50,570 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session 7d068092f3c8266ddafe9804d837e1ab.
+2025-04-03 07:40:59,133 - BotManager - INFO - [2025-04-03 07:40:59] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session 7d068092f3c8266ddafe9804d837e1ab.
+2025-04-03 07:40:59,134 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session 7d068092f3c8266ddafe9804d837e1ab.
+2025-04-03 09:39:50,900 - BotManager - ERROR - Error viewing paper details: '_iLocIndexer' object has no attribute 'to_dict'
+2025-04-03 11:13:20,673 - BotManager - ERROR - Error loading links from data\links\links__ollama-guides__20250403.parquet: name 'row' is not defined
+2025-04-03 11:13:20,673 - BotManager - INFO - Loaded 0 links from 1 files
+2025-04-03 11:13:21,182 - BotManager - ERROR - Error loading links from data\links\links__ollama-guides__20250403.parquet: name 'row' is not defined
+2025-04-03 11:13:21,182 - BotManager - INFO - Loaded 0 links from 1 files
+2025-04-03 11:13:21,342 - BotManager - ERROR - Error loading links from data\links\links__ollama-guides__20250403.parquet: name 'row' is not defined
+2025-04-03 11:13:21,342 - BotManager - INFO - Loaded 0 links from 1 files
+2025-04-03 11:13:23,017 - BotManager - ERROR - Error loading links from data\links\links__ollama-guides__20250403.parquet: name 'row' is not defined
+2025-04-03 11:13:23,017 - BotManager - INFO - Loaded 0 links from 1 files
+2025-04-03 11:17:33,617 - BotManager - INFO - [2025-04-03 11:17:33] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session 7d068092f3c8266ddafe9804d837e1ab.
+2025-04-03 11:17:33,618 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session 7d068092f3c8266ddafe9804d837e1ab.
+2025-04-03 12:00:04,533 - BotManager - INFO - Base model changed to: r2-d2:latest
+2025-04-03 12:00:31,008 - BotManager - INFO - Stopping Discord bot...
+2025-04-03 12:00:31,542 - BotManager - INFO - Bot stopped successfully.
+2025-04-03 12:00:31,795 - BotManager - INFO - Bot process exited with code: 1
+2025-04-03 12:00:32,604 - BotManager - INFO - Updated models display - Base: r2-d2:latest, Vision: gemma3:4b
+2025-04-03 12:00:32,605 - BotManager - INFO - Starting with model: r2-d2:latest
+2025-04-03 12:00:32,687 - BotManager - INFO - Bot started with PID: 43016
+2025-04-03 12:00:34,805 - BotManager - INFO - Base model changed to: 
+2025-04-03 12:00:35,602 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 12:00:35,607 - BotManager - INFO - Base model changed to: 
+2025-04-03 12:00:35,615 - BotManager - INFO - Base model changed to: granite3.2-vision:2b-q8_0
+2025-04-03 12:00:35,615 - BotManager - INFO - Available models: granite3.2-vision:2b-q8_0, granite3-dense:2b, granite3.2-vision:latest, granite3-dense:8b, granite3-guardian:latest, gemma3:4b, llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 12:00:39,298 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-03 12:00:39,305 - BotManager - INFO - [2025-04-03 12:00:39] [INFO    ] discord.client: logging in using static token
+2025-04-03 12:00:39,306 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-03 12:00:40,130 - BotManager - INFO - [2025-04-03 12:00:40] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: eccf722dc1760c7ce33a2e8ae62c8d78).
+2025-04-03 12:00:40,131 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: eccf722dc1760c7ce33a2e8ae62c8d78).
+2025-04-03 12:00:48,712 - BotManager - INFO - Base model changed to: r2-d2:latest
+2025-04-03 12:01:48,310 - BotManager - INFO - Base model changed to: llama3.2:3b
+2025-04-03 12:15:06,222 - BotManager - ERROR - Error loading links from data\links\links__ollama-guides__20250403.parquet: name 'row' is not defined
+2025-04-03 12:15:06,222 - BotManager - INFO - Loaded 0 links from 1 files
+2025-04-03 12:15:06,377 - BotManager - ERROR - Error loading links from data\links\links__ollama-guides__20250403.parquet: name 'row' is not defined
+2025-04-03 12:15:06,377 - BotManager - INFO - Loaded 0 links from 1 files
+2025-04-03 12:15:06,530 - BotManager - ERROR - Error loading links from data\links\links__ollama-guides__20250403.parquet: name 'row' is not defined
+2025-04-03 12:15:06,530 - BotManager - INFO - Loaded 0 links from 1 files
+2025-04-03 12:16:40,817 - BotManager - INFO - Loading data from data
+2025-04-03 12:16:40,817 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 12:16:40,817 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 12:16:40,818 - BotManager - INFO - Found 3 files in data\papers
+2025-04-03 12:16:40,819 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 12:16:40,819 - BotManager - INFO - Found 7 files in data\searches
+2025-04-03 12:16:40,819 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 12:16:40,820 - BotManager - INFO - Found 10 files in data\crawls
+2025-04-03 12:16:40,820 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 12:16:40,821 - BotManager - INFO - Found 1 files in data\links
+2025-04-03 12:16:40,821 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 12:16:40,821 - BotManager - INFO - Found 5 files in data\user_profiles
+2025-04-03 12:16:40,822 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 12:16:40,822 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 12:16:41,399 - BotManager - INFO - Loaded 2 papers from 2 paper files
+2025-04-03 12:16:41,400 - BotManager - ERROR - Error loading links from data\links\links__ollama-guides__20250403.parquet: name 'row' is not defined
+2025-04-03 12:16:41,400 - BotManager - INFO - Loaded 0 links from 1 files
+2025-04-03 12:16:41,422 - BotManager - INFO - Updated models display - Base: llama3.2:3b, Vision: gemma3:4b
+2025-04-03 12:16:41,680 - BotManager - INFO - Base model changed to: 
+2025-04-03 12:16:42,485 - BotManager - INFO - Vision model changed to: 
+2025-04-03 12:16:42,529 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 12:16:42,530 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 12:16:42,548 - BotManager - INFO - Vision model changed to: 
+2025-04-03 12:16:42,550 - BotManager - INFO - Vision model changed to: granite3.2-vision:2b-q8_0
+2025-04-03 12:16:42,550 - BotManager - INFO - Loaded 63 vision models
+2025-04-03 12:16:42,562 - BotManager - INFO - Base model changed to: 
+2025-04-03 12:16:42,572 - BotManager - INFO - Base model changed to: granite3.2-vision:2b-q8_0
+2025-04-03 12:16:42,573 - BotManager - INFO - Available models: granite3.2-vision:2b-q8_0, granite3-dense:2b, granite3.2-vision:latest, granite3-dense:8b, granite3-guardian:latest, gemma3:4b, llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 12:44:40,537 - BotManager - INFO - Base model changed to: granite3-dense:2b
+2025-04-03 12:44:44,411 - BotManager - INFO - Updated models display - Base: granite3-dense:2b, Vision: granite3.2-vision:2b-q8_0
+2025-04-03 12:44:44,411 - BotManager - INFO - Starting with model: granite3-dense:2b
+2025-04-03 12:44:44,419 - BotManager - INFO - Bot started with PID: 31080
+2025-04-03 12:44:47,206 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-03 12:44:47,214 - BotManager - INFO - [2025-04-03 12:44:47] [INFO    ] discord.client: logging in using static token
+2025-04-03 12:44:47,215 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-03 12:44:48,172 - BotManager - INFO - [2025-04-03 12:44:48] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: f0942381fbe7890faa79ce1eddec7780).
+2025-04-03 12:44:48,173 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: f0942381fbe7890faa79ce1eddec7780).

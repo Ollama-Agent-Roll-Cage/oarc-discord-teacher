@@ -23,7 +23,7 @@ except ImportError:
 
 import ollama
 
-from utils import ParquetStorage
+from utils import ParquetStorage, SYSTEM_PROMPT
 from config import MODEL_NAME as CONFIG_MODEL_NAME
 
 # ---------- Web Crawling Integration ----------
@@ -279,7 +279,7 @@ class ModelManager:
 model_manager = ModelManager()
 
 # Update get_ollama_response to use model manager
-async def get_ollama_response(prompt, with_context=True, use_groq=False):
+async def get_ollama_response(prompt, with_context=True, use_groq=False, conversation_history=None):
     """Gets a response from the Ollama or Groq model."""
     if use_groq:
         # Groq handling remains unchanged
@@ -296,12 +296,19 @@ async def get_ollama_response(prompt, with_context=True, use_groq=False):
                 raise Exception(f"Could not load model: {model_name}")
 
             # Format messages for the model
-            messages_to_send = [
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ]
+            if with_context and conversation_history:
+                messages_to_send = conversation_history
+            else:
+                messages_to_send = [
+                    {
+                        "role": "system",
+                        "content": SYSTEM_PROMPT
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ]
 
             # Using the streaming approach with AsyncClient
             response_text = ""
@@ -310,7 +317,7 @@ async def get_ollama_response(prompt, with_context=True, use_groq=False):
             # Get the stream of responses
             stream_generator = await client.chat(
                 model=model_name,
-                messages=messages_to_send,
+                messages=messages_to_send,  # Now includes system prompt
                 options={
                     'temperature': TEMPERATURE,
                     'num_predict': 512,
