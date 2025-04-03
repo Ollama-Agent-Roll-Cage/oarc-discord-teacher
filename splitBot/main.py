@@ -74,18 +74,49 @@ register_commands(bot, USER_CONVERSATIONS, COMMAND_MEMORY, conversation_logs, US
 @bot.event
 async def on_message(message: Message):
     """Handles incoming messages."""
-    # Don't respond to self
     if message.author == bot.user:
         return
 
-    # Get user's preferred name
     user_name = message.author.display_name or message.author.name
     user_key = get_user_key(message)
     
-    # Only process if bot is mentioned
     if bot.user and bot.user.mentioned_in(message):
         content = re.sub(f'<@!?{bot.user.id}>', '', message.content).strip()
+        use_llava = '--llava' in content
         
+        # Handle vision model if --llava flag is present and there's an image
+        if use_llava and message.attachments:
+            try:
+                content = content.replace('--llava', '').strip()
+                image_data = await process_image_attachment(message.attachments[0])
+                
+                async with message.channel.typing():
+                    # Get description from vision model
+                    vision_response = await process_image_with_llava(
+                        image_data, 
+                        f"Describe this image in detail, addressing this query: {content}"
+                    )
+                    
+                    await send_in_chunks(message.channel, 
+                        f"# 🖼️ Vision Analysis\n\n{vision_response}", message)
+                    
+                    # Store in conversation history
+                    await store_user_conversation(
+                        message,
+                        f"Asked about image with query: {content}"
+                    )
+                    await store_user_conversation(
+                        message,
+                        vision_response,
+                        is_bot=True
+                    )
+                return
+                
+            except Exception as e:
+                await message.channel.send(f"⚠️ Error processing image: {str(e)}")
+                return
+
+        # Continue with regular message processing
         # Store user information
         await store_user_conversation(message, content)
         

@@ -371,51 +371,64 @@ class ConfigDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Bot Configuration")
-        self.resize(500, 300)
+        self.resize(500, 400)  # Made taller for new options
         
         # Set up the UI
         layout = QVBoxLayout(self)
         
-        # Create log area
-        self.log_area = QTextEdit()
-        self.log_area.setReadOnly(True)
-        self.log_area.setFixedHeight(80)
-        self.log_area.setStyleSheet(f"""
-            QTextEdit {{
-                background-color: {AcidTheme.BG_DARK};
-                color: {AcidTheme.TEXT_SECONDARY};
-                border: 1px solid {AcidTheme.ACCENT_PRIMARY};
-                font-family: monospace;
-                font-size: 9pt;
-            }}
-        """)
-        
         # Config form
         config_grid = QGridLayout()
         
+        # Regular Ollama Model Selection (ADD THIS FIRST)
+        config_grid.addWidget(QLabel("Ollama Model:"), 0, 0)
+        self.model_combo = QComboBox()
+        self.model_combo.setMinimumWidth(200)
+        self.model_combo.setEnabled(False)
+        self.model_combo.addItem("Loading models...")
+        config_grid.addWidget(self.model_combo, 0, 1)
+        
+        # Add refresh button for regular models
+        refresh_btn = QPushButton("⟳")
+        refresh_btn.setToolTip("Refresh Models")
+        refresh_btn.clicked.connect(self.fetch_models)
+        config_grid.addWidget(refresh_btn, 0, 2)
+
+        # Vision Model Selection
+        config_grid.addWidget(QLabel("Vision Model:"), 1, 0)
+        self.vision_model_combo = QComboBox()
+        self.vision_model_combo.setMinimumWidth(200)
+        self.vision_model_combo.setEnabled(False)
+        self.vision_model_combo.addItem("Loading models...")
+        config_grid.addWidget(self.vision_model_combo, 1, 1)
+        
+        # Add refresh button for vision models
+        refresh_vision_btn = QPushButton("⟳")
+        refresh_vision_btn.setToolTip("Refresh Vision Models")
+        refresh_vision_btn.clicked.connect(self.fetch_vision_models)
+        config_grid.addWidget(refresh_vision_btn, 1, 2)
+
         # Temperature
-        config_grid.addWidget(QLabel("Temperature:"), 0, 0)
+        config_grid.addWidget(QLabel("Temperature:"), 2, 0)
         self.temp_entry = QLineEdit(str(TEMPERATURE))
-        config_grid.addWidget(self.temp_entry, 0, 1)
+        config_grid.addWidget(self.temp_entry, 2, 1)
         
         # Timeout
-        config_grid.addWidget(QLabel("Timeout (seconds):"), 1, 0)
+        config_grid.addWidget(QLabel("Timeout (seconds):"), 3, 0)
         self.timeout_entry = QLineEdit(str(TIMEOUT))
-        config_grid.addWidget(self.timeout_entry, 1, 1)
+        config_grid.addWidget(self.timeout_entry, 3, 1)
         
         # Data directory
-        config_grid.addWidget(QLabel("Data Directory:"), 2, 0)
+        config_grid.addWidget(QLabel("Data Directory:"), 4, 0)
         self.data_dir_entry = QLineEdit(DATA_DIR)
-        config_grid.addWidget(self.data_dir_entry, 2, 1)
+        config_grid.addWidget(self.data_dir_entry, 4, 1)
         
         # Change nickname option
-        config_grid.addWidget(QLabel("Change Bot Nickname:"), 3, 0)
+        config_grid.addWidget(QLabel("Change Bot Nickname:"), 5, 0)
         self.nickname_check = QCheckBox()
         self.nickname_check.setChecked(CHANGE_NICKNAME)
-        config_grid.addWidget(self.nickname_check, 3, 1)
+        config_grid.addWidget(self.nickname_check, 5, 1)
         
         layout.addLayout(config_grid)
-        layout.addWidget(self.log_area)
         
         # Buttons
         btn_layout = QHBoxLayout()
@@ -443,18 +456,47 @@ class ConfigDialog(QDialog):
         btn_layout.addWidget(save_btn)
         btn_layout.addWidget(cancel_btn)
         layout.addLayout(btn_layout)
-    
-    def log_message(self, message):
-        """Add a message to the log area"""
-        timestamp = datetime.now().strftime('%H:%M:%S')
-        self.log_area.append(f"[{timestamp}] {message}")
-        # Scroll to bottom
-        self.log_area.moveCursor(QTextCursor.MoveOperation.End)
-    
-    def save_config(self):
-        """Save the configuration without model selection"""
+        
+        # Start timers to fetch both types of models
+        QTimer.singleShot(100, self.fetch_models)
+        QTimer.singleShot(100, self.fetch_vision_models)
+
+    def fetch_vision_models(self):
+        """Fetch models for the vision model combo box"""
+        # Show loading state
+        self.vision_model_combo.clear()
+        self.vision_model_combo.addItem("Fetching models...")
+        self.vision_model_combo.setEnabled(False)
+        
         try:
-            # Declare globals properly at the start 
+            class VisionModelsFetchThread(QThread):
+                models_fetched = pyqtSignal(object)
+                error_occurred = pyqtSignal(str)
+                
+                def run(self):
+                    try:
+                        import ollama
+                        models = ollama.list()
+                        self.models_fetched.emit(models)
+                    except Exception as e:
+                        self.error_occurred.emit(str(e))
+            
+            # Create thread
+            fetch_thread = VisionModelsFetchThread(self)
+            fetch_thread.models_fetched.connect(self.process_vision_models)
+            fetch_thread.error_occurred.connect(self.handle_vision_model_error)
+            fetch_thread.start()
+            
+        except Exception as e:
+            self.log_message(f"Error fetching vision models: {e}")
+            self.vision_model_combo.clear()
+            self.vision_model_combo.addItem("Error fetching models")
+            self.vision_model_combo.setEnabled(False)
+
+    def save_config(self):
+        """Save the configuration"""
+        try:
+            # Only save non-model configuration
             global TEMPERATURE, TIMEOUT, DATA_DIR, CHANGE_NICKNAME
             
             # Create new configuration
@@ -493,15 +535,89 @@ class ConfigDialog(QDialog):
             DATA_DIR = new_config['DATA_DIR']
             CHANGE_NICKNAME = new_config['CHANGE_NICKNAME']
             
-            self.log_message("Configuration saved successfully")
-            
-            # Notify
-            QMessageBox.information(self, "Success", "Configuration saved.\nRestart the bot for all changes to take effect.")
+            QMessageBox.information(self, "Success", "Configuration saved.\nRestart the bot for changes to take effect.")
             self.accept()
-        
+            
         except Exception as e:
-            self.log_message(f"Error saving configuration: {str(e)}")
             QMessageBox.critical(self, "Error", f"Failed to save configuration: {str(e)}")
+
+    def fetch_models(self):
+        """Fetch available Ollama models"""
+        try:
+            class ModelsFetchThread(QThread):
+                models_fetched = pyqtSignal(object)
+                error_occurred = pyqtSignal(str)
+                
+                def run(self):
+                    try:
+                        import ollama
+                        models = ollama.list()
+                        self.models_fetched.emit(models)
+                    except Exception as e:
+                        self.error_occurred.emit(str(e))
+
+            # Create and start thread
+            thread = ModelsFetchThread(self)
+            thread.models_fetched.connect(self.process_models)
+            thread.error_occurred.connect(self.handle_model_error)
+            thread.start()
+
+        except Exception as e:
+            self.log_message(f"Error fetching models: {e}")
+            self.model_combo.clear()
+            self.model_combo.addItem("Error fetching models")
+            self.model_combo.setEnabled(False)
+
+    def process_models(self, models_list):
+        """Process fetched models list for regular model combo"""
+        self.model_combo.clear()
+        self.model_combo.setEnabled(True)
+        
+        try:
+            # Get current model
+            current_model = os.getenv('OLLAMA_MODEL', '')
+            current_idx = 0
+            
+            # Extract model names
+            model_names = []
+            
+            if hasattr(models_list, 'models'):
+                models = models_list.models
+            elif isinstance(models_list, dict) and 'models' in models_list:
+                models = models_list['models']
+            else:
+                models = []
+
+            for model in models:
+                model_name = (model.get('model') or model.get('name') if isinstance(model, dict) 
+                            else getattr(model, 'model', None) or getattr(model, 'name', None))
+                
+                if model_name:
+                    model_names.append(model_name)
+                    if model_name == current_model:
+                        current_idx = len(model_names) - 1
+
+            if not model_names:
+                self.model_combo.addItem("No models found")
+                return
+                
+            # Add models to combobox
+            self.model_combo.addItems(model_names)
+            
+            # Select current model if set
+            if current_idx < len(model_names):
+                self.model_combo.setCurrentIndex(current_idx)
+
+        except Exception as e:
+            self.log_message(f"Error processing models: {e}")
+            self.model_combo.addItem("Error processing models")
+
+    def handle_model_error(self, error_message):
+        """Handle model fetch error"""
+        self.model_combo.clear()
+        self.model_combo.addItem("Error fetching models")
+        self.model_combo.setEnabled(False)
+        self.log_message(f"Model fetch error: {error_message}")
 
 class BotManagerApp(QMainWindow):
     """Main application window for the Bot Manager"""
@@ -562,25 +678,40 @@ class BotManagerApp(QMainWindow):
         control_frame = QGroupBox("Bot Control")
         control_layout = QVBoxLayout(control_frame)
         
-        # Add model selection widget FIRST
-        model_layout = QHBoxLayout()
-        model_layout.addWidget(QLabel("Active Model:"))
+        # Model selection layout
+        model_grid = QGridLayout()
         
-        # Create model combo box
+        # Base Model Selection
+        model_grid.addWidget(QLabel("Base Model:"), 0, 0)
         self.dashboard_model_combo = QComboBox()
         self.dashboard_model_combo.setMinimumWidth(200)
-        self.dashboard_model_combo.currentIndexChanged.connect(self.change_active_model)
-        model_layout.addWidget(self.dashboard_model_combo)
+        self.dashboard_model_combo.setEnabled(False)
+        self.dashboard_model_combo.addItem("Loading models...")
+        model_grid.addWidget(self.dashboard_model_combo, 0, 1)
         
-        # Add refresh button
-        refresh_models_btn = QPushButton("⟳")
-        refresh_models_btn.setToolTip("Refresh Available Models")
-        refresh_models_btn.setMaximumWidth(30)
-        refresh_models_btn.clicked.connect(self.fetch_models_for_dashboard)
-        model_layout.addWidget(refresh_models_btn)
+        # Base model refresh button
+        refresh_base_btn = QPushButton("⟳")
+        refresh_base_btn.setToolTip("Refresh Base Models")
+        refresh_base_btn.setMaximumWidth(30)
+        refresh_base_btn.clicked.connect(self.fetch_models_for_dashboard)
+        model_grid.addWidget(refresh_base_btn, 0, 2)
         
-        model_layout.addStretch()
-        control_layout.addLayout(model_layout)
+        # Vision Model Selection
+        model_grid.addWidget(QLabel("Vision Model:"), 1, 0)
+        self.vision_model_combo = QComboBox()
+        self.vision_model_combo.setMinimumWidth(200)
+        self.vision_model_combo.setEnabled(False)
+        self.vision_model_combo.addItem("Loading models...")
+        model_grid.addWidget(self.vision_model_combo, 1, 1)
+        
+        # Vision model refresh button
+        refresh_vision_btn = QPushButton("⟳")
+        refresh_vision_btn.setToolTip("Refresh Vision Models")
+        refresh_vision_btn.setMaximumWidth(30)
+        refresh_vision_btn.clicked.connect(self.fetch_vision_models)
+        model_grid.addWidget(refresh_vision_btn, 1, 2)
+        
+        control_layout.addLayout(model_grid)
         
         # Start/Stop buttons
         btn_layout = QHBoxLayout()
@@ -635,27 +766,33 @@ class BotManagerApp(QMainWindow):
         # Create grid for stats
         grid_layout = QGridLayout()
         
-        # Row 1
+        # Row 1 - Bot Status and Base Model
         grid_layout.addWidget(QLabel("Bot Status:"), 0, 0)
         self.status_value = QLabel(self.bot_status)
         self.status_value.setStyleSheet(f"color: {AcidTheme.ACCENT_PRIMARY}; font-weight: bold;")
         grid_layout.addWidget(self.status_value, 0, 1)
         
-        grid_layout.addWidget(QLabel("Active Model:"), 0, 2)
+        grid_layout.addWidget(QLabel("Base Model:"), 0, 2)
         self.model_value = QLabel(self.active_model)
         self.model_value.setStyleSheet(f"color: {AcidTheme.ACCENT_PRIMARY}; font-weight: bold;")
         grid_layout.addWidget(self.model_value, 0, 3)
         
-        # Row 2
-        grid_layout.addWidget(QLabel("Unique Users:"), 1, 0)
+        # Row 2 - Vision Model and Users
+        grid_layout.addWidget(QLabel("Vision Model:"), 1, 0)
+        self.vision_model_value = QLabel(os.getenv('OLLAMA_VISION_MODEL', 'Not Set'))
+        self.vision_model_value.setStyleSheet(f"color: {AcidTheme.ACCENT_PRIMARY}; font-weight: bold;")
+        grid_layout.addWidget(self.vision_model_value, 1, 1)
+        
+        grid_layout.addWidget(QLabel("Unique Users:"), 1, 2)
         self.users_value = QLabel(str(self.user_count))
         self.users_value.setStyleSheet(f"color: {AcidTheme.ACCENT_PRIMARY}; font-weight: bold;")
-        grid_layout.addWidget(self.users_value, 1, 1)
+        grid_layout.addWidget(self.users_value, 1, 3)
         
-        grid_layout.addWidget(QLabel("Total Conversations:"), 1, 2)
+        # Row 3 - Conversations
+        grid_layout.addWidget(QLabel("Total Conversations:"), 2, 0)
         self.conversations_value = QLabel(str(self.total_conversations))
         self.conversations_value.setStyleSheet(f"color: {AcidTheme.ACCENT_PRIMARY}; font-weight: bold;")
-        grid_layout.addWidget(self.conversations_value, 1, 3)
+        grid_layout.addWidget(self.conversations_value, 2, 1)
         
         stats_layout.addLayout(grid_layout)
         layout.addWidget(stats_frame)
@@ -673,6 +810,10 @@ class BotManagerApp(QMainWindow):
     
         # Start a timer to fetch models
         QTimer.singleShot(100, self.fetch_models_for_dashboard)
+        QTimer.singleShot(100, self.fetch_vision_models)
+
+        self.dashboard_model_combo.currentTextChanged.connect(self.change_base_model)
+        self.vision_model_combo.currentTextChanged.connect(self.change_vision_model)
 
     def fetch_models_for_dashboard(self):
         """Fetch models for the dashboard combo box"""
@@ -1718,9 +1859,6 @@ class BotManagerApp(QMainWindow):
             total_links = 0
             for link_file in link_files:
                 try:
-                    df = ParquetStorage.load_from_parquet(str(link_file))
-                    if df is not None and not df.empty:
-                        for _, row in df.iterrows():
                             # Create tree item
                             item = QTreeWidgetItem([
                                 row.get('url', ''),
@@ -1816,7 +1954,7 @@ class BotManagerApp(QMainWindow):
                                     conversations_count += 1
                                     
             self.total_conversations = conversations_count
-            self.conversations_value.setText(str(self.total_conversations))
+            self.conversations_value.setText(str(conversations_count))
             
             # Update model info
             self.model_value.setText(self.active_model)
@@ -1914,7 +2052,7 @@ class BotManagerApp(QMainWindow):
                 QMessageBox.warning(self, "Paper Data Error", f"Paper file exists but data could not be loaded")
                 return
                 
-            paper_data = df.iloc[0].to_dict()
+            paper_data = df.iloc(0).to_dict()
             
             # Show paper dialog
             dialog = PaperDialog(paper_data, arxiv_id, self)
@@ -2010,22 +2148,29 @@ class BotManagerApp(QMainWindow):
         event.accept()
 
     def update_model_display(self):
-        """Update the displayed model name from environment variables"""
+        """Update the displayed model names from environment variables"""
         try:
-            # Get model from environment
-            model_name = os.getenv('OLLAMA_MODEL', '')
-            if not model_name:
+            # Get base model from environment
+            base_model = os.getenv('OLLAMA_MODEL', '')
+            if not base_model:
                 self.model_value.setText("Not set in .env")
-                return
+            else:
+                self.model_value.setText(base_model)
+                self.active_model = base_model
                 
-            # Update UI
-            self.model_value.setText(model_name)
-            self.active_model = model_name
-            logger.info(f"Updated model display: {model_name}")
+            # Get vision model from environment
+            vision_model = os.getenv('OLLAMA_VISION_MODEL', '')
+            if not vision_model:
+                self.vision_model_value.setText("Not set in .env")
+            else:
+                self.vision_model_value.setText(vision_model)
+                
+            logger.info(f"Updated models display - Base: {base_model}, Vision: {vision_model}")
             
         except Exception as e:
             logger.error(f"Error updating model display: {e}")
-            self.model_value.setText("Error retrieving model")
+            self.model_value.setText("Error retrieving models")
+            self.vision_model_value.setText("Error retrieving models")
 
     def log_message(self, message):
         """Add a message to the activity log."""
@@ -2063,6 +2208,147 @@ class BotManagerApp(QMainWindow):
         self.start_bot_button.setEnabled(True)
         self.stop_bot_button.setEnabled(False)
         self.restart_bot_button.setEnabled(False)
+
+    def change_base_model(self, selected_model):
+        """Handle base model selection change"""
+        if selected_model in ["Fetching models...", "Loading models...", "Error fetching models", "No models found"]:
+            return
+            
+        try:
+            # Update .env file
+            env_path = ".env"
+            if os.path.exists(env_path):
+                with open(env_path, 'r') as f:
+                    lines = f.readlines()
+                # Remove existing base model line
+                lines = [line for line in lines if not line.startswith('OLLAMA_MODEL=')]
+                # Add new base model line
+                lines.append(f"OLLAMA_MODEL={selected_model}\n")
+                with open(env_path, 'w') as f:
+                    f.writelines(lines)
+            else:
+                with open(env_path, 'w') as f:
+                    f.write(f"OLLAMA_MODEL={selected_model}\n")
+                    
+            # Update environment variable
+            os.environ['OLLAMA_MODEL'] = selected_model
+            
+            # Update UI
+            self.active_model = selected_model
+            self.model_value.setText(selected_model)
+            self.log_message(f"Base model changed to: {selected_model}")
+            
+        except Exception as e:
+            self.log_message(f"Error changing base model: {e}")
+
+    def change_vision_model(self, selected_model):
+        """Handle vision model selection change"""
+        if selected_model in ["Fetching models...", "Loading models...", "Error fetching models", "No models found"]:
+            return
+            
+        try:
+            # Update .env file
+            env_path = ".env"
+            if os.path.exists(env_path):
+                with open(env_path, 'r') as f:
+                    lines = f.readlines()
+                # Remove existing vision model line
+                lines = [line for line in lines if not line.startswith('OLLAMA_VISION_MODEL=')]
+                # Add new vision model line
+                lines.append(f"OLLAMA_VISION_MODEL={selected_model}\n")
+                with open(env_path, 'w') as f:
+                    f.writelines(lines)
+            else:
+                with open(env_path, 'w') as f:
+                    f.write(f"OLLAMA_VISION_MODEL={selected_model}\n")
+                    
+            # Update environment variable
+            os.environ['OLLAMA_VISION_MODEL'] = selected_model
+            
+            # Update UI
+            self.vision_model_value.setText(selected_model)
+            self.log_message(f"Vision model changed to: {selected_model}")
+            
+        except Exception as e:
+            self.log_message(f"Error changing vision model: {e}")
+
+    def fetch_vision_models(self):
+        """Fetch available models for vision tasks"""
+        try:
+            # Show loading state
+            self.vision_model_combo.clear()
+            self.vision_model_combo.addItem("Fetching models...")
+            self.vision_model_combo.setEnabled(False)
+            
+            class VisionModelsFetchThread(QThread):
+                models_fetched = pyqtSignal(object)
+                error_occurred = pyqtSignal(str)
+                
+                def run(self):
+                    try:
+                        import ollama
+                        models = ollama.list()
+                        self.models_fetched.emit(models)
+                    except Exception as e:
+                        self.error_occurred.emit(str(e))
+
+            # Create and start thread
+            thread = VisionModelsFetchThread(self)
+            thread.models_fetched.connect(self.process_vision_models)
+            thread.error_occurred.connect(lambda e: self.log_message(f"Vision model fetch error: {e}"))
+            thread.start()
+
+        except Exception as e:
+            self.log_message(f"Error fetching vision models: {e}")
+            self.vision_model_combo.clear()
+            self.vision_model_combo.addItem("Error fetching models")
+            self.vision_model_combo.setEnabled(False)
+
+    def process_vision_models(self, models_list):
+        """Process fetched models for vision model dropdown"""
+        try:
+            self.vision_model_combo.clear()
+            self.vision_model_combo.setEnabled(True)
+            
+            # Get current vision model
+            current_model = os.getenv('OLLAMA_VISION_MODEL', '')
+            current_idx = 0
+            
+            # Extract model names
+            model_names = []
+            
+            if hasattr(models_list, 'models'):
+                models = models_list.models
+            elif isinstance(models_list, dict) and 'models' in models_list:
+                models = models_list['models']
+            else:
+                models = []
+
+            for model in models:
+                model_name = (model.get('model') or model.get('name') if isinstance(model, dict) 
+                            else getattr(model, 'model', None) or getattr(model, 'name', None))
+                
+                if model_name:
+                    model_names.append(model_name)
+                    if model_name == current_model:
+                        current_idx = len(model_names) - 1
+
+            if not model_names:
+                self.vision_model_combo.addItem("No models found")
+                return
+                
+            # Add all models to combobox
+            self.vision_model_combo.addItems(model_names)
+            
+            # Select current model if set
+            if current_idx < len(model_names):
+                self.vision_model_combo.setCurrentIndex(current_idx)
+            
+            logger.info(f"Loaded {len(model_names)} vision models")
+            
+        except Exception as e:
+            self.log_message(f"Error processing vision models: {e}")
+            self.vision_model_combo.addItem("Error processing models")
 
 def main():
     """Main function to start the Bot Manager application"""

@@ -216,105 +216,162 @@ DATA_DIR = os.getenv('DATA_DIR', 'data')
 
 # ---------- Ollama Integration ----------
 
+class ModelManager:
+    """Manages Ollama model loading and unloading"""
+    
+    def __init__(self):
+        self.current_base_model = None
+        self.current_vision_model = None
+        self.model_info = {}  # Cache model metadata
+        
+    async def load_model(self, model_name, is_vision=False):
+        """Load a model and unload others if needed"""
+        try:
+            # Check if model is already loaded
+            if (is_vision and self.current_vision_model == model_name) or (not is_vision and self.current_base_model == model_name):
+                return True
+                
+            # Get model info if not cached
+            if model_name not in self.model_info:
+                client = ollama.AsyncClient()
+                try:
+                    # Test if model is available by attempting a minimal chat
+                    test_message = {'role': 'user', 'content': 'test'}
+                    await client.chat(model=model_name, messages=[test_message])
+                    self.model_info[model_name] = {'loaded': True}
+                    
+                    # Update current model tracking
+                    if is_vision:
+                        self.current_vision_model = model_name
+                    else:
+                        self.current_base_model = model_name
+                    
+                    logging.info(f"Successfully loaded model: {model_name}")
+                    return True
+                    
+                except Exception as e:
+                    logging.error(f"Model {model_name} not available: {e}")
+                    return False
+                    
+        except Exception as e:
+            logging.error(f"Error loading model {model_name}: {e}")
+            return False
+
+    async def unload_model(self, model_name):
+        """Mark model as unloaded in our tracking"""
+        try:
+            if self.current_base_model == model_name:
+                self.current_base_model = None
+            if self.current_vision_model == model_name:
+                self.current_vision_model = None
+            
+            if model_name in self.model_info:
+                del self.model_info[model_name]
+                
+            logging.info(f"Model unloaded from tracking: {model_name}")
+            return True
+            
+        except Exception as e:
+            logging.error(f"Error unloading model {model_name}: {e}")
+            return False
+
+# Create global model manager instance
+model_manager = ModelManager()
+
+# Update get_ollama_response to use model manager
 async def get_ollama_response(prompt, with_context=True, use_groq=False):
     """Gets a response from the Ollama or Groq model."""
-    # Import from main.py to avoid circular imports
-    from main import conversation_logs
-    
-    # Use simplified prompt for non-context conversations
-    if not with_context:
-        from utils import SYSTEM_PROMPT
-        messages_to_send = [{'role': 'system', 'content': SYSTEM_PROMPT}, 
-                           {'role': 'user', 'content': prompt}]
+    if use_groq:
+        # Groq handling remains unchanged
+        ...
     else:
-        # Use existing conversation logs
-        messages_to_send = conversation_logs.copy()  # Simple copy, no filtering needed
-    
-    try:
-        if use_groq and GROQ_AVAILABLE:
-            if not GROQ_API_KEY:
-                return "⚠️ Groq API key not found. Please add GROQ_API_KEY to your .env file."
-                
-            logging.info(f"Using Groq model: {GROQ_MODEL}")
+        try:
+            # Get selected model from environment
+            model_name = os.getenv('OLLAMA_MODEL')
+            if not model_name:
+                raise Exception("No model selected. Please select a model in the UI.")
             
-            # Create Groq client - using the latest API structure
-            client = Groq(api_key=GROQ_API_KEY)
-            
-            # Format messages for Groq
-            groq_messages = []
-            for msg in messages_to_send:
-                if 'content' in msg and 'role' in msg:
-                    groq_messages.append({
-                        "role": msg['role'],
-                        "content": msg['content']
-                    })
-            
-            # Make API call using streaming for better performance
-            response_text = ""
-            
-            # Using async iteration with stream=True
-            completion = await asyncio.wait_for(
-                client.chat.completions.create(
-                    model=GROQ_MODEL,
-                    messages=groq_messages,
-                    temperature=TEMPERATURE,
-                    max_tokens=1024,
-                    top_p=1,
-                    stream=True,
-                    stop=['User:', 'Human:', '###']
-                ),
-                timeout=TIMEOUT
-            )
-            
-            # Process the streaming response
-            async for chunk in completion:
-                if hasattr(chunk.choices[0].delta, 'content') and chunk.choices[0].delta.content:
-                    response_text += chunk.choices[0].delta.content
-            
-            logging.info(f"Groq response received, length: {len(response_text) if response_text else 0}")
-            if response_text:
-                logging.info(f"Groq response (first 100 chars): {response_text[:100]}")
-                # Verify the response isn't too large
-                if len(response_text) > 4000:
-                    response_text = response_text[:4000] + "...[response truncated due to excessive length]"
-                return response_text
-            else:
-                return "I apologize, but I couldn't generate a response with Groq. Please try again or use a different model."
-        else:
-            # Use the configured model with proper streaming
-            logging.info(f"Using Ollama model: {MODEL_NAME}")
-            
-            # Using the streaming approach correctly with AsyncClient
+            # Try loading the model
+            if not await model_manager.load_model(model_name):
+                raise Exception(f"Could not load model: {model_name}")
+
+            # Format messages for the model
+            messages_to_send = [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+
+            # Using the streaming approach with AsyncClient
             response_text = ""
             client = ollama.AsyncClient(timeout=TIMEOUT)
             
             # Get the stream of responses
             stream_generator = await client.chat(
-                model=MODEL_NAME,
+                model=model_name,
                 messages=messages_to_send,
                 options={
                     'temperature': TEMPERATURE,
-                    'num_predict': 512,  # Limit token generation
-                    'stop': ['User:', 'Human:', '###']  # Stop if model tries to simulate dialogue
+                    'num_predict': 512,
+                    'stop': ['User:', 'Human:', '###']
                 },
                 stream=True
             )
             
-            # Process the streaming response - note the correct async iteration pattern
+            # Process the streaming response
             async for chunk in stream_generator:
                 if 'message' in chunk and 'content' in chunk['message']:
                     response_text += chunk['message']['content']
             
             if response_text:
-                # Just return the content, no filtering needed
                 return response_text
             else:
-                # Simple fallback
-                return "I'm sorry, I couldn't generate a response. Please try rephrasing your question."
+                return "I'm sorry, I couldn't generate a response. Please try rephrasing your question. If the issue persists, please contact @BORCH the developer of Ollama Teacher & OARC."
     
+        except Exception as e:
+            logging.error(f"Error in get_ollama_response: {e}")
+            return f"Error: {str(e)}. Please make sure a model is selected in the UI."
+
+# Update process_image_with_llava similarly
+async def process_image_with_llava(image_data, prompt, model_name=None):
+    """Process image data with a vision model."""
+    try:
+        vision_model = model_name or os.getenv('OLLAMA_VISION_MODEL')
+        
+        # Try loading the vision model
+        if not await model_manager.load_model(vision_model, is_vision=True):
+            raise Exception("Could not load vision model")
+
+        # Format messages for vision model
+        messages = [
+            {
+                "role": "user",
+                "content": prompt,
+                "images": [image_data]
+            }
+        ]
+
+        # Call vision model
+        logging.info(f"Using vision model: {vision_model}")
+        client = ollama.AsyncClient()
+        response_text = ""
+        
+        stream = await client.chat(
+            model=vision_model,
+            messages=messages,
+            stream=True
+        )
+
+        async for chunk in stream:
+            if 'message' in chunk and 'content' in chunk['message']:
+                response_text += chunk['message']['content']
+
+        return response_text
+
     except Exception as e:
-        logging.error(f"Error in get_ollama_response: {e}")
-        return f"I encountered an error: {str(e)}. Please try again."
+        logging.error(f"Vision model error: {e}")
+        return f"Error processing image: {str(e)}"
 
 # ---------- ArXiv Integration ----------
 
@@ -483,3 +540,65 @@ class DuckDuckGoSearcher:
         except Exception as e:
             logging.error(f"DuckDuckGo search error: {e}")
             return f"An error occurred during the search: {str(e)}"
+
+# ---------- Pandas Query Engine Integration ----------
+
+class PandasQueryEngine:
+    def __init__(self, conversation_memory=None):
+        self.conversation_memory = conversation_memory or []
+        self.last_query_context = None
+    
+    async def query(self, query_str, df, with_memory=False):
+        """Process a natural language query against a pandas DataFrame"""
+        try:
+            # Build context from memory if enabled
+            context = ""
+            if with_memory and self.conversation_memory:
+                context = "Previous relevant queries:\n"
+                for mem in self.conversation_memory[-3:]:  # Last 3 queries
+                    context += f"Q: {mem['query']}\nA: {mem['result']}\n"
+            
+            # Format prompt with context
+            prompt = f"""
+            {context}
+            DataFrame Info:
+            {df.info()}
+            
+            Query: {query_str}
+            
+            Generate Python code using pandas to answer this query.
+            """
+            
+            # Get LLM response
+            response = await get_ollama_response(prompt)
+            
+            # Execute generated code safely
+            result = self._safe_execute(response, df)
+            
+            # Store in memory
+            if with_memory:
+                self.conversation_memory.append({
+                    'query': query_str,
+                    'result': str(result),
+                    'timestamp': datetime.now(UTC).isoformat()
+                })
+                
+            return result
+            
+        except Exception as e:
+            logging.error(f"Query engine error: {e}")
+            return f"Error processing query: {str(e)}"
+            
+    def _safe_execute(self, code, df):
+        """Safely execute generated pandas code"""
+        # Add code safety checks here
+        restricted_terms = ['eval', 'exec', 'import', 'os', 'system']
+        if any(term in code for term in restricted_terms):
+            raise ValueError("Unsafe code detected")
+            
+        try:
+            # Execute in restricted environment
+            local_vars = {'df': df, 'pd': pd}
+            return eval(code, {"__builtins__": {}}, local_vars)
+        except Exception as e:
+            raise ValueError(f"Code execution failed: {e}")

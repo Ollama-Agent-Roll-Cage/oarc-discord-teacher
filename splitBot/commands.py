@@ -245,12 +245,30 @@ https://github.com/Leoleojames1/OllamaDiscordTeacher/tree/master
     async def duckduckgo_search(ctx, query: str, *, question: str = None):
         """Search using DuckDuckGo and learn from the results."""
         try:
-            # Check for groq flag
-            use_groq = False
-            if '--groq' in query:
-                use_groq = True
-                query = query.replace('--groq', '').strip()
-                
+            # Check for flags
+            use_groq = '--groq' in query
+            use_llava = '--llava' in query
+            
+            # Clean flags from query
+            query = query.replace('--groq', '').replace('--llava', '').strip()
+            
+            # Handle image input for llava
+            image_data = None
+            if use_llava and ctx.message.attachments:
+                try:
+                    image_data = await process_image_attachment(ctx.message.attachments[0])
+                    # Get image description from llava
+                    vision_prompt = f"Describe this image in detail and extract key searchable concepts that would be relevant to the query: {query}"
+                    image_description = await process_image_with_llava(image_data, vision_prompt)
+                    
+                    # Combine image insights with original query
+                    query = f"{query} {image_description}"
+                    logging.info(f"Enhanced search query with vision: {query[:100]}...")
+                    
+                except Exception as e:
+                    await ctx.send(f"⚠️ Error processing image: {str(e)}")
+                    return
+                    
             async with ctx.typing():
                 # Log the search query
                 logging.info(f"DuckDuckGo search: {query}")
@@ -385,138 +403,58 @@ If the search results don't contain relevant information about {query}, please e
         """Query stored data using natural language and the Pandas Query Engine."""
         try:
             async with ctx.typing():
-                # First check if data directories exist
-                if not os.path.exists(DATA_DIR):
-                    await ctx.send("⚠️ No data directory found. Please perform some searches or paper queries first.")
-                    return
-
-                # Determine which data to query based on the query
-                query_lower = query.lower()
-                df = None
-                data_desc = ""
-
-                # Add debugging
-                logging.info(f"Processing pandas query: '{query}'")
-                logging.info(f"DATA_DIR: {DATA_DIR}")
-
-                if 'arxiv' in query_lower or 'paper' in query_lower:
-                    # Logging for arxiv data loading
-                    papers_dir = Path(f"{DATA_DIR}/papers")
-                    logging.info(f"Checking papers directory: {papers_dir}, exists={papers_dir.exists()}")
-                    
-                    if papers_dir.exists():
-                        papers_files = list(papers_dir.glob("*.parquet"))
-                        logging.info(f"Found {len(papers_files)} paper files: {[p.name for p in papers_files]}")
-                    
-                elif 'crawl' in query_lower or 'web' in query_lower:
-                    # Logging for crawls data loading
-                    crawls_dir = Path(f"{DATA_DIR}/crawls")
-                    logging.info(f"Checking crawls directory: {crawls_dir}, exists={crawls_dir.exists()}")
-                    
-                    if crawls_dir.exists():
-                        crawl_files = list(crawls_dir.glob("*.parquet"))
-                        logging.info(f"Found {len(crawl_files)} crawl files: {[c.name for c in crawl_files]}")
-                    
-                elif 'link' in query_lower:
-                    # Handle links query
-                    links_dir = Path(f"{DATA_DIR}/links")
-                    if not links_dir.exists():
-                        await ctx.send("No links data directory found.")
-                        return
-                        
-                    link_files = list(links_dir.glob("*.parquet"))
-                    if not link_files:
-                        await ctx.send("No link collection data has been saved yet.")
-                        return
-                        
-                    dfs = []
-                    for file in link_files:
-                        try:
-                            df_temp = ParquetStorage.load_from_parquet(str(file))
-                            if df_temp is not None and not df_temp.empty:
-                                dfs.append(df_temp)
-                        except Exception as e:
-                            logging.error(f"Error loading link file {file}: {e}")
-                            
-                    if not dfs:
-                        await ctx.send("No valid link data found in the files.")
-                        return
-                        
-                    df = pd.concat(dfs, ignore_index=True)
-                    data_desc = "Links Collection"
-
-                elif 'search' in query_lower or 'duck' in query_lower or 'ddg' in query_lower:
-                    # Logging for searches data loading
-                    searches_dir = Path(f"{DATA_DIR}/searches")
-                    logging.info(f"Checking searches directory: {searches_dir}, exists={searches_dir.exists()}")
-                    
-                    if searches_dir.exists():
-                        search_files = list(searches_dir.glob("*.parquet"))
-                        logging.info(f"Found {len(search_files)} search files: {[s.name for s in search_files]}")
-                    
-                    if not searches_dir.exists():
-                        await ctx.send("No search data directory found.")
-                        return
-
-                    search_files = list(searches_dir.glob("*.parquet"))
-                    if not search_files:
-                        await ctx.send("No DuckDuckGo searches have been performed yet.")
-                        return
-
-                    dfs = []
-                    for file in search_files:
-                        try:
-                            logging.info(f"Loading search file: {file}")
-                            df_temp = ParquetStorage.load_from_parquet(str(file))
-                            if df_temp is not None and not df_temp.empty:
-                                logging.info(f"File loaded successfully: {file.name}, shape: {df_temp.shape}")
-                                # Log sample data from first row
-                                if not df_temp.empty:
-                                    logging.info(f"First row timestamp: {df_temp['timestamp'].iloc[0]}")
-                                dfs.append(df_temp)
-                            else:
-                                logging.warning(f"File loaded but empty or None: {file}")
-                        except Exception as e:
-                            logging.error(f"Error loading search file {file}: {e}")
-
-                    if not dfs:
-                        await ctx.send("No valid search data found in the files.")
-                        return
-
-                    df = pd.concat(dfs, ignore_index=True)
-                    logging.info(f"Combined DataFrame shape: {df.shape}")
-                    data_desc = "DuckDuckGo searches"
-
-                # Create df_info string with dataset information
-                if df is None:
-                    await ctx.send("⚠️ No data found matching your query criteria.")
-                    return
+                user_key = get_user_key(ctx)
                 
-                df_info = f"Total entries: {len(df)}\nColumns: {', '.join(df.columns)}\nDate range: {df['timestamp'].min()} to {df['timestamp'].max()}"
+                # Load all relevant data
+                dfs = []
                 
-                # Execute the pandas query with the enhanced error logging
-                logging.info(f"Executing query on DataFrame with columns: {df.columns.tolist()}")
+                # Load conversation history
+                if os.path.exists(f"{DATA_DIR}/conversations/{user_key}.parquet"):
+                    conv_df = ParquetStorage.load_from_parquet(f"{DATA_DIR}/conversations/{user_key}.parquet")
+                    if conv_df is not None:
+                        dfs.append(conv_df)
+
+                # Load search history  
+                searches_dir = Path(f"{DATA_DIR}/searches")
+                if searches_dir.exists():
+                    for file in searches_dir.glob("*.parquet"):
+                        search_df = ParquetStorage.load_from_parquet(str(file))
+                        if search_df is not None:
+                            dfs.append(search_df)
+
+                # Combine all data
+                if not dfs:
+                    await ctx.send("No data found to query")
+                    return
+                    
+                df = pd.concat(dfs, ignore_index=True)
+
+                # Execute query
                 result = await PandasQueryEngine.execute_query(df, query)
-                
-                # Format response
-                response_text = f"""# 📊 Data Query Results: {data_desc}
 
-**Your query:** `{query}`
+                if result["success"]:
+                    response = f"""# Query Results
+Your query: `{query}`
 
-{result.get('result', 'No results available.')}
+{result["result"]}
 
-{result.get('explanation', '')}
-
-## Tips
-- Try `!pandas show searches from today`
-- Try `!pandas count searches by date`
-- Try `!pandas show most recent 5 searches`
+Found {result.get("count", "N/A")} matching records.
 """
-                await send_in_chunks(ctx, response_text, reference=ctx.message)
-                    
+                else:
+                    response = f"""# Query Error
+Sorry, I couldn't process that query: {result["error"]}
+
+Try queries like:
+- "show my recent conversations"
+- "what topics have I searched for today"
+- "count messages by date"
+"""
+
+                await send_in_chunks(ctx, response)
+
         except Exception as e:
-            logging.error(f"Error in pandas_query: {e}", exc_info=True)  # Added exc_info=True for full traceback
-            await ctx.send(f"⚠️ Error in data query: {str(e)}\nTry using !reset if the issue persists.")
+            logging.error(f"Error in pandas_query: {e}", exc_info=True)
+            await ctx.send(f"⚠️ Error querying data: {str(e)}")
 
     @bot.command(name='profile')
     async def view_profile(ctx, *, question: str = None):

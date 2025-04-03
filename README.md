@@ -26,6 +26,8 @@ Ollama Teacher is designed to make advanced AI learning accessible through Disco
 - **Documentation Crawler**: Extract and explain content from websites
   - *Special handling for PyPI documentation* to provide accurate package information
 - **Data Analysis Engine**: Query stored information using natural language
+- **Vision Analysis**: Process and analyze images with `--llava` flag
+- **Enhanced Processing**: Use Groq's API with `--groq` flag for improved responses
 
 ### 👤 Personalized Experience
 - **Name Recognition**: Bot addresses users by their Discord names
@@ -42,6 +44,7 @@ Ollama Teacher is designed to make advanced AI learning accessible through Disco
 ### 🤖 Discord Integration
 - Mention-based command system that doesn't conflict with other bots
 - Support for file attachments to share and analyze code
+- Image processing capabilities with vision models
 - Long message chunking for comprehensive explanations
 - Customizable appearance and behavior
 - Graphical management interface for monitoring and configuration
@@ -62,11 +65,18 @@ All commands require mentioning the bot: `@Ollama Teacher command`
 ### Learning Commands
 | Command | Description | Example |
 |---------|-------------|---------|
-| `!arxiv <id> [--memory] <question>` | Learn from papers with memory | `@Ollama Teacher !arxiv --memory 1706.03762 What is self-attention?` |
-| `!ddg <query> <question>` | Search with DuckDuckGo | `@Ollama Teacher !ddg "ollama api" How do I use it?` |
-| `!crawl <url> <question>` | Analyze web content | `@Ollama Teacher !crawl https://pypi.org/project/ollama/ Usage examples?` |
+| `!arxiv <id> [--memory] [--groq] <question>` | Learn from papers with memory or Groq API | `@Ollama Teacher !arxiv --memory --groq 1706.03762 What is self-attention?` |
+| `!ddg <query> [--groq] [--llava] <question>` | Search with DuckDuckGo, with optional Groq API or image analysis | `@Ollama Teacher !ddg --groq "ollama api" How do I use it?` |
+| `!crawl <url> [--groq] <question>` | Analyze web content with optional Groq API | `@Ollama Teacher !crawl --groq https://pypi.org/project/ollama/ Usage examples?` |
 | `!pandas <query>` | Query stored data | `@Ollama Teacher !pandas Show recent searches` |
 | `!links [limit]` | Collect links from messages | `@Ollama Teacher !links 500` |
+
+### Special Features
+| Feature | Description | Example |
+|---------|-------------|---------|
+| `--groq` | Use Groq's API instead of local Ollama for potentially improved responses | `@Ollama Teacher !arxiv --groq 1706.03762 Explain this paper` |
+| `--llava` | Process attached images using vision model | `@Ollama Teacher --llava [attach image] What's in this image?` |
+| `--memory` | Enable persistent memory for ongoing conversations (works with arxiv command) | `@Ollama Teacher !arxiv --memory 1706.03762 Tell me more about this` |
 
 ## Technical Architecture
 
@@ -74,6 +84,8 @@ Ollama Teacher combines several technologies to provide a seamless learning expe
 
 - **Discord.py**: Handles Discord integration and message management
 - **Ollama API**: Provides access to powerful language models running locally
+- **Groq API**: Optional external API for enhanced processing
+- **LLaVa/Vision Models**: Enables image processing capabilities
 - **BeautifulSoup**: Extracts and structures content from web pages
 - **Pandas & PyArrow**: Manages and queries stored data efficiently
 - **aiohttp**: Handles asynchronous network requests
@@ -86,6 +98,7 @@ The bot uses a modular architecture with specialized components:
 - **PandasQueryEngine**: Converts natural language to data queries
 - **ParquetStorage**: Efficiently stores and manages local data
 - **BotManagerApp**: GUI for monitoring and controlling the bot
+- **ModelManager**: Manages loading and switching between language and vision models
 
 ## 🛠️ Setup
 
@@ -94,6 +107,8 @@ The bot uses a modular architecture with specialized components:
 - Discord Bot Token ([Discord Developer Portal](https://discord.com/developers/applications))
 - [Ollama](https://ollama.ai/download) installed locally
 - Recommended model: llama3 or faster/smaller models for better response time
+- (Optional) Groq API key for using `--groq` flag features
+- (Optional) Vision-capable Ollama model for image processing with `--llava` flag
 
 ### Installation
 ```bash
@@ -109,6 +124,9 @@ pip install -r requirements.txt
 # Configure .env file
 DISCORD_TOKEN=your_token_here
 OLLAMA_MODEL=llama3
+OLLAMA_VISION_MODEL=llava  # Optional for image processing
+GROQ_API_KEY=your_groq_key_here  # Optional for Groq API
+GROQ_MODEL=llama3-70b-8192  # Optional for Groq API
 TEMPERATURE=0.7
 TIMEOUT=120.0
 DATA_DIR=data
@@ -129,6 +147,7 @@ The Ollama Teacher Bot comes with a graphical management interface that provides
 - Configuration editing
 - ArXiv paper management
 - Link collection visualization
+- Model switching for both base and vision models
 
 ```
 # Graphical interface
@@ -146,15 +165,26 @@ startup.bat
 
 ## 🚀 Usage Examples
 
-### Using Memory for Complex Topics
+### Using External API with Memory for Complex Topics
 ```
-@Ollama Teacher !arxiv --memory 1706.03762 Explain attention mechanism
+@Ollama Teacher !arxiv --memory --groq 1706.03762 Explain attention mechanism
 @Ollama Teacher !arxiv --memory 1810.04805 How does BERT build on this?
 ```
 
-### Multi-Source Learning
+### Vision Analysis with Image
 ```
-@Ollama Teacher !crawl https://pytorch.org/docs/stable/nn.html,https://pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html How do I create a neural network?
+@Ollama Teacher --llava [upload image of code] What does this code do?
+@Ollama Teacher --llava [upload image of ML diagram] Explain this model architecture
+```
+
+### Enhanced Search with Vision Input
+```
+@Ollama Teacher !ddg --llava "neural networks" [upload image of neural network] How does this type of network function?
+```
+
+### Multi-Source Learning with Groq API
+```
+@Ollama Teacher !crawl --groq https://pytorch.org/docs/stable/nn.html,https://pytorch.org/tutorials/beginner/basics/buildmodel_tutorial.html How do I create a neural network?
 ```
 
 ### Personal Context Reset
@@ -221,7 +251,7 @@ For long-term hosting on your local PC:
 - All data stored locally
 - User-specific conversation isolation
 - Admin-only global controls
-- No external API dependencies except Ollama
+- No external API dependencies except Ollama (and optionally Groq)
 - Regular automated cleanup
 
 ## 🛠️ Advanced Configuration
@@ -229,7 +259,10 @@ For long-term hosting on your local PC:
 ### Environment Variables
 | Variable | Purpose | Default |
 |----------|---------|---------|
-| `OLLAMA_MODEL` | Model selection | llama3 |
+| `OLLAMA_MODEL` | Base model selection | llama3 |
+| `OLLAMA_VISION_MODEL` | Vision model for image processing | llava |
+| `GROQ_API_KEY` | API key for Groq service | None |
+| `GROQ_MODEL` | Model to use with Groq API | None |
 | `TEMPERATURE` | Response creativity | 0.7 |
 | `TIMEOUT` | Response timeout | 120.0 |
 | `DATA_DIR` | Storage location | data |
@@ -244,6 +277,8 @@ For long-term hosting on your local PC:
 
 - **Bot not responding**: Make sure Ollama is running (`ollama serve`)
 - **Slow responses**: Use a smaller model or increase timeout
+- **Vision features not working**: Ensure you've pulled a vision-capable model with `ollama pull llava` or similar
+- **Groq API errors**: Check your API key and model name in the .env file
 - **High memory usage**: Reduce `MAX_CONVERSATION_LOG_SIZE` in the code
 - **Storage issues**: Check disk space if you've stored many papers/searches
 - **Model loading issues**: Ensure you've pulled the model with `ollama pull model_name`
@@ -255,6 +290,12 @@ MIT License - See LICENSE file for details.
 
 ## 🔄 Recent Updates
 
+- Added Groq API integration with `--groq` flag for enhanced processing
+- Implemented vision capabilities with `--llava` flag for image analysis
+- Enhanced DuckDuckGo search with vision-based query refinement
+- Added vision model management to the GUI interface
+- Improved model switching capabilities in both CLI and GUI
+- Enhanced multi-paper handling in ArXiv command
 - Added persistent memory system with `--memory` flag
 - Implemented user profiles and analysis
 - Added admin-only global reset command

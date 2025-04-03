@@ -1460,3 +1460,393 @@
 2025-04-02 07:12:12,231 - BotManager - INFO - Stopping Discord bot...
 2025-04-02 07:12:12,568 - BotManager - INFO - Bot stopped successfully.
 2025-04-02 07:12:13,444 - BotManager - INFO - Bot process exited with code: 1
+2025-04-02 17:16:31,409 - BotManager - INFO - Loading data from data
+2025-04-02 17:16:31,410 - BotManager - INFO - DATA_DIR exists: True
+2025-04-02 17:16:31,410 - BotManager - INFO - Directory data\papers exists: True
+2025-04-02 17:16:31,411 - BotManager - INFO - Found 0 files in data\papers
+2025-04-02 17:16:31,412 - BotManager - INFO - Directory data\searches exists: True
+2025-04-02 17:16:31,413 - BotManager - INFO - Found 0 files in data\searches
+2025-04-02 17:16:31,414 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-02 17:16:31,415 - BotManager - INFO - Found 0 files in data\crawls
+2025-04-02 17:16:31,416 - BotManager - INFO - Directory data\links exists: True
+2025-04-02 17:16:31,418 - BotManager - INFO - Found 0 files in data\links
+2025-04-02 17:16:31,418 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-02 17:16:31,419 - BotManager - INFO - Found 0 files in data\user_profiles
+2025-04-02 17:16:31,420 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-02 17:16:31,421 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-02 17:16:31,424 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-02 17:16:31,426 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-02 17:16:31,512 - BotManager - INFO - Updated model display: phi3:latest
+2025-04-02 17:16:36,708 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-02 17:16:36,730 - BotManager - INFO - Available models: llama3.2:1b, llama3.2:3b, qnguyen3/nanollava:latest, qwen2.5-coder:3b, qwen2.5-coder:7b, phi3:latest
+2025-04-02 17:21:24,594 - BotManager - INFO - Updated model display: phi3:latest
+2025-04-02 17:21:24,594 - BotManager - INFO - Starting with model: phi3:latest
+2025-04-02 17:21:24,609 - BotManager - INFO - Bot started with PID: 11676
+2025-04-02 17:21:29,059 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-02 17:21:29,074 - BotManager - INFO - [2025-04-02 17:21:29] [INFO    ] discord.client: logging in using static token
+2025-04-02 17:21:29,074 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-02 17:21:29,945 - BotManager - INFO - [2025-04-02 17:21:29] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: 124af79927451baa18f0e7f114fc8357).
+2025-04-02 17:21:29,945 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: 124af79927451baa18f0e7f114fc8357).
+2025-04-02 17:50:31,466 - BotManager - INFO - Loading data from data
+2025-04-02 17:50:31,469 - BotManager - INFO - DATA_DIR exists: True
+2025-04-02 17:50:31,470 - BotManager - INFO - Directory data\papers exists: True
+2025-04-02 17:50:31,471 - BotManager - INFO - Found 0 files in data\papers
+2025-04-02 17:50:31,472 - BotManager - INFO - Directory data\searches exists: True
+2025-04-02 17:50:31,474 - BotManager - INFO - Found 2 files in data\searches
+2025-04-02 17:50:31,475 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-02 17:50:31,476 - BotManager - INFO - Found 0 files in data\crawls
+2025-04-02 17:50:31,477 - BotManager - INFO - Directory data\links exists: True
+2025-04-02 17:50:31,478 - BotManager - INFO - Found 0 files in data\links
+2025-04-02 17:50:31,479 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-02 17:50:31,481 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-02 17:50:31,482 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-02 17:50:31,483 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-02 17:50:31,490 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-02 17:50:31,492 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-02 17:50:31,536 - BotManager - INFO - Updated model display: phi3:latest
+2025-04-02 17:50:35,050 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-02 17:50:35,079 - BotManager - INFO - Available models: llama3.2:1b, llama3.2:3b, qnguyen3/nanollava:latest, qwen2.5-coder:3b, qwen2.5-coder:7b, phi3:latest
+2025-04-02 17:50:46,632 - BotManager - INFO - Updated model display: phi3:latest
+2025-04-02 17:50:46,632 - BotManager - INFO - Starting with model: phi3:latest
+2025-04-02 17:50:46,663 - BotManager - INFO - Bot started with PID: 25960
+2025-04-02 17:50:50,363 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-02 17:50:50,363 - BotManager - INFO - [2025-04-02 17:50:50] [INFO    ] discord.client: logging in using static token
+2025-04-02 17:50:50,363 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-02 17:50:51,063 - BotManager - INFO - [2025-04-02 17:50:51] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: e506ae1515b7c550548c72f077ce4e46).
+2025-04-02 17:50:51,078 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: e506ae1515b7c550548c72f077ce4e46).
+2025-04-02 17:56:27,689 - BotManager - INFO - [2025-04-02 17:56:27] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session e506ae1515b7c550548c72f077ce4e46.
+2025-04-02 17:56:27,703 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session e506ae1515b7c550548c72f077ce4e46.
+2025-04-02 18:53:41,783 - BotManager - INFO - Loading data from data
+2025-04-02 18:53:41,784 - BotManager - INFO - DATA_DIR exists: True
+2025-04-02 18:53:41,786 - BotManager - INFO - Directory data\papers exists: True
+2025-04-02 18:53:41,786 - BotManager - INFO - Found 0 files in data\papers
+2025-04-02 18:53:41,787 - BotManager - INFO - Directory data\searches exists: True
+2025-04-02 18:53:41,789 - BotManager - INFO - Found 4 files in data\searches
+2025-04-02 18:53:41,789 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-02 18:53:41,790 - BotManager - INFO - Found 0 files in data\crawls
+2025-04-02 18:53:41,791 - BotManager - INFO - Directory data\links exists: True
+2025-04-02 18:53:41,793 - BotManager - INFO - Found 0 files in data\links
+2025-04-02 18:53:41,794 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-02 18:53:41,796 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-02 18:53:41,796 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-02 18:53:41,797 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-02 18:53:41,809 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-02 18:53:41,811 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-02 18:53:41,854 - BotManager - INFO - Updated model display: phi3:latest
+2025-04-02 18:53:44,956 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-02 18:53:44,962 - BotManager - INFO - Available models: llama3.2:1b, llama3.2:3b, qnguyen3/nanollava:latest, qwen2.5-coder:3b, qwen2.5-coder:7b, phi3:latest
+2025-04-02 18:56:15,388 - BotManager - INFO - Loading data from data
+2025-04-02 18:56:15,389 - BotManager - INFO - DATA_DIR exists: True
+2025-04-02 18:56:15,390 - BotManager - INFO - Directory data\papers exists: True
+2025-04-02 18:56:15,391 - BotManager - INFO - Found 0 files in data\papers
+2025-04-02 18:56:15,392 - BotManager - INFO - Directory data\searches exists: True
+2025-04-02 18:56:15,393 - BotManager - INFO - Found 4 files in data\searches
+2025-04-02 18:56:15,394 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-02 18:56:15,395 - BotManager - INFO - Found 0 files in data\crawls
+2025-04-02 18:56:15,396 - BotManager - INFO - Directory data\links exists: True
+2025-04-02 18:56:15,397 - BotManager - INFO - Found 0 files in data\links
+2025-04-02 18:56:15,398 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-02 18:56:15,399 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-02 18:56:15,400 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-02 18:56:15,401 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-02 18:56:15,405 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-02 18:56:15,407 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-02 18:56:15,434 - BotManager - INFO - Updated model display: llama3.2:1b
+2025-04-02 18:56:17,106 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-02 18:56:17,106 - BotManager - INFO - Available models: llama3.2:1b, llama3.2:3b, qnguyen3/nanollava:latest, qwen2.5-coder:3b, qwen2.5-coder:7b, phi3:latest
+2025-04-02 18:56:44,405 - BotManager - INFO - Loading data from data
+2025-04-02 18:56:44,406 - BotManager - INFO - DATA_DIR exists: True
+2025-04-02 18:56:44,407 - BotManager - INFO - Directory data\papers exists: True
+2025-04-02 18:56:44,408 - BotManager - INFO - Found 0 files in data\papers
+2025-04-02 18:56:44,408 - BotManager - INFO - Directory data\searches exists: True
+2025-04-02 18:56:44,409 - BotManager - INFO - Found 4 files in data\searches
+2025-04-02 18:56:44,410 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-02 18:56:44,411 - BotManager - INFO - Found 0 files in data\crawls
+2025-04-02 18:56:44,411 - BotManager - INFO - Directory data\links exists: True
+2025-04-02 18:56:44,412 - BotManager - INFO - Found 0 files in data\links
+2025-04-02 18:56:44,412 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-02 18:56:44,413 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-02 18:56:44,414 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-02 18:56:44,415 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-02 18:56:44,418 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-02 18:56:44,419 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-02 18:56:44,448 - BotManager - INFO - Updated model display: llama3.2:1b
+2025-04-02 18:56:46,100 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-02 18:56:46,103 - BotManager - INFO - Available models: llama3.2:1b, llama3.2:3b, qnguyen3/nanollava:latest, qwen2.5-coder:3b, qwen2.5-coder:7b, phi3:latest
+2025-04-02 19:11:24,868 - BotManager - INFO - Loading data from data
+2025-04-02 19:11:24,869 - BotManager - INFO - DATA_DIR exists: True
+2025-04-02 19:11:24,870 - BotManager - INFO - Directory data\papers exists: True
+2025-04-02 19:11:24,871 - BotManager - INFO - Found 0 files in data\papers
+2025-04-02 19:11:24,872 - BotManager - INFO - Directory data\searches exists: True
+2025-04-02 19:11:24,874 - BotManager - INFO - Found 4 files in data\searches
+2025-04-02 19:11:24,874 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-02 19:11:24,876 - BotManager - INFO - Found 0 files in data\crawls
+2025-04-02 19:11:24,876 - BotManager - INFO - Directory data\links exists: True
+2025-04-02 19:11:24,877 - BotManager - INFO - Found 0 files in data\links
+2025-04-02 19:11:24,878 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-02 19:11:24,880 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-02 19:11:24,881 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-02 19:11:24,882 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-02 19:11:24,888 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-02 19:11:24,889 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-02 19:11:24,925 - BotManager - INFO - Updated model display: llama3.2:1b
+2025-04-02 19:11:26,618 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-02 19:11:26,638 - BotManager - INFO - Available models: llama3.2:1b, llama3.2:3b, qnguyen3/nanollava:latest, qwen2.5-coder:3b, qwen2.5-coder:7b, phi3:latest
+2025-04-02 19:11:54,962 - BotManager - INFO - Loading data from data
+2025-04-02 19:11:54,963 - BotManager - INFO - DATA_DIR exists: True
+2025-04-02 19:11:54,964 - BotManager - INFO - Directory data\papers exists: True
+2025-04-02 19:11:54,965 - BotManager - INFO - Found 0 files in data\papers
+2025-04-02 19:11:54,966 - BotManager - INFO - Directory data\searches exists: True
+2025-04-02 19:11:54,967 - BotManager - INFO - Found 4 files in data\searches
+2025-04-02 19:11:54,967 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-02 19:11:54,968 - BotManager - INFO - Found 0 files in data\crawls
+2025-04-02 19:11:54,970 - BotManager - INFO - Directory data\links exists: True
+2025-04-02 19:11:54,971 - BotManager - INFO - Found 0 files in data\links
+2025-04-02 19:11:54,971 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-02 19:11:54,972 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-02 19:11:54,973 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-02 19:11:54,974 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-02 19:11:54,978 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-02 19:11:54,979 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-02 19:11:55,017 - BotManager - INFO - Updated model display: llama3.2:1b
+2025-04-02 19:11:56,743 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-02 19:11:56,761 - BotManager - INFO - Available models: llama3.2:1b, llama3.2:3b, qnguyen3/nanollava:latest, qwen2.5-coder:3b, qwen2.5-coder:7b, phi3:latest
+2025-04-02 19:22:20,985 - BotManager - INFO - Loading data from data
+2025-04-02 19:22:20,985 - BotManager - INFO - DATA_DIR exists: True
+2025-04-02 19:22:20,986 - BotManager - INFO - Directory data\papers exists: True
+2025-04-02 19:22:20,988 - BotManager - INFO - Found 0 files in data\papers
+2025-04-02 19:22:20,988 - BotManager - INFO - Directory data\searches exists: True
+2025-04-02 19:22:20,989 - BotManager - INFO - Found 4 files in data\searches
+2025-04-02 19:22:20,990 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-02 19:22:20,990 - BotManager - INFO - Found 0 files in data\crawls
+2025-04-02 19:22:20,991 - BotManager - INFO - Directory data\links exists: True
+2025-04-02 19:22:20,991 - BotManager - INFO - Found 0 files in data\links
+2025-04-02 19:22:20,992 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-02 19:22:20,993 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-02 19:22:20,993 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-02 19:22:20,994 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-02 19:22:20,998 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-02 19:22:20,998 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-02 19:22:21,031 - BotManager - INFO - Updated model display: llama3.2:1b
+2025-04-02 19:22:22,841 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-02 19:22:22,856 - BotManager - INFO - Available models: llama3.2:1b, llama3.2:3b, qnguyen3/nanollava:latest, qwen2.5-coder:3b, qwen2.5-coder:7b, phi3:latest
+2025-04-02 19:29:38,752 - BotManager - INFO - Loading data from data
+2025-04-02 19:29:38,753 - BotManager - INFO - DATA_DIR exists: True
+2025-04-02 19:29:38,754 - BotManager - INFO - Directory data\papers exists: True
+2025-04-02 19:29:38,755 - BotManager - INFO - Found 0 files in data\papers
+2025-04-02 19:29:38,756 - BotManager - INFO - Directory data\searches exists: True
+2025-04-02 19:29:38,757 - BotManager - INFO - Found 4 files in data\searches
+2025-04-02 19:29:38,758 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-02 19:29:38,759 - BotManager - INFO - Found 0 files in data\crawls
+2025-04-02 19:29:38,759 - BotManager - INFO - Directory data\links exists: True
+2025-04-02 19:29:38,761 - BotManager - INFO - Found 0 files in data\links
+2025-04-02 19:29:38,762 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-02 19:29:38,762 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-02 19:29:38,763 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-02 19:29:38,764 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-02 19:29:38,769 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-02 19:29:38,771 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-02 19:29:38,808 - BotManager - INFO - Updated models display - Base: llama3.2:3b, Vision: 
+2025-04-02 19:29:40,674 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-02 19:29:40,692 - BotManager - INFO - Available models: llama3.2:1b, llama3.2:3b, qnguyen3/nanollava:latest, qwen2.5-coder:3b, qwen2.5-coder:7b, phi3:latest
+2025-04-02 23:20:25,302 - BotManager - INFO - Loading data from data
+2025-04-02 23:20:25,303 - BotManager - INFO - DATA_DIR exists: True
+2025-04-02 23:20:25,303 - BotManager - INFO - Directory data\papers exists: True
+2025-04-02 23:20:25,304 - BotManager - INFO - Found 0 files in data\papers
+2025-04-02 23:20:25,304 - BotManager - INFO - Directory data\searches exists: True
+2025-04-02 23:20:25,305 - BotManager - INFO - Found 4 files in data\searches
+2025-04-02 23:20:25,305 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-02 23:20:25,305 - BotManager - INFO - Found 0 files in data\crawls
+2025-04-02 23:20:25,306 - BotManager - INFO - Directory data\links exists: True
+2025-04-02 23:20:25,306 - BotManager - INFO - Found 0 files in data\links
+2025-04-02 23:20:25,306 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-02 23:20:25,306 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-02 23:20:25,306 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-02 23:20:25,307 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-02 23:20:25,311 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-02 23:20:25,311 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-02 23:20:25,334 - BotManager - INFO - Updated models display - Base: llama3.2:1b, Vision: 
+2025-04-02 23:20:27,361 - BotManager - INFO - Base model changed to: 
+2025-04-02 23:20:28,231 - BotManager - INFO - Vision model changed to: 
+2025-04-02 23:20:28,314 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-02 23:20:28,315 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-02 23:20:28,324 - BotManager - INFO - Vision model changed to: 
+2025-04-02 23:20:28,326 - BotManager - INFO - Vision model changed to: llama3.2:1b
+2025-04-02 23:20:28,327 - BotManager - INFO - Loaded 6 vision models
+2025-04-02 23:20:28,332 - BotManager - INFO - Base model changed to: 
+2025-04-02 23:20:28,337 - BotManager - INFO - Base model changed to: llama3.2:1b
+2025-04-02 23:20:28,338 - BotManager - INFO - Available models: llama3.2:1b, llama3.2:3b, qnguyen3/nanollava:latest, qwen2.5-coder:3b, qwen2.5-coder:7b, phi3:latest
+2025-04-02 23:20:34,166 - BotManager - INFO - Base model changed to: phi3:latest
+2025-04-02 23:20:36,438 - BotManager - INFO - Vision model changed to: qnguyen3/nanollava:latest
+2025-04-02 23:20:43,067 - BotManager - INFO - Updated models display - Base: phi3:latest, Vision: qnguyen3/nanollava:latest
+2025-04-02 23:20:43,067 - BotManager - INFO - Starting with model: phi3:latest
+2025-04-02 23:20:43,081 - BotManager - INFO - Bot started with PID: 10700
+2025-04-02 23:20:45,136 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-02 23:20:45,148 - BotManager - INFO - [2025-04-02 23:20:45] [INFO    ] discord.client: logging in using static token
+2025-04-02 23:20:45,148 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-02 23:20:45,990 - BotManager - INFO - [2025-04-02 23:20:45] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: dfbfa21228c6d9eaac9cf9a20d8b6dc0).
+2025-04-02 23:20:45,990 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: dfbfa21228c6d9eaac9cf9a20d8b6dc0).
+2025-04-02 23:21:12,345 - BotManager - INFO - ERROR:root:Error in get_ollama_response: model requires more system memory (5.6 GiB) than is available (5.0 GiB) (status code: 500)
+2025-04-02 23:21:27,864 - BotManager - INFO - Base model changed to: llama3.2:3b
+2025-04-02 23:21:47,908 - BotManager - INFO - ERROR:root:Error in get_ollama_response: model requires more system memory (5.6 GiB) than is available (5.1 GiB) (status code: 500)
+2025-04-02 23:21:53,296 - BotManager - INFO - Stopping Discord bot...
+2025-04-02 23:21:53,505 - BotManager - INFO - Bot stopped successfully.
+2025-04-02 23:21:53,505 - BotManager - INFO - Bot process exited with code: 1
+2025-04-02 23:33:52,610 - BotManager - INFO - Loading data from data
+2025-04-02 23:33:52,610 - BotManager - INFO - DATA_DIR exists: True
+2025-04-02 23:33:52,628 - BotManager - INFO - Directory data\papers exists: True
+2025-04-02 23:33:52,630 - BotManager - INFO - Found 0 files in data\papers
+2025-04-02 23:33:52,630 - BotManager - INFO - Directory data\searches exists: True
+2025-04-02 23:33:52,630 - BotManager - INFO - Found 4 files in data\searches
+2025-04-02 23:33:52,631 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-02 23:33:52,631 - BotManager - INFO - Found 0 files in data\crawls
+2025-04-02 23:33:52,631 - BotManager - INFO - Directory data\links exists: True
+2025-04-02 23:33:52,631 - BotManager - INFO - Found 0 files in data\links
+2025-04-02 23:33:52,632 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-02 23:33:52,632 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-02 23:33:52,632 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-02 23:33:52,632 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-02 23:33:52,634 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-02 23:33:52,634 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-02 23:33:52,661 - BotManager - INFO - Updated models display - Base: llama3.2:3b, Vision: qnguyen3/nanollava:latest
+2025-04-02 23:33:52,979 - BotManager - INFO - Base model changed to: 
+2025-04-02 23:33:53,500 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-02 23:33:53,500 - BotManager - INFO - Vision model changed to: 
+2025-04-02 23:33:53,510 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-02 23:33:53,523 - BotManager - INFO - Base model changed to: 
+2025-04-02 23:33:53,530 - BotManager - INFO - Base model changed to: llama3.2:1b
+2025-04-02 23:33:53,530 - BotManager - INFO - Available models: llama3.2:1b, llama3.2:3b, qnguyen3/nanollava:latest, qwen2.5-coder:3b, qwen2.5-coder:7b, phi3:latest
+2025-04-02 23:33:53,533 - BotManager - INFO - Vision model changed to: 
+2025-04-02 23:33:53,544 - BotManager - INFO - Vision model changed to: llama3.2:1b
+2025-04-02 23:33:53,545 - BotManager - INFO - Loaded 6 vision models
+2025-04-02 23:33:57,608 - BotManager - INFO - Base model changed to: llama3.2:3b
+2025-04-02 23:33:59,339 - BotManager - INFO - Vision model changed to: qnguyen3/nanollava:latest
+2025-04-02 23:34:01,423 - BotManager - INFO - Updated models display - Base: llama3.2:3b, Vision: qnguyen3/nanollava:latest
+2025-04-02 23:34:01,423 - BotManager - INFO - Starting with model: llama3.2:3b
+2025-04-02 23:34:01,423 - BotManager - INFO - Bot started with PID: 10900
+2025-04-02 23:34:02,894 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-02 23:34:02,894 - BotManager - INFO - [2025-04-02 23:34:02] [INFO    ] discord.client: logging in using static token
+2025-04-02 23:34:02,894 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-02 23:34:03,612 - BotManager - INFO - [2025-04-02 23:34:03] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: bd03dcb0abf6be96b49c45cba20bf5eb).
+2025-04-02 23:34:03,627 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: bd03dcb0abf6be96b49c45cba20bf5eb).
+2025-04-02 23:34:20,852 - BotManager - INFO - ERROR:root:Error loading model llama3.2:3b: 'AsyncClient' object has no attribute 'load'
+2025-04-02 23:34:20,852 - BotManager - INFO - ERROR:root:Error in get_ollama_response: Could not load model: llama3.2:3b
+2025-04-02 23:39:14,008 - BotManager - INFO - ERROR:root:Error loading model llama3.2:3b: 'AsyncClient' object has no attribute 'load'
+2025-04-02 23:39:14,010 - BotManager - INFO - ERROR:root:Error in get_ollama_response: Could not load model: llama3.2:3b
+2025-04-02 23:48:03,490 - BotManager - INFO - Loading data from data
+2025-04-02 23:48:03,491 - BotManager - INFO - DATA_DIR exists: True
+2025-04-02 23:48:03,491 - BotManager - INFO - Directory data\papers exists: True
+2025-04-02 23:48:03,491 - BotManager - INFO - Found 0 files in data\papers
+2025-04-02 23:48:03,492 - BotManager - INFO - Directory data\searches exists: True
+2025-04-02 23:48:03,492 - BotManager - INFO - Found 4 files in data\searches
+2025-04-02 23:48:03,493 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-02 23:48:03,493 - BotManager - INFO - Found 0 files in data\crawls
+2025-04-02 23:48:03,493 - BotManager - INFO - Directory data\links exists: True
+2025-04-02 23:48:03,494 - BotManager - INFO - Found 0 files in data\links
+2025-04-02 23:48:03,494 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-02 23:48:03,494 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-02 23:48:03,494 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-02 23:48:03,495 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-02 23:48:03,496 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-02 23:48:03,496 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-02 23:48:03,523 - BotManager - INFO - Updated models display - Base: llama3.2:3b, Vision: qnguyen3/nanollava:latest
+2025-04-02 23:48:04,031 - BotManager - INFO - Base model changed to: 
+2025-04-02 23:48:04,537 - BotManager - INFO - Vision model changed to: 
+2025-04-02 23:48:04,545 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-02 23:48:04,546 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-02 23:48:04,566 - BotManager - INFO - Vision model changed to: 
+2025-04-02 23:48:04,568 - BotManager - INFO - Vision model changed to: llama3.2:1b
+2025-04-02 23:48:04,568 - BotManager - INFO - Loaded 6 vision models
+2025-04-02 23:48:04,570 - BotManager - INFO - Base model changed to: 
+2025-04-02 23:48:04,573 - BotManager - INFO - Base model changed to: llama3.2:1b
+2025-04-02 23:48:04,574 - BotManager - INFO - Available models: llama3.2:1b, llama3.2:3b, qnguyen3/nanollava:latest, qwen2.5-coder:3b, qwen2.5-coder:7b, phi3:latest
+2025-04-02 23:48:08,568 - BotManager - INFO - Base model changed to: llama3.2:3b
+2025-04-02 23:48:11,261 - BotManager - INFO - Vision model changed to: qnguyen3/nanollava:latest
+2025-04-02 23:48:14,747 - BotManager - INFO - Updated models display - Base: llama3.2:3b, Vision: qnguyen3/nanollava:latest
+2025-04-02 23:48:14,747 - BotManager - INFO - Starting with model: llama3.2:3b
+2025-04-02 23:48:14,747 - BotManager - INFO - Bot started with PID: 20312
+2025-04-02 23:48:16,208 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-02 23:48:16,208 - BotManager - INFO - [2025-04-02 23:48:16] [INFO    ] discord.client: logging in using static token
+2025-04-02 23:48:16,208 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-02 23:48:16,964 - BotManager - INFO - [2025-04-02 23:48:16] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: a439ceba58774a2c6d05fbd435f6670f).
+2025-04-02 23:48:16,964 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: a439ceba58774a2c6d05fbd435f6670f).
+2025-04-02 23:48:42,878 - BotManager - INFO - ERROR:root:Error in get_ollama_response: name 'messages_to_send' is not defined
+2025-04-02 23:56:09,238 - BotManager - INFO - Loading data from data
+2025-04-02 23:56:09,238 - BotManager - INFO - DATA_DIR exists: True
+2025-04-02 23:56:09,239 - BotManager - INFO - Directory data\papers exists: True
+2025-04-02 23:56:09,240 - BotManager - INFO - Found 0 files in data\papers
+2025-04-02 23:56:09,240 - BotManager - INFO - Directory data\searches exists: True
+2025-04-02 23:56:09,241 - BotManager - INFO - Found 4 files in data\searches
+2025-04-02 23:56:09,241 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-02 23:56:09,242 - BotManager - INFO - Found 0 files in data\crawls
+2025-04-02 23:56:09,242 - BotManager - INFO - Directory data\links exists: True
+2025-04-02 23:56:09,242 - BotManager - INFO - Found 0 files in data\links
+2025-04-02 23:56:09,242 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-02 23:56:09,243 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-02 23:56:09,243 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-02 23:56:09,243 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-02 23:56:09,245 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-02 23:56:09,245 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-02 23:56:09,272 - BotManager - INFO - Updated models display - Base: llama3.2:3b, Vision: qnguyen3/nanollava:latest
+2025-04-02 23:56:09,887 - BotManager - INFO - Base model changed to: 
+2025-04-02 23:56:10,508 - BotManager - INFO - Vision model changed to: 
+2025-04-02 23:56:10,522 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-02 23:56:10,522 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-02 23:56:10,530 - BotManager - INFO - Base model changed to: 
+2025-04-02 23:56:10,535 - BotManager - INFO - Base model changed to: llama3.2:1b
+2025-04-02 23:56:10,536 - BotManager - INFO - Available models: llama3.2:1b, llama3.2:3b, qnguyen3/nanollava:latest, qwen2.5-coder:3b, qwen2.5-coder:7b, phi3:latest
+2025-04-02 23:56:10,540 - BotManager - INFO - Vision model changed to: 
+2025-04-02 23:56:10,542 - BotManager - INFO - Vision model changed to: llama3.2:1b
+2025-04-02 23:56:10,543 - BotManager - INFO - Loaded 6 vision models
+2025-04-02 23:56:13,886 - BotManager - INFO - Base model changed to: llama3.2:3b
+2025-04-02 23:56:17,086 - BotManager - INFO - Vision model changed to: qnguyen3/nanollava:latest
+2025-04-02 23:56:21,082 - BotManager - INFO - Updated models display - Base: llama3.2:3b, Vision: qnguyen3/nanollava:latest
+2025-04-02 23:56:21,082 - BotManager - INFO - Starting with model: llama3.2:3b
+2025-04-02 23:56:21,089 - BotManager - INFO - Bot started with PID: 27872
+2025-04-02 23:56:21,968 - BotManager - INFO - Traceback (most recent call last):
+2025-04-02 23:56:21,968 - BotManager - INFO - File "C:\gitClone\OllamaDiscordTeacher\splitBot\main.py", line 20, in <module>
+2025-04-02 23:56:21,968 - BotManager - INFO - from services import get_ollama_response
+2025-04-02 23:56:21,968 - BotManager - INFO - File "C:\gitClone\OllamaDiscordTeacher\splitBot\services.py", line 282
+2025-04-02 23:56:21,968 - BotManager - INFO - """Gets a response from the Ollama or Groq model."""
+2025-04-02 23:56:21,968 - BotManager - INFO - IndentationError: unexpected indent
+2025-04-02 23:56:22,055 - BotManager - INFO - Bot process exited with code: 1
+2025-04-02 23:59:46,951 - BotManager - INFO - Loading data from data
+2025-04-02 23:59:46,952 - BotManager - INFO - DATA_DIR exists: True
+2025-04-02 23:59:46,952 - BotManager - INFO - Directory data\papers exists: True
+2025-04-02 23:59:46,952 - BotManager - INFO - Found 0 files in data\papers
+2025-04-02 23:59:46,953 - BotManager - INFO - Directory data\searches exists: True
+2025-04-02 23:59:46,953 - BotManager - INFO - Found 4 files in data\searches
+2025-04-02 23:59:46,953 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-02 23:59:46,953 - BotManager - INFO - Found 0 files in data\crawls
+2025-04-02 23:59:46,954 - BotManager - INFO - Directory data\links exists: True
+2025-04-02 23:59:46,954 - BotManager - INFO - Found 0 files in data\links
+2025-04-02 23:59:46,954 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-02 23:59:46,954 - BotManager - INFO - Found 1 files in data\user_profiles
+2025-04-02 23:59:46,954 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-02 23:59:46,954 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-02 23:59:46,956 - BotManager - INFO - Loaded 0 papers from 0 paper files
+2025-04-02 23:59:46,956 - BotManager - INFO - Loaded 0 links from 0 files
+2025-04-02 23:59:46,981 - BotManager - INFO - Updated models display - Base: llama3.2:3b, Vision: qnguyen3/nanollava:latest
+2025-04-02 23:59:47,255 - BotManager - INFO - Base model changed to: 
+2025-04-02 23:59:47,751 - BotManager - INFO - Vision model changed to: 
+2025-04-02 23:59:47,764 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-02 23:59:47,764 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-02 23:59:47,781 - BotManager - INFO - Vision model changed to: 
+2025-04-02 23:59:47,781 - BotManager - INFO - Vision model changed to: llama3.2:1b
+2025-04-02 23:59:47,781 - BotManager - INFO - Loaded 6 vision models
+2025-04-02 23:59:47,781 - BotManager - INFO - Base model changed to: 
+2025-04-02 23:59:47,781 - BotManager - INFO - Base model changed to: llama3.2:1b
+2025-04-02 23:59:47,781 - BotManager - INFO - Available models: llama3.2:1b, llama3.2:3b, qnguyen3/nanollava:latest, qwen2.5-coder:3b, qwen2.5-coder:7b, phi3:latest
+2025-04-02 23:59:51,275 - BotManager - INFO - Base model changed to: llama3.2:3b
+2025-04-02 23:59:53,597 - BotManager - INFO - Vision model changed to: qnguyen3/nanollava:latest
+2025-04-02 23:59:56,025 - BotManager - INFO - Updated models display - Base: llama3.2:3b, Vision: qnguyen3/nanollava:latest
+2025-04-02 23:59:56,025 - BotManager - INFO - Starting with model: llama3.2:3b
+2025-04-02 23:59:56,032 - BotManager - INFO - Bot started with PID: 19512
+2025-04-02 23:59:57,516 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-02 23:59:57,532 - BotManager - INFO - [2025-04-02 23:59:57] [INFO    ] discord.client: logging in using static token
+2025-04-02 23:59:57,532 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-02 23:59:58,356 - BotManager - INFO - [2025-04-02 23:59:58] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: eadeee0938d06b3402c3e060594e2cba).
+2025-04-02 23:59:58,357 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: eadeee0938d06b3402c3e060594e2cba).
+2025-04-03 00:17:20,270 - BotManager - INFO - Stopping Discord bot...
+2025-04-03 00:17:20,443 - BotManager - INFO - Bot stopped successfully.
+2025-04-03 00:17:21,424 - BotManager - INFO - Bot process exited with code: 1

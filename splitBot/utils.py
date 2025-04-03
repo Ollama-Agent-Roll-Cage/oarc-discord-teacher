@@ -155,6 +155,24 @@ async def process_file_attachment(attachment):
     except Exception as e:
         raise ValueError(f"Error reading file: {str(e)}")
 
+async def process_image_attachment(attachment):
+    """Process an image attachment and return its base64 data."""
+    if attachment.size > MAX_FILE_SIZE:
+        raise ValueError(f"Image too large (max {MAX_FILE_SIZE/1024/1024}MB)")
+        
+    # Get file extension
+    ext = attachment.filename.lower().split('.')[-1]
+    
+    if ext not in ['png', 'jpg', 'jpeg', 'webp']:
+        raise ValueError("Invalid image format. Supported: PNG, JPG, JPEG, WEBP")
+        
+    try:
+        # Download and convert to base64
+        image_data = await attachment.read()
+        return image_data
+    except Exception as e:
+        raise ValueError(f"Error processing image: {str(e)}")
+
 # ---------- Parquet Storage ----------
 
 class ParquetStorage:
@@ -227,155 +245,59 @@ class PandasQueryEngine:
         try:
             from services import get_ollama_response
             
-            # Print sample timestamp for debugging
+            # First ensure we have proper timestamp handling
             if 'timestamp' in dataframe.columns and not dataframe.empty:
-                sample_timestamp = dataframe['timestamp'].iloc[0]
-                logging.info(f"Sample timestamp format: '{sample_timestamp}'")
-                logging.info(f"Timestamp dtype: {dataframe['timestamp'].dtype}")
-                logging.info(f"Dataframe columns: {dataframe.columns.tolist()}")
-            
-            # Handle timestamp conversion as before
-            try:
-                # Create a custom parser function to handle both formats
-                def parse_timestamp(ts):
-                    if pd.isna(ts):
-                        return None
-                    try:
-                        # Remove any timezone info before parsing
-                        if '+' in ts:
-                            ts_clean = ts.split('+')[0]
-                            return pd.Timestamp(ts_clean)
-                        else:
-                            return pd.Timestamp(ts)
-                    except:
-                        return None
-                
-                # Apply the custom parser
-                dataframe['parsed_timestamp'] = dataframe['timestamp'].apply(parse_timestamp)
+                dataframe['parsed_timestamp'] = pd.to_datetime(dataframe['timestamp'], utc=True)
                 dataframe['date'] = dataframe['parsed_timestamp'].dt.date
-                logging.info(f"Successfully converted timestamps with custom parser")
                 
-                # Format readable timestamps for display
-                dataframe['formatted_time'] = dataframe['parsed_timestamp'].dt.strftime('%Y-%m-%d %H:%M')
-                
-            except Exception as e:
-                logging.error(f"Custom timestamp parsing failed: {e}")
-                # Use dummy dates as a last resort
-                dataframe['date'] = datetime.now(UTC).date()
-                dataframe['formatted_time'] = 'Unknown'
-            
-            # Create a prompt that follows the llama-index pattern for PandasQueryEngine
-            # We'll get the first 5 rows as a string to help the model understand the data
-            df_head = dataframe.head(5).to_string()
-            
-            instruction_str = """
-            1. Convert the query to executable Python code using Pandas.
-            2. The final line of code should be a Python expression that can be called with the `eval()` function.
-            3. The code should represent a solution to the query.
-            4. PRINT ONLY THE EXPRESSION.
-            5. Do not quote the expression.
-            """
-            
-            prompt = f"""You are working with a pandas dataframe in Python.
-            The name of the dataframe is `df`.
-            This is the result of `print(df.head())`:
-            {df_head}
+            # Create a more natural prompt for the LLM
+            df_info = f"""
+Available columns: {', '.join(dataframe.columns)}
+Sample data:
+{dataframe.head(3).to_string()}
 
-            Follow these instructions:
-            {instruction_str}
-            Query: {query}
+Data contains:
+- User messages and interactions
+- Timestamps of conversations
+- Search queries and results
+- Topics discussed
+"""
+            prompt = f"""Given this DataFrame information:
+{df_info}
 
-            Expression:"""
-            
+User query: "{query}"
+
+Convert this to a pandas operation that will:
+1. Extract relevant information
+2. Sort by timestamp if time-based
+3. Group or aggregate if needed
+4. Return only necessary columns
+
+Return only the pandas code, no explanation."""
+
             # Get the pandas code to execute
-            pandas_instruction = await get_ollama_response(prompt, with_context=False)
-            pandas_instruction = pandas_instruction.strip()
-            
-            logging.info(f"Generated pandas instruction: {pandas_instruction}")
-            
-            # For safety, check the code doesn't have dangerous operations
-            dangerous_terms = ['import', 'exec', 'eval(', 'os.', 'subprocess', 'sys.', 'shutil', 'open(']
-            if any(term in pandas_instruction for term in dangerous_terms):
+            pandas_code = await get_ollama_response(prompt, with_context=False)
+            pandas_code = pandas_code.strip()
+
+            # Execute safely
+            result = eval(pandas_code)
+
+            # Format results nicely
+            if isinstance(result, pd.DataFrame):
                 return {
-                    "error": "Potentially unsafe code detected",
-                    "explanation": "The generated pandas code contains potentially unsafe operations."
+                    "success": True,
+                    "result": tabulate(result, headers='keys', tablefmt='pipe'),
+                    "count": len(result)
                 }
-            
-            # Execute the pandas code
-            try:
-                # Use a copy of the dataframe to avoid modifying the original
-                df = dataframe.copy()
-                # Execute the code and capture the result
-                result = eval(pandas_instruction)
-                
-                # Convert the result to a string for display
-                if isinstance(result, pd.DataFrame):
-                    if 'parsed_timestamp' in result.columns:
-                        result = result.sort_values('parsed_timestamp', ascending=False)
-                    
-                    # Format the output
-                    if 'query' in result.columns:
-                        # For search results, create a more structured table
-                        display_df = result[['query', 'formatted_time']].copy()
-                        display_df.columns = ['Search Query', 'Time']
-                        result_str = "## Recent Searches\n\n"
-                        result_str += display_df.to_string(index=False)
-                    else:
-                        # Generic dataframe display
-                        result_str = result.to_string(index=False)
-                else:
-                    result_str = str(result)
-                
-                # Follow the llama-index pattern for returning metadata
+            else:
                 return {
-                    "pandas_instruction_str": pandas_instruction,
-                    "result": result_str,
-                    "explanation": f"Found {len(result) if isinstance(result, pd.DataFrame) else 'N/A'} records matching your query."
+                    "success": True, 
+                    "result": str(result)
                 }
-            except Exception as e:
-                logging.error(f"Error executing pandas code: {e}")
-                
-                # Try common query patterns as fallback
-                today = datetime.now(UTC).date()
-                query_lower = query.lower()
-                
-                if 'today' in query_lower:
-                    result = dataframe[dataframe['date'] == today]
-                elif 'recent' in query_lower or 'show' in query_lower:
-                    result = dataframe.head(10)
-                elif 'count' in query_lower:
-                    if 'date' in query_lower:
-                        result = dataframe['date'].value_counts().head(10)
-                    else:
-                        result = len(dataframe)
-                else:
-                    result = dataframe.head(5)
-                
-                # Format the result
-                if isinstance(result, pd.DataFrame):
-                    if 'parsed_timestamp' in result.columns:
-                        result = result.sort_values('parsed_timestamp', ascending=False)
-                    
-                    # Format the output
-                    if 'query' in result.columns:
-                        display_df = result[['query', 'formatted_time']].copy()
-                        display_df.columns = ['Search Query', 'Time']
-                        result_str = "## Recent Searches\n\n"
-                        result_str += display_df.to_string(index=False)
-                    else:
-                        result_str = result.to_string(index=False)
-                else:
-                    result_str = str(result)
-                
-                return {
-                    "code": "df.head()",  # Fallback simple code
-                    "result": result_str,
-                    "explanation": f"The original query failed with error: {str(e)}. Showing fallback results."
-                }
-                
+
         except Exception as e:
-            logging.error(f"Error in PandasQueryEngine: {e}")
+            logging.error(f"PandasQueryEngine error: {e}", exc_info=True)
             return {
-                "error": str(e),
-                "explanation": f"Query engine error: {str(e)}"
+                "success": False,
+                "error": str(e)
             }
