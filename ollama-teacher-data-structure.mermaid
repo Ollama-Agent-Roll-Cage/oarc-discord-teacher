@@ -1,0 +1,102 @@
+flowchart TD
+    subgraph "Data Directory Structure"
+        ROOT["DATA_DIR (Root)"]
+        ROOT --> PAPERS["papers/"]
+        ROOT --> SEARCHES["searches/"]
+        ROOT --> CRAWLS["crawls/"]
+        ROOT --> LINKS["links/"]
+        ROOT --> PROFILES["user_profiles/"]
+        ROOT --> GUILDS["guilds/"]
+    end
+
+    subgraph "Storage Format & Content"
+        PAPERS -->|Parquet| PAPER_DATA["ArXiv Papers
+        - arxiv_id
+        - title
+        - authors
+        - abstract
+        - published
+        - categories
+        - pdf_link
+        - arxiv_url
+        - timestamp"]
+        
+        SEARCHES -->|Parquet| SEARCH_DATA["Search Results
+        - query
+        - timestamp
+        - raw_results"]
+        
+        CRAWLS -->|Parquet| CRAWL_DATA["Web Content
+        - url
+        - timestamp
+        - content"]
+        
+        LINKS -->|Parquet| LINK_DATA["Collected Links
+        - url
+        - title
+        - source
+        - collected
+        - channel_name
+        - guild_name
+        - category"]
+        
+        PROFILES -->|JSON| PROFILE_DATA["User Profiles
+        - timestamp
+        - analysis
+        - username
+        - learning interests
+        - skill level
+        - progress"]
+        
+        GUILDS -->|JSON| GUILD_DATA["Guild Data
+        - members info
+        - roles
+        - activity"]
+    end
+
+    subgraph "Memory Systems"
+        MEMORY_SYSTEMS["In-Memory Data"]
+        
+        MEMORY_SYSTEMS --> USER_CONV["USER_CONVERSATIONS
+        - Map: 'guild_id_user_id' → 
+          conversation array"]
+        
+        MEMORY_SYSTEMS --> CMD_MEM["COMMAND_MEMORY
+        - Map: 'guild_id_user_id' → 
+          command context map"]
+        
+        MEMORY_SYSTEMS --> CONV_LOGS["Conversation Logs
+        - Global system prompt
+        - Recent messages"]
+    end
+
+    subgraph "Interaction Flow"
+        USER["User Input"] --> PROCESS["Process Command"]
+        PROCESS --> MEM_CHECK["Check Memory Context"]
+        MEM_CHECK --> QUERY_DATA["Query Relevant Data"]
+        QUERY_DATA --> GEN_RESPONSE["Generate Response"]
+        GEN_RESPONSE --> STORE_RESPONSE["Store Interaction"]
+        STORE_RESPONSE --> UPDATE_PROFILE["Update User Profile"]
+    end
+
+    %% Connect the systems
+    USER_CONV -.->|Persisted to| PROFILES
+    QUERY_DATA -.->|Reads from| PAPERS
+    QUERY_DATA -.->|Reads from| SEARCHES
+    QUERY_DATA -.->|Reads from| CRAWLS
+    QUERY_DATA -.->|Reads from| LINKS
+    STORE_RESPONSE -.->|Writes to| PAPERS
+    STORE_RESPONSE -.->|Writes to| SEARCHES
+    STORE_RESPONSE -.->|Writes to| CRAWLS
+    STORE_RESPONSE -.->|Writes to| LINKS
+    UPDATE_PROFILE -.->|Updates| PROFILES
+
+    classDef directory fill:#1E1E1E,stroke:#39FF14,color:white;
+    classDef storage fill:#1E1E1E,stroke:#00FF8C,color:white;
+    classDef memory fill:#1E1E1E,stroke:#F1FA8C,color:white;
+    classDef process fill:#1E1E1E,stroke:#FF5555,color:white;
+    
+    class ROOT,PAPERS,SEARCHES,CRAWLS,LINKS,PROFILES,GUILDS directory;
+    class PAPER_DATA,SEARCH_DATA,CRAWL_DATA,LINK_DATA,PROFILE_DATA,GUILD_DATA storage;
+    class MEMORY_SYSTEMS,USER_CONV,CMD_MEM,CONV_LOGS memory;
+    class USER,PROCESS,MEM_CHECK,QUERY_DATA,GEN_RESPONSE,STORE_RESPONSE,UPDATE_PROFILE process;

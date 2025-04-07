@@ -2795,3 +2795,141 @@
 2025-04-03 12:44:47,215 - BotManager - INFO - INFO:discord.client:logging in using static token
 2025-04-03 12:44:48,172 - BotManager - INFO - [2025-04-03 12:44:48] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: f0942381fbe7890faa79ce1eddec7780).
 2025-04-03 12:44:48,173 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: f0942381fbe7890faa79ce1eddec7780).
+2025-04-03 12:52:35,309 - BotManager - INFO - Loading data from data
+2025-04-03 12:52:35,312 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 12:52:35,313 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 12:52:35,314 - BotManager - INFO - Found 3 files in data\papers
+2025-04-03 12:52:35,314 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 12:52:35,315 - BotManager - INFO - Found 7 files in data\searches
+2025-04-03 12:52:35,315 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 12:52:35,315 - BotManager - INFO - Found 10 files in data\crawls
+2025-04-03 12:52:35,316 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 12:52:35,316 - BotManager - INFO - Found 1 files in data\links
+2025-04-03 12:52:35,317 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 12:52:35,317 - BotManager - INFO - Found 5 files in data\user_profiles
+2025-04-03 12:52:35,318 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 12:52:35,318 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 12:52:35,374 - BotManager - INFO - Loaded 2 papers from 2 paper files
+2025-04-03 12:52:35,374 - BotManager - ERROR - Error loading links from data\links\links__ollama-guides__20250403.parquet: name 'row' is not defined
+2025-04-03 12:52:35,375 - BotManager - INFO - Loaded 0 links from 1 files
+2025-04-03 12:52:35,400 - BotManager - INFO - Updated models display - Base: granite3-dense:2b, Vision: granite3.2-vision:2b-q8_0
+2025-04-03 12:52:35,632 - BotManager - INFO - Base model changed to: 
+2025-04-03 12:52:36,628 - BotManager - INFO - Vision model changed to: 
+2025-04-03 12:52:36,703 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 12:52:36,707 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 12:52:36,730 - BotManager - INFO - Vision model changed to: 
+2025-04-03 12:52:36,734 - BotManager - INFO - Vision model changed to: granite3.2-vision:2b-q8_0
+2025-04-03 12:52:36,735 - BotManager - INFO - Loaded 63 vision models
+2025-04-03 12:52:36,750 - BotManager - INFO - Base model changed to: 
+2025-04-03 12:52:36,754 - BotManager - INFO - Base model changed to: granite3.2-vision:2b-q8_0
+2025-04-03 12:52:36,754 - BotManager - INFO - Available models: granite3.2-vision:2b-q8_0, granite3-dense:2b, granite3.2-vision:latest, granite3-dense:8b, granite3-guardian:latest, gemma3:4b, llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 12:52:38,906 - BotManager - INFO - Base model changed to: granite3-dense:2b
+2025-04-03 12:52:47,067 - BotManager - INFO - Vision model changed to: gemma3:4b
+2025-04-03 12:53:30,795 - BotManager - INFO - Updated models display - Base: granite3-dense:2b, Vision: gemma3:4b
+2025-04-03 12:53:30,795 - BotManager - INFO - Starting with model: granite3-dense:2b
+2025-04-03 12:53:30,804 - BotManager - INFO - Bot started with PID: 23236
+2025-04-03 12:53:33,595 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-03 12:53:33,599 - BotManager - INFO - [2025-04-03 12:53:33] [INFO    ] discord.client: logging in using static token
+2025-04-03 12:53:33,601 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-03 12:53:34,381 - BotManager - INFO - [2025-04-03 12:53:34] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: ac55e80f04451e7ddc24f20cbec5001f).
+2025-04-03 12:53:34,384 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: ac55e80f04451e7ddc24f20cbec5001f).
+2025-04-03 15:30:34,008 - BotManager - INFO - [2025-04-03 15:30:34] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session ac55e80f04451e7ddc24f20cbec5001f.
+2025-04-03 15:30:34,012 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session ac55e80f04451e7ddc24f20cbec5001f.
+2025-04-03 15:50:05,315 - BotManager - INFO - [2025-04-03 15:50:05] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session ac55e80f04451e7ddc24f20cbec5001f.
+2025-04-03 15:50:05,316 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session ac55e80f04451e7ddc24f20cbec5001f.
+2025-04-03 16:34:22,966 - BotManager - INFO - Loading data from data
+2025-04-03 16:34:22,966 - BotManager - INFO - DATA_DIR exists: True
+2025-04-03 16:34:22,966 - BotManager - INFO - Directory data\papers exists: True
+2025-04-03 16:34:22,967 - BotManager - INFO - Found 3 files in data\papers
+2025-04-03 16:34:22,967 - BotManager - INFO - Directory data\searches exists: True
+2025-04-03 16:34:22,968 - BotManager - INFO - Found 7 files in data\searches
+2025-04-03 16:34:22,968 - BotManager - INFO - Directory data\crawls exists: True
+2025-04-03 16:34:22,969 - BotManager - INFO - Found 10 files in data\crawls
+2025-04-03 16:34:22,969 - BotManager - INFO - Directory data\links exists: True
+2025-04-03 16:34:22,969 - BotManager - INFO - Found 1 files in data\links
+2025-04-03 16:34:22,969 - BotManager - INFO - Directory data\user_profiles exists: True
+2025-04-03 16:34:22,970 - BotManager - INFO - Found 6 files in data\user_profiles
+2025-04-03 16:34:22,970 - BotManager - INFO - Directory data\guilds exists: True
+2025-04-03 16:34:22,971 - BotManager - INFO - Found 0 files in data\guilds
+2025-04-03 16:34:23,025 - BotManager - INFO - Loaded 2 papers from 2 paper files
+2025-04-03 16:34:23,026 - BotManager - ERROR - Error loading links from data\links\links__ollama-guides__20250403.parquet: name 'row' is not defined
+2025-04-03 16:34:23,026 - BotManager - INFO - Loaded 0 links from 1 files
+2025-04-03 16:34:23,057 - BotManager - INFO - Updated models display - Base: granite3-dense:2b, Vision: gemma3:4b
+2025-04-03 16:34:23,261 - BotManager - INFO - Base model changed to: 
+2025-04-03 16:34:24,120 - BotManager - INFO - Vision model changed to: 
+2025-04-03 16:34:24,173 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 16:34:24,178 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2025-04-03 16:34:24,197 - BotManager - INFO - Base model changed to: 
+2025-04-03 16:34:24,209 - BotManager - INFO - Base model changed to: granite3.2-vision:2b-q8_0
+2025-04-03 16:34:24,210 - BotManager - INFO - Available models: granite3.2-vision:2b-q8_0, granite3-dense:2b, granite3.2-vision:latest, granite3-dense:8b, granite3-guardian:latest, gemma3:4b, llama-guard3:8b, llama-guard3:1b, tinyllama:latest, deepseek-r1:latest, hf.co/unsloth/gemma-3-4b-it-GGUF:Q4_K_M, hf.co/Borcherding/Llama-3.2-3B-Finetome:latest, hf.co/Borcherding/OARC_Commander_v001_beta:F16, hf.co/Borcherding/OARC_Commander_v001_beta:Q8_0, dolphin3:latest, marco-o1:latest, qwen2.5-coder:latest, opencoder:latest, unclemusclez/unsloth-llama3.2:latest, wojtek/beyonder:4x7b-v3-q4_k, llama2:latest, llama3.2:1b-instruct-q2_K, llama3.2:1b, llama3.2:3b, eas/nous-genstruct:7b-f16, unclemusclez/smollm-135m-instruct-devinator:latest, borch/Meta-Llama-3.1-8B-Instruct-bnb-4bit_OARC_Commander_v001_dequant_og_alpha:latest, CognitiveComputations/dolphin-llama3.1:latest, stablelm2:1.6b, smollm:1.7b, smollm:360m, smollm:135m, mannix/llama3.1-8b-abliterated:latest, sebdg/emotional_llama:latest, mathstral:latest, llama3.1:8b, qnguyen3/nanollava:latest, CognitiveComputations/dolphin-2.9.2-qwen2-7b:Q2_K, qwen2:latest, borch/emotional_llama_speed_chat:latest, nomic-embed-text:latest, borch/phi3_speed_chat:latest, phi3:latest, borch/gpt2-chatbot-q8_0:latest, sunapi386/llama-3-lexi-uncensored:8b, mistral:latest, llava:latest, llava-phi3:latest, llama3:latest, dolphin-phi:latest, dolphin-mistral:latest, dolphin-llama3:latest, borch/llama3_speed_chat_2:latest, borch/llava-llama-3-8b-Q3_K_M:latest, borch/llava-phi-3-mini-int4:latest, r2-d2:latest, RicknMorty:latest, Dolphin_Eminem_Rap_God:latest, borch_llama3po:latest, borch_llama3_speed_chat_shrek:latest, borch_llama3_speed_chat:latest, Jesus:latest, C3PO:latest
+2025-04-03 16:34:24,222 - BotManager - INFO - Vision model changed to: 
+2025-04-03 16:34:24,235 - BotManager - INFO - Vision model changed to: granite3.2-vision:2b-q8_0
+2025-04-03 16:34:24,236 - BotManager - INFO - Loaded 63 vision models
+2025-04-03 16:34:30,845 - BotManager - INFO - Vision model changed to: gemma3:4b
+2025-04-03 16:34:46,401 - BotManager - INFO - Base model changed to: qwen2.5-coder:latest
+2025-04-03 16:34:48,226 - BotManager - INFO - Updated models display - Base: qwen2.5-coder:latest, Vision: gemma3:4b
+2025-04-03 16:34:48,227 - BotManager - INFO - Starting with model: qwen2.5-coder:latest
+2025-04-03 16:34:48,234 - BotManager - INFO - Bot started with PID: 56980
+2025-04-03 16:34:50,712 - BotManager - INFO - WARNING:discord.client:PyNaCl is not installed, voice will NOT be supported
+2025-04-03 16:34:50,715 - BotManager - INFO - [2025-04-03 16:34:50] [INFO    ] discord.client: logging in using static token
+2025-04-03 16:34:50,716 - BotManager - INFO - INFO:discord.client:logging in using static token
+2025-04-03 16:34:51,424 - BotManager - INFO - [2025-04-03 16:34:51] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: c3b61724d6c7a1a6d23f84c3dba9211a).
+2025-04-03 16:34:51,424 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: c3b61724d6c7a1a6d23f84c3dba9211a).
+2025-04-03 16:45:22,906 - BotManager - ERROR - Error viewing paper details: '_iLocIndexer' object has no attribute 'to_dict'
+2025-04-03 16:45:34,122 - BotManager - ERROR - Error viewing paper details: '_iLocIndexer' object has no attribute 'to_dict'
+2025-04-03 19:00:08,662 - BotManager - INFO - [2025-04-03 19:00:08] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session c3b61724d6c7a1a6d23f84c3dba9211a.
+2025-04-03 19:00:08,663 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session c3b61724d6c7a1a6d23f84c3dba9211a.
+2025-04-03 19:42:54,094 - BotManager - INFO - [2025-04-03 19:42:54] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session c3b61724d6c7a1a6d23f84c3dba9211a.
+2025-04-03 19:42:54,095 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session c3b61724d6c7a1a6d23f84c3dba9211a.
+2025-04-03 23:26:25,993 - BotManager - INFO - [2025-04-03 23:26:25] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session c3b61724d6c7a1a6d23f84c3dba9211a.
+2025-04-03 23:26:25,996 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session c3b61724d6c7a1a6d23f84c3dba9211a.
+2025-04-04 02:23:00,709 - BotManager - INFO - [2025-04-04 02:23:00] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session c3b61724d6c7a1a6d23f84c3dba9211a.
+2025-04-04 02:23:00,712 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session c3b61724d6c7a1a6d23f84c3dba9211a.
+2025-04-04 09:04:54,042 - BotManager - INFO - [2025-04-04 09:04:53] [WARNING ] discord.gateway: Shard ID None has stopped responding to the gateway. Closing and restarting.
+2025-04-04 09:04:54,054 - BotManager - INFO - WARNING:discord.gateway:Shard ID None has stopped responding to the gateway. Closing and restarting.
+2025-04-04 09:05:00,353 - BotManager - INFO - [2025-04-04 09:04:54] [INFO    ] discord.gateway: Shard ID None session has been invalidated.
+2025-04-04 09:05:00,355 - BotManager - INFO - INFO:discord.gateway:Shard ID None session has been invalidated.
+2025-04-04 09:05:00,357 - BotManager - INFO - [2025-04-04 09:05:00] [INFO    ] discord.gateway: Shard ID None has connected to Gateway (Session ID: c12eefe569e4c54087b5ddc848062642).
+2025-04-04 09:05:00,359 - BotManager - INFO - INFO:discord.gateway:Shard ID None has connected to Gateway (Session ID: c12eefe569e4c54087b5ddc848062642).
+2025-04-04 09:05:02,213 - BotManager - INFO - ERROR:root:Error in on_ready: Task is already launched and is not completed.
+2025-04-04 11:10:23,961 - BotManager - ERROR - Error viewing paper details: '_iLocIndexer' object has no attribute 'to_dict'
+2025-04-04 11:10:42,066 - BotManager - ERROR - Error loading links from data\links\links__ollama-guides__20250403.parquet: name 'row' is not defined
+2025-04-04 11:10:42,066 - BotManager - INFO - Loaded 0 links from 1 files
+2025-04-04 11:10:42,229 - BotManager - ERROR - Error loading links from data\links\links__ollama-guides__20250403.parquet: name 'row' is not defined
+2025-04-04 11:10:42,229 - BotManager - INFO - Loaded 0 links from 1 files
+2025-04-04 11:10:42,892 - BotManager - ERROR - Error loading links from data\links\links__ollama-guides__20250403.parquet: name 'row' is not defined
+2025-04-04 11:10:42,892 - BotManager - INFO - Loaded 0 links from 1 files
+2025-04-04 11:10:43,044 - BotManager - ERROR - Error loading links from data\links\links__ollama-guides__20250403.parquet: name 'row' is not defined
+2025-04-04 11:10:43,044 - BotManager - INFO - Loaded 0 links from 1 files
+2025-04-04 11:10:44,892 - BotManager - ERROR - Error opening URL: 'bool' object has no attribute 'text'
+2025-04-04 11:10:47,582 - BotManager - ERROR - Error loading links from data\links\links__ollama-guides__20250403.parquet: name 'row' is not defined
+2025-04-04 11:10:47,582 - BotManager - INFO - Loaded 0 links from 1 files
+2025-04-04 11:10:47,740 - BotManager - ERROR - Error loading links from data\links\links__ollama-guides__20250403.parquet: name 'row' is not defined
+2025-04-04 11:10:47,740 - BotManager - INFO - Loaded 0 links from 1 files
+2025-04-04 12:10:45,533 - BotManager - INFO - [2025-04-04 12:10:45] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-04 12:10:45,535 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-04 14:35:44,483 - BotManager - INFO - [2025-04-04 14:35:44] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-04 14:35:44,484 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-04 15:11:53,874 - BotManager - INFO - [2025-04-04 15:11:53] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-04 15:11:53,875 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-04 15:45:15,547 - BotManager - INFO - [2025-04-04 15:45:15] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-04 15:45:15,553 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-04 16:46:32,173 - BotManager - INFO - [2025-04-04 16:46:32] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-04 16:46:32,176 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-04 17:41:28,390 - BotManager - INFO - [2025-04-04 17:41:28] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-04 17:41:28,392 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-04 18:09:00,072 - BotManager - INFO - [2025-04-04 18:09:00] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-04 18:09:00,074 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-04 21:39:52,396 - BotManager - INFO - [2025-04-04 21:39:52] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-04 21:39:52,398 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-04 22:21:18,003 - BotManager - INFO - [2025-04-04 22:21:18] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-04 22:21:18,005 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-04 23:35:25,163 - BotManager - INFO - [2025-04-04 23:35:25] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-04 23:35:25,166 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-05 02:21:05,728 - BotManager - INFO - [2025-04-05 02:21:05] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-05 02:21:05,731 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-05 02:41:11,763 - BotManager - INFO - [2025-04-05 02:41:11] [INFO    ] discord.gateway: Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-05 02:41:11,764 - BotManager - INFO - INFO:discord.gateway:Shard ID None has successfully RESUMED session c12eefe569e4c54087b5ddc848062642.
+2025-04-05 04:24:06,040 - BotManager - INFO - Stopping Discord bot...
+2025-04-05 04:24:06,558 - BotManager - INFO - Bot stopped successfully.
+2025-04-05 04:24:06,599 - BotManager - INFO - Bot process exited with code: 1

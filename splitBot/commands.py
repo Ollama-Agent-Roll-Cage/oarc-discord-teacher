@@ -49,43 +49,49 @@ def register_commands(bot, USER_CONVERSATIONS, COMMAND_MEMORY, conversation_logs
         """Display help information."""
         help_text = """# 🤖 Ollama Teacher Bot Commands
 
-## Personal Commands
-- `!profile` - View your learning profile
-- `!profile <question>` - Ask about your learning history
-- `!reset` - Clear your conversation history
+    ## Personal Commands
+    - `!profile` - View your learning profile
+    - `!profile <question>` - Ask about your learning history
+    - `!reset` - Clear your conversation history
 
-## AI-Powered Commands
-- `!arxiv <arxiv_url_or_id> [--memory] [--groq] <question>` - Learn from ArXiv papers
-- `!ddg <query> [--groq] <question>` - Search DuckDuckGo and learn
-- `!crawl <url1> [url2 url3...] [--groq] <question>` - Learn from web pages
-- `!pandas <query>` - Query stored data
-- `!links [limit]` - Collect and organize links from channel history
+    ## AI-Powered Commands
+    - `!arxiv <arxiv_url_or_id> [--memory] [--groq] <question>` - Learn from ArXiv papers
+    - `!ddg <query> [--groq] [--llava] <question>` - Search DuckDuckGo and learn
+    - `!crawl <url1> [url2 url3...] [--groq] <question>` - Learn from web pages
+    - `!pandas <query>` - Query stored data using natural language
+    - `!links [limit]` - Collect and organize links from channel history
 
-## Admin Commands
-- `!globalReset` - Reset all conversations (admin only)
+    ## Admin Commands
+    - `!globalReset` - Reset all conversations (admin only)
 
-## Download and build your own custom OllamaDiscordTeacher from the github repo
-https://github.com/Leoleojames1/OllamaDiscordTeacher/tree/master
+    ## Special Features
+    - Add `--groq` flag to use Groq's API for potentially improved responses
+    - Add `--llava` flag with an attached image to use vision models
+    - Add `--memory` with arxiv command to enable persistent memory
+    - Simply mention the bot to start a conversation without commands
 
-## Chat Mode
-- Mention the bot without commands to start a conversation
-- Example: @Ollama Teacher What is machine learning?
+    ## Examples
+    ```
+    !profile                                    # View your profile
+    !profile What topics have I been learning?  # Ask about your progress
+    !arxiv --memory 1706.03762 Tell me about attention mechanisms
+    !arxiv 1706.03762 2104.05704 Compare these two papers  # Multiple papers
+    !ddg "python asyncio" How to use async/await?
+    !ddg --llava "neural network" How does this type match the image?  # With image
+    !crawl https://pypi.org/project/ollama/ https://github.com/ollama/ollama Compare these
+    !links 500                                  # Collect links from last 500 messages
+    ```
 
-## API Options
-- Add `--groq` to use Groq's API instead of local Ollama
-- Add `--memory` with arxiv command to enable persistent memory
+    ## Technical Features
+    - 🧠 Personal memory system that maintains conversation context
+    - 🔍 Multiple information sources with intelligent extraction
+    - 📊 Data analysis capabilities for structured information
+    - 👁️ Vision processing for images with --llava flag
+    - 💬 Natural language interactions with personalized responses
 
-## Examples
-```
-!profile                                    # View your profile
-!profile What topics have I been learning?  # Ask about your progress
-!arxiv --memory 1706.03762 Tell me about attention mechanisms
-!arxiv 1706.03762 2104.05704 Compare these two papers  # Multiple papers
-!ddg "python asyncio" How to use async/await?
-!crawl https://pypi.org/project/ollama/ https://github.com/ollama/ollama Compare these
-!links 500                                  # Collect links from last 500 messages
-```
-"""
+    ## Download and build your own custom OllamaDiscordTeacher from the github repo
+    https://github.com/Leoleojames1/OllamaDiscordTeacher/tree/master
+    """
         await send_in_chunks(ctx, help_text)
 
     @bot.command(name='learn')

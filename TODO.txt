@@ -1,0 +1,74 @@
+add anouncements
+add announcemnts for oarc updates
+hackathon announcements
+groq key cluster request messages
+
+add osyylabi
+curriculum
+ollama
+unsloth
+huggingface hub
+llama cpp 
+coqui
+crewai
+llamaindex
+pandas
+pyqt6
+fastapi
+oob python
+cython
+swift
+javascript
+nextjsx react typescript shadcnui
+c++
+C#
+rust
+ruby
+
+others
+
+add huggingface account log into to oarc website, to access account info like GPU and model keys and whatnot
+
+add jokes module, make funny somehow
+
+how to build ollama llama index agents with custom python package
+- youtube video with claude vibe coding mix.
+
+use osyllabi to construct database for coding battles
+
+make agent chef discord bot channel
+make img gen channel
+-dedicated inference channels, unlock dms when donald gets bot verified
+
+have ollama llm and llava model names printed in the discord output
+
+please tell donald when he cuts people off.
+
+why are there 2 data dirs
+
+there is an issue where he is getting cut off
+
+limited image gen use for each user per hour
+
+shadowy trees forest art in the sky img gen with my tree load_from_parquet
+secret server rooms based on skill level unlocks
+trickle down rooms climb the ladder 
+
+so now what im noticing is the UI does not accuratley show the saved crawls, 
+guild info, links, papers, searches, user profile info etc, please make sure 
+the ui retreives it
+
+add agentchef and modularize webscrapers
+
+coding learning
+coding challenge
+coding battle
+
+/ instead of !
+
+- dataset bounties
+    - tree pictures
+    - math problems/papers
+    - science articeles
+    --> cross reference platinum datasets
+     and see if we already have that article in training data
