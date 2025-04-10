@@ -7,9 +7,10 @@ import json
 from pathlib import Path
 from collections import defaultdict
 import signal
+from io import BytesIO
 
 from dotenv import load_dotenv
-from discord import Intents, Message, Game, Status, File
+from discord import Intents, Message, Game, Status, File, app_commands
 from discord.ext import commands, tasks
 
 # Import our modules
@@ -28,8 +29,19 @@ logging.info(f"Environment configuration: OLLAMA_MODEL={os.getenv('OLLAMA_MODEL'
 CONFIG_MODEL_NAME = os.getenv('CONFIG_MODEL_NAME', 'default_model_name')  # Define a default value if not set
 logging.info(f"Config.py MODEL_NAME: {CONFIG_MODEL_NAME}")
 
-# Initialize logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# Update the logging configuration
+logging.basicConfig(
+    level=logging.ERROR,  # Change from WARNING to ERROR to reduce verbosity further
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
+# Set specific loggers to higher levels
+logging.getLogger('discord').setLevel(logging.ERROR)
+logging.getLogger('PIL').setLevel(logging.ERROR)
+logging.getLogger('diffusers').setLevel(logging.ERROR)
+logging.getLogger('transformers').setLevel(logging.ERROR)
+logging.getLogger('urllib3').setLevel(logging.ERROR)
+logging.getLogger('asyncio').setLevel(logging.ERROR)
 logger = logging.getLogger(__name__)
 
 # Configuration variables
@@ -71,6 +83,195 @@ bot.remove_command('help')  # Remove the default help command
 # Register all command handlers
 register_commands(bot, USER_CONVERSATIONS, COMMAND_MEMORY, conversation_logs, USER_PROFILES_DIR)
 
+async def setup_slash_commands():
+    """Set up Discord slash commands."""
+    logging.info("Setting up slash commands...")
+    
+    @bot.tree.command(name="help", description="Display help information")
+    async def slash_help(interaction):
+        """Display help information."""
+        help_text = """# 🤖 Ollama Teacher Bot Commands
+
+## Personal Commands
+- `/profile` - View your learning profile
+- `/reset` - Clear your conversation history
+
+## AI-Powered Commands
+- `/arxiv` - Learn from ArXiv papers
+- `/search` - Search DuckDuckGo and learn
+- `/crawl` - Learn from web pages
+- `/query` - Query stored data using natural language
+- `/links` - Collect and organize links from channel history
+
+## Image Generation
+- `/sdxl` - Generate AI images with SDXL
+- `/queue` - Check status of the image generation queue
+
+## Special Features
+- Add `--groq` flag to use Groq's API for potentially improved responses
+- Add `--llava` flag with an attached image to use vision models
+- Simply mention the bot to start a conversation without commands
+
+## Download and build your own custom OllamaDiscordTeacher from the GitHub repo:
+https://github.com/Leoleojames1/OllamaDiscordTeacher/tree/master
+"""
+        await interaction.response.send_message(help_text, ephemeral=True)
+    
+    @bot.tree.command(name="reset", description="Reset your conversation history")
+    async def slash_reset(interaction):
+        """Reset the user's conversation log."""
+        user_key = f"{interaction.guild_id}_{interaction.user.id}"
+        USER_CONVERSATIONS[user_key] = [{'role': 'system', 'content': SYSTEM_PROMPT}]
+        COMMAND_MEMORY[user_key].clear()
+        await interaction.response.send_message("✅ Your conversation context has been reset.", ephemeral=True)
+    
+    @bot.tree.command(name="profile", description="View your learning profile")
+    async def slash_profile(interaction):
+        """View your user profile."""
+        user_key = f"{interaction.guild_id}_{interaction.user.id}"
+        user_name = interaction.user.display_name or interaction.user.name
+        profile_path = os.path.join(USER_PROFILES_DIR, f"{user_key}_profile.json")
+        
+        # Check if profile exists
+        if not os.path.exists(profile_path):
+            await interaction.response.send_message("No profile found. Interact with me more to build your profile!", ephemeral=True)
+            return
+            
+        # Load profile data
+        with open(profile_path, 'r', encoding='utf-8') as f:
+            profile_data = json.load(f)
+            
+        # Get conversation history
+        conversations = USER_CONVERSATIONS.get(user_key, [])
+        user_messages = [
+            conv for conv in conversations 
+            if conv['role'] == 'user' and 'content' in conv
+        ]
+        
+        # Format basic profile info
+        profile_text = f"""# 👤 Profile for {user_name}
+
+## Activity Summary
+- Messages: {len(user_messages)}
+- First Interaction: {user_messages[0]['timestamp'] if user_messages else 'N/A'}
+- Last Active: {profile_data.get('timestamp', 'Unknown')}
+
+## Learning Analysis
+{profile_data.get('analysis', 'No analysis available yet.')}
+"""
+        await interaction.response.send_message(profile_text, ephemeral=True)
+    
+    @bot.tree.command(name="links", description="Collect links from recent messages")
+    @app_commands.describe(limit="Number of messages to search (default: 100)")
+    async def slash_links(interaction, limit: int = 100):
+        """Collect all links from the channel and format them as markdown lists."""
+        await interaction.response.defer()
+        
+        try:
+            # Fetch messages
+            messages = await interaction.channel.history(limit=limit).flatten()
+            
+            # Extract links with metadata
+            links_data = defaultdict(list)
+            
+            for msg in messages:
+                if msg.author.bot:
+                    continue
+                    
+                # Extract URLs from message content
+                urls = re.findall(r'(https?://\S+)', msg.content)
+                
+                for url in urls:
+                    # Clean URL (remove trailing punctuation)
+                    url = url.rstrip(',.!?;:\'\"')
+                    
+                    # Categorize based on domain
+                    domain = urllib.parse.urlparse(url).netloc
+                    category = "Other"
+                    
+                    if "github" in domain:
+                        category = "GitHub"
+                    elif "arxiv" in domain:
+                        category = "Research Papers"
+                    elif "huggingface" in domain or "hf.co" in domain:
+                        category = "Hugging Face"
+                    elif "youtube" in domain or "youtu.be" in domain:
+                        category = "Videos"
+                    elif "docs" in domain or "documentation" in domain:
+                        category = "Documentation"
+                    elif "pypi" in domain:
+                        category = "Python Packages"
+                    
+                    links_data[category].append({
+                        'url': url,
+                        'timestamp': msg.created_at.isoformat(),
+                        'author_name': msg.author.display_name or msg.author.name,
+                        'author_id': msg.author.id
+                    })
+            
+            # Create markdown chunks
+            if not any(links_data.values()):
+                await interaction.followup.send(f"No links found in the last {limit} messages.")
+                return
+                
+            # Format as Markdown chunks
+            markdown_chunks = []
+            current_chunk = "# Links Collection\n\n"
+            current_chunk += f"*Collected from the last {limit} messages*\n\n"
+            
+            for category, links in links_data.items():
+                if not links:
+                    continue
+                    
+                current_chunk += f"## {category}\n\n"
+                
+                for link in links:
+                    link_entry = f"- [{link['url']}]({link['url']})\n  - Shared by {link['author_name']}\n  - {link['timestamp'][:10]}\n\n"
+                    
+                    # If chunk gets too large, start a new one
+                    if len(current_chunk) + len(link_entry) > 1900:
+                        markdown_chunks.append(current_chunk)
+                        current_chunk = f"# Links Collection (Continued)\n\n"
+                    
+                    current_chunk += link_entry
+            
+            # Add the last chunk if there's any content left
+            if current_chunk and len(current_chunk) > 50:  # Not just the header
+                markdown_chunks.append(current_chunk)
+            
+            # Save links to storage
+            timestamp = int(datetime.now(UTC).timestamp())
+            links_dir = Path(f"{DATA_DIR}/links")
+            links_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Save to a file and send as attachment
+            for i, chunk in enumerate(markdown_chunks):
+                file_path = links_dir / f"links_{interaction.guild_id}_{timestamp}_part{i+1}.md"
+                with open(file_path, "w", encoding="utf-8") as f:
+                    f.write(chunk)
+                
+                # Send the file
+                await interaction.followup.send(
+                    f"Links collection part {i+1} of {len(markdown_chunks)}", 
+                    file=File(file_path)
+                )
+            
+            # Also save to parquet for database access
+            links_file = links_dir / f"links_{interaction.guild_id}_{timestamp}.parquet"
+            all_links = []
+            for category, items in links_data.items():
+                for item in items:
+                    item['category'] = category
+                    all_links.append(item)
+                    
+            if all_links:
+                ParquetStorage.save_to_parquet(all_links, str(links_file))
+                logging.info(f"Links saved to {links_file}")
+                
+        except Exception as e:
+            logging.error(f"Error collecting links: {e}")
+            await interaction.followup.send(f"⚠️ Error collecting links: {str(e)}")
+
 @bot.event
 async def on_message(message: Message):
     """Handles incoming messages."""
@@ -92,6 +293,9 @@ async def on_message(message: Message):
                 image_data = await process_image_attachment(message.attachments[0])
                 
                 async with message.channel.typing():
+                    # Get selected vision model name
+                    vision_model = os.getenv('OLLAMA_VISION_MODEL', 'llava')
+                    
                     # Get description from vision model
                     vision_response = await process_image_with_llava(
                         image_data, 
@@ -99,7 +303,7 @@ async def on_message(message: Message):
                     )
                     
                     await send_in_chunks(message.channel, 
-                        f"# 🖼️ Vision Analysis\n\n{vision_response}", message)
+                        f"# 🖼️ Vision Analysis (using {vision_model})\n\n{vision_response}", message)
                     
                     # Store in conversation history
                     await store_user_conversation(
@@ -130,6 +334,9 @@ async def on_message(message: Message):
         # Handle conversation for non-command mentions
         else:
             try:
+                # Get selected model name
+                model_name = os.getenv('OLLAMA_MODEL', 'Unknown model')
+                
                 # Ensure we pass the correct conversation history to the model
                 # Create messages for the current conversation
                 messages_for_model = conversation_logs.copy()
@@ -137,17 +344,22 @@ async def on_message(message: Message):
                 
                 # Get a response from the model with conversation history
                 async with message.channel.typing():
+                    # Increase timeout for complex requests
                     response = await get_ollama_response(
                         content,
                         with_context=True,
-                        conversation_history=messages_for_model  # Pass full conversation
+                        conversation_history=messages_for_model,
+                        timeout=180.0  # Increase timeout for complex requests
                     )
                 
                 # Only continue if we got a valid response
                 if response and isinstance(response, str) and len(response.strip()) > 0:
                     # Check for any weird content insertions by limiting to a reasonable response length
-                    if len(response) > 2000:
-                        response = response[:2000] + "..."
+                    if len(response) > 10000:  # Increase max length
+                        response = response[:10000] + "\n\n[Response truncated due to length]"
+                    
+                    # Add model name as a footer
+                    response += f"\n\n---\n*Response generated using {model_name}*"
                     
                     # Add to conversation logs
                     conversation_logs.append({'role': 'user', 'content': f"{user_name} asks: {content}"})
@@ -155,7 +367,9 @@ async def on_message(message: Message):
                     
                     # Store in user history
                     await store_user_conversation(message, response, is_bot=True)
-                    await send_in_chunks(message.channel, response, message)
+                    
+                    # Use improved chunking for sending messages
+                    await send_in_chunks(message.channel, response, message, chunk_size=1950)  # Smaller chunks for safety
                     
                     # Also update the per-user conversation history
                     USER_CONVERSATIONS[user_key].append({'role': 'user', 'content': content, 'timestamp': datetime.now(UTC).isoformat()})
@@ -182,6 +396,10 @@ async def on_ready():
         logging.info(f'{bot.user.name} is now running!')
         logging.info(f'Connected to {len(bot.guilds)} guilds')
         
+        # Set up slash commands
+        await setup_slash_commands()
+        await bot.tree.sync()  # Sync commands with Discord
+        
         # Start periodic tasks
         analyze_user_profiles.start()
         
@@ -198,9 +416,7 @@ async def on_ready():
                     member_data[str(member.id)] = {
                         'name': member.name,
                         'display_name': member.display_name,
-                        'joined_at': member.joined_at.isoformat() if member.joined_at else None,
-                        'roles': [role.name for role in member.roles if role.name != "@everyone"],
-                        'last_active': datetime.now(UTC).isoformat()
+                        'joined_at': member.joined_at.isoformat() if member.joined_at else None
                     }
             
             # Save member data
@@ -212,13 +428,12 @@ async def on_ready():
         if (CHANGE_NICKNAME):
             for guild in bot.guilds:
                 try:
-                    await guild.me.edit(nick="Ollama Teacher")
-                    logging.info(f'Nickname changed in guild {guild.name}')
+                    await change_nickname(guild)
                 except Exception as e:
-                    logging.error(f'Failed to change nickname in {guild.name}: {e}')
+                    logging.error(f"Failed to change nickname in guild {guild.name}: {str(e)}")
         
         # Set custom status with help command info
-        status_text = "!help | Mention me with questions!"
+        status_text = "/help | Mention me with questions!"
         await bot.change_presence(
             activity=Game(name=status_text),
             status=Status.online

@@ -1,6 +1,9 @@
 @echo off
 REM Startup script for Ollama Learning Discord Bot on Windows
 
+REM Set CUDA Device Order to ensure proper device selection
+SET CUDA_DEVICE_ORDER=PCI_BUS_ID
+
 REM Navigate to the bot directory
 cd /d "%~dp0"
 
@@ -14,6 +17,8 @@ if not exist data mkdir data
 if not exist data\papers mkdir data\papers
 if not exist data\searches mkdir data\searches
 if not exist data\crawls mkdir data\crawls
+if not exist data\links mkdir data\links
+if not exist data\generated_images mkdir data\generated_images
 
 REM Check if Ollama is running
 tasklist | find /i "ollama.exe" >nul

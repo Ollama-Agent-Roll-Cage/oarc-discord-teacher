@@ -7,6 +7,9 @@ from pathlib import Path
 from collections import defaultdict
 import pandas as pd
 from discord import File
+import asyncio
+from io import BytesIO
+import re
 
 from utils import (
     send_in_chunks, get_user_key, store_user_conversation,
@@ -15,6 +18,7 @@ from utils import (
 from services import (
     get_ollama_response, ArxivSearcher, DuckDuckGoSearcher, WebCrawler
 )
+from image_queue import ImageGenerationQueue
 
 # Initialize logging
 logger = logging.getLogger(__name__)
@@ -24,6 +28,9 @@ DATA_DIR = os.getenv('DATA_DIR', 'data')
 
 def register_commands(bot, USER_CONVERSATIONS, COMMAND_MEMORY, conversation_logs, USER_PROFILES_DIR):
     """Register all bot commands."""
+    
+    # Create a global image queue for the bot
+    image_queue = ImageGenerationQueue(rate_limit_count=3, rate_limit_period=3600)  # 3 images per hour
 
     @bot.command(name='reset')
     async def reset(ctx):
@@ -44,54 +51,69 @@ def register_commands(bot, USER_CONVERSATIONS, COMMAND_MEMORY, conversation_logs
         COMMAND_MEMORY.clear()
         await ctx.send("🔄 Global conversation context has been reset.")
 
+    # Update the help_command function in commands.py
     @bot.command(name='help')
     async def help_command(ctx):
         """Display help information."""
         help_text = """# 🤖 Ollama Teacher Bot Commands
 
-    ## Personal Commands
-    - `!profile` - View your learning profile
-    - `!profile <question>` - Ask about your learning history
-    - `!reset` - Clear your conversation history
+## Personal Commands
+- `!profile` - View your learning profile
+- `!profile <question>` - Ask about your learning history
+- `!reset` - Clear your conversation history
 
-    ## AI-Powered Commands
-    - `!arxiv <arxiv_url_or_id> [--memory] [--groq] <question>` - Learn from ArXiv papers
-    - `!ddg <query> [--groq] [--llava] <question>` - Search DuckDuckGo and learn
-    - `!crawl <url1> [url2 url3...] [--groq] <question>` - Learn from web pages
-    - `!pandas <query>` - Query stored data using natural language
-    - `!links [limit]` - Collect and organize links from channel history
+## AI-Powered Commands
+- `!arxiv <arxiv_url_or_id> [--memory] [--groq] <question>` - Learn from ArXiv papers
+- `!ddg <query> [--groq] [--llava] <question>` - Search DuckDuckGo and learn
+- `!crawl <url1> [url2 url3...] [--groq] <question>` - Learn from web pages
+- `!pandas <query>` - Query stored data using natural language
+- `!links [limit]` - Collect and organize links from channel history
 
-    ## Admin Commands
-    - `!globalReset` - Reset all conversations (admin only)
+## Image Generation
+- `!sdxl <prompt> [--width <pixels>] [--height <pixels>] [--steps <count>] [--guidance <value>]` - Generate AI images with SDXL
+- `!sdxl_queue` - Check the status of the image generation queue and your usage
 
-    ## Special Features
-    - Add `--groq` flag to use Groq's API for potentially improved responses
-    - Add `--llava` flag with an attached image to use vision models
-    - Add `--memory` with arxiv command to enable persistent memory
-    - Simply mention the bot to start a conversation without commands
+## Admin Commands
+- `!globalReset` - Reset all conversations (admin only)
 
-    ## Examples
-    ```
-    !profile                                    # View your profile
-    !profile What topics have I been learning?  # Ask about your progress
-    !arxiv --memory 1706.03762 Tell me about attention mechanisms
-    !arxiv 1706.03762 2104.05704 Compare these two papers  # Multiple papers
-    !ddg "python asyncio" How to use async/await?
-    !ddg --llava "neural network" How does this type match the image?  # With image
-    !crawl https://pypi.org/project/ollama/ https://github.com/ollama/ollama Compare these
-    !links 500                                  # Collect links from last 500 messages
-    ```
+## Special Features
+- Add `--groq` flag to use Groq's API for potentially improved responses
+- Add `--llava` flag with an attached image to use vision models
+- Add `--memory` with arxiv command to enable persistent memory
+- Simply mention the bot to start a conversation without commands
 
-    ## Technical Features
-    - 🧠 Personal memory system that maintains conversation context
-    - 🔍 Multiple information sources with intelligent extraction
-    - 📊 Data analysis capabilities for structured information
-    - 👁️ Vision processing for images with --llava flag
-    - 💬 Natural language interactions with personalized responses
+## Examples
 
-    ## Download and build your own custom OllamaDiscordTeacher from the github repo
-    https://github.com/Leoleojames1/OllamaDiscordTeacher/tree/master
-    """
+- `!profile`  
+  View your profile  
+- `!profile What topics have I been learning?`  
+  Ask about your progress  
+- `!arxiv --memory 1706.03762 Tell me about attention mechanisms`  
+  Learn from a specific paper  
+- `!arxiv 1706.03762 2104.05704 Compare these two papers`  
+  Analyze multiple papers  
+- `!ddg "python asyncio" How to use async/await?`  
+  Search DuckDuckGo with a query  
+- `!ddg --llava "neural network" How does this type match the image?`  
+  Use vision models with an image  
+- `!crawl https://pypi.org/project/ollama/ https://github.com/ollama/ollama Compare these`  
+  Crawl and compare web pages  
+- `!links 500`  
+  Collect links from the last 500 messages  
+- `!sdxl A beautiful sunset over mountains --width 1024 --height 768`  
+  Generate an image  
+
+## Technical Features
+- 🧠 Personal memory system that maintains conversation context
+- 🔍 Multiple information sources with intelligent extraction
+- 📊 Data analysis capabilities for structured information
+- 👁️ Vision processing for images with `--llava` flag
+- 🖼️ Image generation with Stable Diffusion XL
+- 💬 Natural language interactions with personalized responses
+
+## Download and build your own custom OllamaDiscordTeacher from the GitHub repo:
+https://github.com/Leoleojames1/OllamaDiscordTeacher/tree/master
+"""
         await send_in_chunks(ctx, help_text)
 
     @bot.command(name='learn')
@@ -531,178 +553,319 @@ Address the user by name ({user_name}) in your response."""
         """Collect all links from the channel and format them as markdown lists."""
         try:
             async with ctx.typing():
-                # Default to 1000 messages if no limit specified
-                message_limit = limit or 1000
+                if limit is None:
+                    limit = 100  # Default limit
                 
-                def create_markdown_chunk(chunk_num, total_chunks, links_data, items_to_show=None):
-                    """Create a markdown chunk with detailed link information."""
-                    markdown = f"""# 🔗 Links from #{links_data['channel_name']} (Part {chunk_num}/{total_chunks})
-
-## Channel Information
-- **Channel:** #{links_data['channel_name']}
-- **Server:** {links_data['guild_name']}
-- **Last Updated:** {datetime.now(UTC).strftime('%Y-%m-%d %H:%M:%S')} UTC
-- **Messages Searched:** {len(messages)}
-
-## Statistics
-- **Total Links Found:** {sum(len(items) for items in links_data['categories'].values())}
-- **Categories Found:** {', '.join(cat.title() for cat, items in links_data['categories'].items() if items)}
-
-## Links by Category
-"""
-                    if items_to_show:
-                        for category, items in items_to_show.items():
-                            if items:
-                                markdown += f"\n### {category.title()} Links\n"
-                                markdown += f"Found {len(items)} links in this category\n\n"
-                                
-                                for item in sorted(items, key=lambda x: x['timestamp'], reverse=True):
-                                    ts = datetime.fromisoformat(item['timestamp']).strftime('%Y-%m-%d %H:%M:%S')
-                                    domain = re.search(r'https?://(?:www\.)?([^/]+)', item['url'])
-                                    domain = domain.group(1) if domain else 'unknown'
-                                    
-                                    markdown += f"#### [{domain}]({item['url']})\n"
-                                    markdown += f"- **Shared by:** {item['author_name']}\n"
-                                    markdown += f"- **Date:** {ts}\n"
-                                    if item.get('context'):
-                                        markdown += f"- **Context:** {item['context'][:100]}...\n"
-                                    markdown += "\n"
-                    
-                    return markdown
-
-                # Initialize link storage
-                links_data = {
-                    'channel_name': ctx.channel.name,
-                    'channel_id': ctx.channel.id,
-                    'guild_name': ctx.guild.name,
-                    'guild_id': ctx.guild.id,
-                    'timestamp': datetime.now(UTC).isoformat(),
-                    'categories': {
-                        'ollama_models': [],
-                        'huggingface': [],
-                        'model_repos': [],
-                        'github': [],
-                        'documentation': [],
-                        'research': [],
-                        'social': [],
-                        'other': []
-                    }
-                }
-
-                # Fetch and process messages
-                messages = [msg async for msg in ctx.channel.history(limit=message_limit)]
-                link_pattern = r'https?://[^\s<>"]+|www\.[^\s<>"]+|\b\w+\.(?:com|org|net|edu|io|ai|dev)\b/[^\s<>"]*'
+                # Fetch messages
+                messages = await ctx.channel.history(limit=limit).flatten()
                 
-                # Extract and categorize links
-                df_data = []
-                for message in messages:
-                    found_links = re.finditer(link_pattern, message.content)
-                    for match in found_links:
-                        link = match.group()
-                        if not link.startswith(('http://', 'https://')):
-                            link = 'https://' + link
-                            
-                        link_data = {
-                            'url': link,
-                            'timestamp': message.created_at.isoformat(),
-                            'author_name': message.author.display_name,
-                            'author_id': message.author.id,
-                            'message_id': message.id,
-                            'context': message.content[:200]
-                        }
-                        
-                        # Categorize the link
-                        if 'ollama.com' in link.lower():
-                            if any(term in link.lower() for term in ['/library/', '/models/']):
-                                links_data['categories']['ollama_models'].append(link_data)
-                                category = 'ollama_models'
-                            else:
-                                links_data['categories']['documentation'].append(link_data)
-                                category = 'documentation'
-                        elif 'huggingface.co' in link.lower():
-                            links_data['categories']['huggingface'].append(link_data)
-                            category = 'huggingface'
-                        elif 'github.com' in link.lower():
-                            links_data['categories']['github'].append(link_data)
-                            category = 'github'
-                        elif any(doc in link.lower() for doc in ['docs.', 'documentation', 'readthedocs', 'wiki']):
-                            links_data['categories']['documentation'].append(link_data)
-                            category = 'documentation'
-                        elif any(model in link.lower() for model in ['/models/', 'modelscope', 'modelzoo']):
-                            links_data['categories']['model_repos'].append(link_data)
-                            category = 'model_repos'
-                        elif any(research in link.lower() for research in ['arxiv.org', 'research', 'paper', 'journal']):
-                            links_data['categories']['research'].append(link_data)
-                            category = 'research'
-                        elif any(social in link.lower() for social in ['twitter.com', 'linkedin.com', 'discord.com']):
-                            links_data['categories']['social'].append(link_data)
-                            category = 'social'
-                        else:
-                            links_data['categories']['other'].append(link_data)
-                            category = 'other'
-                            
-                        df_data.append({
-                            'category': category,
-                            **link_data,
-                            **{k: v for k, v in links_data.items() if k != 'categories'}
-                        })
-
-                # Save to Parquet
-                channel_name = re.sub(r'[^\w\-_]', '_', ctx.channel.name)
-                parquet_filename = f"links_{channel_name}_{datetime.now(UTC).strftime('%Y%m%d')}.parquet"
-                parquet_path = Path(DATA_DIR) / 'links' / parquet_filename
-                Path(DATA_DIR).joinpath('links').mkdir(exist_ok=True)
+                # Extract links with metadata
+                links_data = defaultdict(list)
                 
-                if df_data:
-                    df = pd.DataFrame(df_data)
-                    ParquetStorage.save_to_parquet(df, parquet_path)
-
-                # Process links into markdown chunks
-                markdown_chunks = []
-                current_chunk_items = defaultdict(list)
-                current_size = 0
-                chunk_number = 1
-
-                # Process each category
-                for category, items in links_data['categories'].items():
-                    if not items:
+                for msg in messages:
+                    if msg.author.bot:
                         continue
                         
-                    for item in items:
-                        item_text = f"#### [{item['url']}]\n- Shared by {item['author_name']}\n"
+                    # Extract URLs from message content
+                    urls = re.findall(r'(https?://\S+)', msg.content)
+                    
+                    for url in urls:
+                        # Clean URL (remove trailing punctuation)
+                        url = url.rstrip(',.!?;:\'\"')
                         
-                        if current_size + len(item_text) > 1500:
-                            chunk_content = create_markdown_chunk(chunk_number, 0, links_data, current_chunk_items)
-                            markdown_chunks.append(chunk_content)
-                            current_chunk_items = defaultdict(list)
-                            current_size = 0
-                            chunk_number += 1
+                        # Categorize based on domain
+                        domain = urllib.parse.urlparse(url).netloc
+                        category = "Other"
                         
-                        current_chunk_items[category].append(item)
-                        current_size += len(item_text)
-
-                # Add the final chunk if there's any content left
-                if current_size > 0:
-                    chunk_content = create_markdown_chunk(chunk_number, 0, links_data, current_chunk_items)
-                    markdown_chunks.append(chunk_content)
+                        if "github" in domain:
+                            category = "GitHub"
+                        elif "arxiv" in domain:
+                            category = "Research Papers"
+                        elif "huggingface" in domain or "hf.co" in domain:
+                            category = "Hugging Face"
+                        elif "youtube" in domain or "youtu.be" in domain:
+                            category = "Videos"
+                        elif "docs" in domain or "documentation" in domain:
+                            category = "Documentation"
+                        elif "pypi" in domain:
+                            category = "Python Packages"
+                        
+                        links_data[category].append({
+                            'url': url,
+                            'timestamp': msg.created_at.isoformat(),
+                            'author_name': msg.author.display_name or msg.author.name,
+                            'author_id': msg.author.id
+                        })
                 
-                # Update total chunks count in all chunks
-                total_chunks = len(markdown_chunks)
-                for i in range(total_chunks):
-                    markdown_chunks[i] = markdown_chunks[i].replace(f"(Part {i+1}/0)", f"(Part {i+1}/{total_chunks})")
-
-                # Send the results
-                if not markdown_chunks:
-                    await ctx.send("No links found in the specified message range.")
+                # Create markdown chunks
+                if not any(links_data.values()):
+                    await ctx.send(f"No links found in the last {limit} messages.")
                     return
                     
-                for chunk in markdown_chunks:
-                    await send_in_chunks(ctx, chunk, reference=ctx.message)
+                # Format as Markdown chunks
+                markdown_chunks = []
+                current_chunk = "# Links Collection\n\n"
+                current_chunk += f"*Collected from the last {limit} messages*\n\n"
+                
+                for category, links in links_data.items():
+                    if not links:
+                        continue
+                        
+                    current_chunk += f"## {category}\n\n"
                     
-                # Provide a summary
-                summary = f"Found {sum(len(items) for items in links_data['categories'].values())} links across {len(markdown_chunks)} categories."
-                await ctx.send(summary)
+                    for link in links:
+                        link_entry = f"- [{link['url']}]({link['url']})\n  - Shared by {link['author_name']}\n  - {link['timestamp'][:10]}\n\n"
+                        
+                        # If chunk gets too large, start a new one
+                        if len(current_chunk) + len(link_entry) > 1900:
+                            markdown_chunks.append(current_chunk)
+                            current_chunk = f"# Links Collection (Continued)\n\n"
+                        
+                        current_chunk += link_entry
+                
+                # Add the last chunk if there's any content left
+                if current_chunk and len(current_chunk) > 50:  # Not just the header
+                    markdown_chunks.append(current_chunk)
+                
+                # Save links to storage
+                timestamp = int(datetime.now(UTC).timestamp())
+                links_dir = Path(f"{DATA_DIR}/links")
+                links_dir.mkdir(parents=True, exist_ok=True)
+                
+                # Save to a file and send as attachment
+                for i, chunk in enumerate(markdown_chunks):
+                    file_path = links_dir / f"links_{ctx.guild.id}_{timestamp}_part{i+1}.md"
+                    with open(file_path, "w", encoding="utf-8") as f:
+                        f.write(chunk)
+                    
+                    # Send the file
+                    await ctx.send(f"Links collection part {i+1} of {len(markdown_chunks)}", file=File(file_path))
+                
+                # Also save to parquet for database access
+                links_file = links_dir / f"links_{ctx.guild.id}_{timestamp}.parquet"
+                all_links = []
+                for category, items in links_data.items():
+                    for item in items:
+                        item['category'] = category
+                        all_links.append(item)
+                        
+                if all_links:
+                    ParquetStorage.save_to_parquet(all_links, str(links_file))
+                    logging.info(f"Links saved to {links_file}")
+                    
+                # Schedule a background content extraction
+                asyncio.create_task(extract_content_from_links(links_data, ctx.guild.id))
                     
         except Exception as e:
             logging.error(f"Error collecting links: {e}")
             await ctx.send(f"⚠️ Error collecting links: {str(e)}")
+
+    # New function to extract content from links periodically
+    async def extract_content_from_links(links_data, guild_id):
+        """Extract content from collected links for the knowledge database."""
+        try:
+            from services import WebCrawler
+            
+            # Create knowledge directory
+            knowledge_dir = Path(f"{DATA_DIR}/knowledge/{guild_id}")
+            knowledge_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Process links by category
+            for category, links in links_data.items():
+                for link in links:
+                    url = link['url']
+                    domain = urllib.parse.urlparse(url).netloc
+                    
+                    # Skip videos for now (will be handled separately)
+                    if "youtube" in domain or "youtu.be" in domain:
+                        continue
+                    
+                    try:
+                        # Get content
+                        html = await WebCrawler.fetch_url_content(url)
+                        if not html:
+                            continue
+                            
+                        # Extract text from HTML
+                        content = await WebCrawler.extract_text_from_html(html)
+                        
+                        # Create a document with metadata
+                        document = {
+                            'url': url,
+                            'domain': domain,
+                            'category': category,
+                            'content': content,
+                            'timestamp': link['timestamp'],
+                            'author_name': link['author_name'],
+                            'author_id': link['author_id'],
+                            'extraction_time': datetime.now(UTC).isoformat()
+                        }
+                        
+                        # Save to knowledge database
+                        filename = f"{domain.replace('.', '_')}_{datetime.now().strftime('%Y%m%d%H%M%S')}.parquet"
+                        ParquetStorage.save_to_parquet(document, str(knowledge_dir / filename))
+                        
+                    except Exception as e:
+                        logging.error(f"Error processing link {url}: {e}")
+                        continue
+                        
+            logging.info(f"Content extraction completed for {sum(len(links) for links in links_data.values())} links")
+            
+        except Exception as e:
+            logging.error(f"Error in background content extraction: {e}")
+
+    @bot.command(name='sdxl')
+    async def sdxl_generate(ctx, *, prompt: str = None):
+        """Generate an image with Stable Diffusion XL with content moderation."""
+        if not prompt:
+            await ctx.send("⚠️ Please provide a prompt for image generation.\nExample: `!sdxl A beautiful sunset over mountains --width 768 --height 768 --steps 20 --guidance 7.5`")
+            return
+        
+        try:
+            # Parse arguments with more conservative defaults
+            width = 768  # Smaller default size
+            height = 768  # Smaller default size
+            steps = 20   # Fewer steps
+            guidance = 7.5
+            negative_prompt = "low quality, blurry, distorted, deformed, ugly, bad anatomy"
+        
+            # Extract parameters from prompt if provided
+            if "--width" in prompt:
+                width_match = re.search(r'--width\s+(\d+)', prompt)
+                if width_match:
+                    width = min(int(width_match.group(1)), 1024)  # Cap at 1024
+                    prompt = prompt.replace(width_match.group(0), '')
+            
+            if "--height" in prompt:
+                height_match = re.search(r'--height\s+(\d+)', prompt)
+                if height_match:
+                    height = min(int(height_match.group(1)), 1024)  # Cap at 1024
+                    prompt = prompt.replace(height_match.group(0), '')
+            
+            if "--steps" in prompt:
+                steps_match = re.search(r'--steps\s+(\d+)', prompt)
+                if steps_match:
+                    steps = min(int(steps_match.group(1)), 30)  # Cap at 30 steps
+                    prompt = prompt.replace(steps_match.group(0), '')
+            
+            if "--guidance" in prompt:
+                guidance_match = re.search(r'--guidance\s+([\d\.]+)', prompt)
+                if guidance_match:
+                    guidance = float(guidance_match.group(1))
+                    guidance = max(1.0, min(guidance, 10.0))  # Clamp between 1.0 and 10.0
+                    prompt = prompt.replace(guidance_match.group(0), '')
+                    
+            if "--negative" in prompt:
+                negative_match = re.search(r'--negative\s+"([^"]+)"', prompt)
+                if negative_match:
+                    negative_prompt = negative_match.group(1)
+                    prompt = prompt.replace(negative_match.group(0), '')
+            
+            # Clean up the prompt
+            prompt = prompt.strip()
+            
+            # Get user key for queue management
+            user_key = get_user_key(ctx)
+            
+            # Generate a unique filename
+            timestamp = datetime.now(UTC).strftime('%Y%m%d_%H%M%S')
+            output_dir = os.path.join(DATA_DIR, "generated_images")
+            os.makedirs(output_dir, exist_ok=True)
+            filename = f"{output_dir}/sdxl_{user_key}_{timestamp}.png"
+            
+            # Define the async generator function to pass to the queue
+            async def generate_image_task():
+                from sdxl_access import SDXLGenerator
+                from io import BytesIO
+                
+                # Create generator and ensure it loads the model
+                generator = SDXLGenerator()
+                if not generator.load_model():
+                    raise Exception("Failed to load SDXL model")
+                    
+                # Generate the image
+                image_data = generator.generate_image(
+                    prompt=prompt,
+                    negative_prompt=negative_prompt,
+                    width=width,
+                    height=height,
+                    steps=steps,
+                    guidance_scale=guidance,
+                    output_path=filename
+                )
+                
+                # Unload the model when done to free memory
+                generator.unload_model()
+                
+                return image_data
+            
+            # Define status update callback
+            async def status_update(message):
+                await ctx.send(message)
+                
+            # Define callback for when image is complete
+            async def image_complete(image_data):
+                if image_data:
+                    # Send the file to Discord
+                    await ctx.send(f"✅ Generated image for '{prompt}' (w:{width}, h:{height}, steps:{steps}, guidance:{guidance:.1f})", 
+                                file=File(image_data, filename=f"sdxl_image_{timestamp}.png"))
+                else:
+                    await ctx.send(f"❌ Failed to generate image")
+                    
+            # Define error callback
+            async def error_callback(error_message):
+                await ctx.send(f"⚠️ Error generating image: {error_message}")
+            
+            # Add the task to the queue
+            result = await image_queue.add_to_queue({
+                'user_key': user_key,
+                'prompt': prompt,
+                'generator_func': generate_image_task,
+                'callback': image_complete,
+                'error_callback': error_callback,
+                'width': width,
+                'height': height,
+                'steps': steps,
+                'guidance': guidance
+            })
+            
+            # Register for status updates
+            image_queue.register_status_update(user_key, status_update)
+            
+            # Inform the user about queue status
+            if not result['success']:
+                await ctx.send(result['message'])
+            else:
+                message = f"✅ Your image request has been {result['message'].lower()}"
+                if result['position'] > 0:
+                    message += f" at position {result['position']}"
+                await ctx.send(message)
+                
+        except Exception as e:
+            logging.error(f"Error in sdxl_generate: {e}", exc_info=True)
+            await ctx.send(f"⚠️ Error: {str(e)}")
+    
+    # Add a queue status command
+    @bot.command(name='sdxl_queue')
+    async def sdxl_queue_status(ctx):
+        """Check the status of the image generation queue."""
+        status = image_queue.get_queue_status()
+        user_key = get_user_key(ctx)
+        user_usage = image_queue.get_user_usage(user_key)
+        
+        status_text = f"""# 🖼️ SDXL Queue Status
+
+## Current Queue
+- Queue size: {status['queue_size']} pending requests
+- Active generation: {"Yes" if status['active_generation'] else "No"}
+
+## Your Usage
+- Generated: {user_usage}/3 images this hour
+- Rate limit: 3 images per hour per user
+
+## Model Information
+- Model: randommaxxArtMerge_v10
+- Default settings: 1024x1024, 28 steps, 7.5 guidance
+"""
+        
+        await ctx.send(status_text)

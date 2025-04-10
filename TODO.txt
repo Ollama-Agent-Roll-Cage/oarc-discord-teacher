@@ -1,3 +1,13 @@
+
+1. what is the current feature set - ask claude
+2. modularize discord bot to the highest degree
+3. upgrade links and database nlp with links
+4. add javascript module output
+
+
+please help me the make ! commands as base discord / commands instead, where you dont have to @ollama teacher anymore, and if you dont want to use, there is an issue where he is getting cut off
+
+
 add anouncements
 add announcemnts for oarc updates
 hackathon announcements
@@ -27,12 +37,15 @@ ruby
 
 others
 
-add huggingface account log into to oarc website, to access account info like GPU and model keys and whatnot
+add huggingface account log into to oarc website, to access account info like GPU 
+and model keys and whatnot
 
 add jokes module, make funny somehow
 
+!!! OSYLLABI !!!
 how to build ollama llama index agents with custom python package
 - youtube video with claude vibe coding mix.
+!!! -------- !!!
 
 use osyllabi to construct database for coding battles
 
@@ -72,3 +85,6 @@ coding battle
     - science articeles
     --> cross reference platinum datasets
      and see if we already have that article in training data
+
+
+if your api goes down, ask your users to pay for pro

@@ -11,7 +11,7 @@ import subprocess
 import signal
 import webbrowser
 import re
-
+from diffusers import StableDiffusionXLPipeline
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal, QThread, QUrl
 from PyQt6.QtGui import QColor, QPalette, QTextCursor, QFont, QDesktopServices, QAction
 from PyQt6.QtWidgets import (
@@ -1632,26 +1632,13 @@ class BotManagerApp(QMainWindow):
         self.setCentralWidget(self.tabs)
 
     def load_data(self):
-        """Load all data from storage"""
+        """Load all data from the data directories."""
         try:
-            # Add debug logging
-            logger.info(f"Loading data from {DATA_DIR}")
-            logger.info(f"DATA_DIR exists: {os.path.exists(DATA_DIR)}")
+            logging.info(f"Loading data from {DATA_DIR}")
+            self.ensure_data_directories()
             
-            # Check subdirectories
-            subdirs = ["papers", "searches", "crawls", "links", "user_profiles", "guilds"]
-            for subdir in subdirs:
-                path = os.path.join(DATA_DIR, subdir)
-                logger.info(f"Directory {path} exists: {os.path.exists(path)}")
-                if os.path.exists(path):
-                    files = list(Path(path).glob("*.*"))
-                    logger.info(f"Found {len(files)} files in {path}")
-            
-            # Load users
-            self.load_users()
-            
-            # Load conversations
-            self.load_conversations()
+            # Log directory existence
+            logging.info(f"DATA_DIR exists: {os.path.exists(DATA_DIR)}")
             
             # Load papers
             self.load_papers()
@@ -1659,25 +1646,24 @@ class BotManagerApp(QMainWindow):
             # Load links
             self.load_links()
             
-            # Update logs
-            self.update_logs()
+            # Load user profiles
+            self.load_users()
             
-            # Update dashboard stats
+            # Load conversations
+            self.load_conversations()
+            
+            # Load crawls
+            self.load_crawls()
+            
+            # Load searches
+            self.load_searches()
+            
+            # Update dashboard statistics
             self.update_dashboard_stats()
             
-            # Update model display
-            self.update_model_display()
-            
-            # Update status
-            self.status_label.setText("Data loaded successfully")
-            
-            # Log the action
-            timestamp = datetime.now().strftime('%H:%M:%S')
-            self.activity_text.append(f"{timestamp} - Data refreshed\n")
-            
         except Exception as e:
-            logger.error(f"Error loading data: {e}")
-            self.status_label.setText(f"Error loading data: {str(e)}")
+            logging.error(f"Error loading data: {e}")
+            QMessageBox.warning(self, "Data Loading Error", f"Error loading data: {str(e)}")
 
     def load_users(self):
         """Load user profiles from storage"""
@@ -1879,6 +1865,87 @@ class BotManagerApp(QMainWindow):
         except Exception as e:
             logger.error(f"Error loading links: {e}")
             self.status_label.setText(f"Error loading links: {str(e)}")
+
+    def load_crawls(self):
+        """Load crawled web pages data."""
+        try:
+            crawls_dir = os.path.join(DATA_DIR, "crawls")
+            if not os.path.exists(crawls_dir):
+                return
+                
+            # Clear the existing items
+            self.crawls_tree.clear()
+            
+            # Get all parquet files
+            crawl_files = list(Path(crawls_dir).glob("*.parquet"))
+            
+            for file_path in crawl_files:
+                try:
+                    # Load data
+                    data = ParquetStorage.load_from_parquet(str(file_path))
+                    if data is None or data.empty:
+                        continue
+                        
+                    # Extract metadata
+                    url = data.get('url', ['Unknown URL'])[0] if 'url' in data else "Unknown URL"
+                    timestamp = data.get('timestamp', [''])[0] if 'timestamp' in data else ""
+                    title = data.get('title', ['Unknown Title'])[0] if 'title' in data else "Unknown Title"
+                    
+                    # Create tree item
+                    item = QTreeWidgetItem(self.crawls_tree)
+                    item.setText(0, title)
+                    item.setText(1, url)
+                    item.setText(2, timestamp[:10] if timestamp else "")
+                    item.setData(0, Qt.UserRole, str(file_path))
+                    
+                except Exception as e:
+                    logging.error(f"Error loading crawl data from {file_path}: {e}")
+                    
+            # Update count
+            self.crawls_tree.header().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+            self.crawls_tree.header().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+            
+        except Exception as e:
+            logging.error(f"Error loading crawls: {e}")
+
+    def load_searches(self):
+        """Load search results data."""
+        try:
+            searches_dir = os.path.join(DATA_DIR, "searches")
+            if not os.path.exists(searches_dir):
+                return
+                
+            # Clear the existing items
+            self.searches_tree.clear()
+            
+            # Get all parquet files
+            search_files = list(Path(searches_dir).glob("*.parquet"))
+            
+            for file_path in search_files:
+                try:
+                    # Load data
+                    data = ParquetStorage.load_from_parquet(str(file_path))
+                    if data is None or data.empty:
+                        continue
+                        
+                    # Extract metadata
+                    query = data.get('query', [''])[0] if 'query' in data else ""
+                    timestamp = data.get('timestamp', [''])[0] if 'timestamp' in data else ""
+                    
+                    # Create tree item
+                    item = QTreeWidgetItem(self.searches_tree)
+                    item.setText(0, query)
+                    item.setText(1, timestamp[:19] if timestamp else "")
+                    item.setData(0, Qt.UserRole, str(file_path))
+                    
+                except Exception as e:
+                    logging.error(f"Error loading search data from {file_path}: {e}")
+                    
+            # Update count
+            self.searches_tree.header().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+            
+        except Exception as e:
+            logging.error(f"Error loading searches: {e}")
 
     def update_logs(self):
         """Update log content from the log file"""

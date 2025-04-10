@@ -11,6 +11,9 @@ from datetime import datetime, timezone, UTC
 from pathlib import Path
 import aiohttp
 from bs4 import BeautifulSoup
+from pytube import YouTube
+import concurrent.futures
+import unicodedata
 
 # Import Groq if available
 try:
@@ -198,6 +201,57 @@ class WebCrawler:
                 text = re.sub(r'\s+', ' ', text).strip()
                 return text[:10000] + ("..." if len(text) > 10000 else "")
         return "Failed to extract text from the webpage."
+    
+    @staticmethod
+    async def extract_youtube_content(url):
+        """Extract information from a YouTube video."""
+        try:
+            # Run YouTube download in a thread pool to avoid blocking
+            with concurrent.futures.ThreadPoolExecutor() as executor:
+                future = executor.submit(WebCrawler._extract_youtube_details, url)
+                return await asyncio.wrap_future(future)
+        except Exception as e:
+            logging.error(f"Error extracting YouTube content: {e}")
+            return None
+    
+    @staticmethod
+    def _extract_youtube_details(url):
+        """Extract YouTube video details."""
+        yt = YouTube(url)
+        
+        # Build video information
+        video_info = {
+            'title': yt.title,
+            'author': yt.author,
+            'channel_url': yt.channel_url,
+            'description': yt.description,
+            'publish_date': yt.publish_date.isoformat() if yt.publish_date else None,
+            'length': yt.length,
+            'views': yt.views,
+            'thumbnail_url': yt.thumbnail_url,
+            'keywords': yt.keywords,
+            'url': url,
+            'captions': {},
+            'transcript': '',
+        }
+        
+        # Try to get captions
+        try:
+            captions = yt.captions
+            if captions and 'en' in captions:
+                caption = captions['en']
+                transcript = caption.generate_srt_captions()
+                
+                # Clean up transcript
+                transcript = re.sub(r'\d+:\d+:\d+,\d+ --> \d+:\d+:\d+,\d+', '', transcript)
+                transcript = re.sub(r'^\d+$', '', transcript, flags=re.MULTILINE)
+                transcript = unicodedata.normalize('NFKC', transcript)
+                
+                video_info['transcript'] = transcript.strip()
+        except Exception as e:
+            logging.warning(f"Could not get captions for {url}: {e}")
+            
+        return video_info
 
 # Configuration variables from environment
 
@@ -279,11 +333,54 @@ class ModelManager:
 model_manager = ModelManager()
 
 # Update get_ollama_response to use model manager
-async def get_ollama_response(prompt, with_context=True, use_groq=False, conversation_history=None):
+async def get_ollama_response(prompt, with_context=True, use_groq=False, conversation_history=None, timeout=None):
     """Gets a response from the Ollama or Groq model."""
     if use_groq:
         # Groq handling remains unchanged
-        ...
+        try:
+            if not GROQ_AVAILABLE:
+                return "Groq API not available. Please install the Groq package with: pip install groq"
+                
+            groq_api_key = os.getenv('GROQ_API_KEY')
+            groq_model = os.getenv('GROQ_MODEL', 'meta-llama/llama-4-scout-17b-16e-instruct')
+            
+            if not groq_api_key:
+                return "Groq API key not set. Please set GROQ_API_KEY in your environment variables."
+                
+            # Initialize Groq client
+            client = AsyncGroq(api_key=groq_api_key)
+            
+            # Format messages for the model
+            if with_context and conversation_history:
+                messages_to_send = conversation_history
+            else:
+                messages_to_send = [
+                    {
+                        "role": "system",
+                        "content": SYSTEM_PROMPT
+                    },
+                    {
+                        "role": "user",
+                        "content": prompt
+                    }
+                ]
+                
+            # Log the Groq model being used
+            logging.info(f"Using Groq model: {groq_model}")
+            
+            # Make request to Groq API
+            chat_completion = await client.chat.completions.create(
+                model=groq_model,
+                messages=messages_to_send,
+                temperature=TEMPERATURE,
+                max_tokens=1024,
+            )
+            
+            return chat_completion.choices[0].message.content
+            
+        except Exception as e:
+            logging.error(f"Error using Groq API: {e}")
+            return f"Error with Groq API: {str(e)}"
     else:
         try:
             # Get selected model from environment
@@ -312,29 +409,62 @@ async def get_ollama_response(prompt, with_context=True, use_groq=False, convers
 
             # Using the streaming approach with AsyncClient
             response_text = ""
-            client = ollama.AsyncClient(timeout=TIMEOUT)
+            # Use the timeout parameter if provided, otherwise use the default TIMEOUT value
+            actual_timeout = timeout if timeout is not None else TIMEOUT
             
-            # Get the stream of responses
-            stream_generator = await client.chat(
-                model=model_name,
-                messages=messages_to_send,  # Now includes system prompt
-                options={
-                    'temperature': TEMPERATURE,
-                    'num_predict': 512,
-                    'stop': ['User:', 'Human:', '###']
-                },
-                stream=True
-            )
-            
-            # Process the streaming response
-            async for chunk in stream_generator:
-                if 'message' in chunk and 'content' in chunk['message']:
-                    response_text += chunk['message']['content']
-            
-            if response_text:
-                return response_text
-            else:
-                return "I'm sorry, I couldn't generate a response. Please try rephrasing your question. If the issue persists, please contact @BORCH the developer of Ollama Teacher & OARC."
+            try:
+                # Create client with the correct timeout
+                client = ollama.AsyncClient(timeout=actual_timeout)
+                
+                # Get the stream of responses
+                stream_generator = await client.chat(
+                    model=model_name,
+                    messages=messages_to_send,
+                    options={
+                        'temperature': TEMPERATURE,
+                        'num_predict': 512,
+                        'stop': ['User:', 'Human:', '###']
+                    },
+                    stream=True
+                )
+                
+                # Process the streaming response
+                async for chunk in stream_generator:
+                    if 'message' in chunk and 'content' in chunk['message']:
+                        response_text += chunk['message']['content']
+                
+                if response_text:
+                    return response_text
+                else:
+                    return "I'm sorry, I couldn't generate a response. Please try rephrasing your question. If the issue persists, please contact @BORCH the developer of Ollama Teacher & OARC."
+            except TypeError as te:
+                # Handle the case where timeout might be passed incorrectly
+                if "unexpected keyword argument 'timeout'" in str(te):
+                    logging.warning(f"Timeout parameter not supported by AsyncClient. Trying again without timeout...")
+                    # Try again without timeout parameter
+                    client = ollama.AsyncClient()
+                    stream_generator = await client.chat(
+                        model=model_name,
+                        messages=messages_to_send,
+                        options={
+                            'temperature': TEMPERATURE,
+                            'num_predict': 512,
+                            'stop': ['User:', 'Human:', '###']
+                        },
+                        stream=True
+                    )
+                    
+                    # Process the streaming response
+                    async for chunk in stream_generator:
+                        if 'message' in chunk and 'content' in chunk['message']:
+                            response_text += chunk['message']['content']
+                    
+                    if response_text:
+                        return response_text
+                    else:
+                        return "I'm sorry, I couldn't generate a response. Please try rephrasing your question."
+                else:
+                    raise
     
         except Exception as e:
             logging.error(f"Error in get_ollama_response: {e}")

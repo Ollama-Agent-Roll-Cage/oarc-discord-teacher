@@ -4,9 +4,11 @@ import json
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
+import asyncio  # Make sure this is imported for send_in_chunks
 from pathlib import Path
 from datetime import datetime, timezone, UTC
 from tabulate import tabulate  # Add this import
+import re
 
 # System prompt for initializing the conversation
 SYSTEM_PROMPT = """
@@ -47,11 +49,10 @@ def is_text_file(file_content):
     except (UnicodeDecodeError, AttributeError):
         return False
 
-async def send_in_chunks(ctx, text, reference=None, chunk_size=2000):
+async def send_in_chunks(ctx, text, reference=None, chunk_size=1950):
     """Sends long messages in chunks to avoid exceeding Discord's message length limit."""
     # Add debug logging
     logging.info(f"send_in_chunks called with text of length: {len(text) if text else 0}")
-    logging.info(f"Text content (first 100 chars): {text[:100] if text else 'None'}")
     
     # Check if text is empty
     if not text or len(text.strip()) == 0:
@@ -59,17 +60,65 @@ async def send_in_chunks(ctx, text, reference=None, chunk_size=2000):
         await ctx.send("⚠️ No content to display. The result was empty.", reference=reference)
         return
     
-    # Convert markdown to Discord-friendly format
-    chunks = [text[i:i + chunk_size] for i in range(0, len(text), chunk_size)]
+    # Find natural breakpoints for chunks (paragraphs, headers, code blocks)
+    natural_breaks = [
+        "\n\n", "\n## ", "\n# ", "```\n",
+        "\n- ", "\n1. ", "\n---", "\n***"
+    ]
+    
+    chunks = []
+    current_chunk = ""
+    
+    # Split by paragraphs first
+    paragraphs = re.split(r'(\n\n|\n#+\s|\n---|\n\*\*\*|\n```)', text)
+    
+    for i in range(0, len(paragraphs), 2):
+        paragraph = paragraphs[i] if i < len(paragraphs) else ""
+        delimiter = paragraphs[i+1] if i+1 < len(paragraphs) else ""
+        
+        # If adding this paragraph would exceed chunk size, start a new chunk
+        if len(current_chunk) + len(paragraph) + len(delimiter) > chunk_size:
+            chunks.append(current_chunk)
+            current_chunk = paragraph + delimiter
+        else:
+            current_chunk += paragraph + delimiter
+    
+    # Add the last chunk
+    if current_chunk:
+        chunks.append(current_chunk)
+    
+    # If chunking didn't work well, use simpler approach
+    if not chunks:
+        chunks = [text[i:i + chunk_size] for i in range(0, len(text), chunk_size)]
     
     for i, chunk in enumerate(chunks):
         # Skip empty chunks
         if not chunk or len(chunk.strip()) == 0:
             logging.warning(f"Empty chunk #{i} detected, skipping")
             continue
+        
+        # Add continuation marker for clarity
+        if i > 0:
+            chunk = "(continued) " + chunk
+        
+        # Add unfinished marker if needed
+        if i < len(chunks) - 1:
+            if not chunk.endswith("\n"):
+                chunk += "\n"
+            chunk += "_(continued in next message)_"
             
         ref = reference if i == 0 else None
-        await ctx.send(chunk, reference=ref)
+        try:
+            await ctx.send(chunk, reference=ref)
+            # Small delay between chunks to prevent rate limiting
+            if i < len(chunks) - 1:
+                await asyncio.sleep(0.5)
+        except Exception as e:
+            logging.error(f"Error sending chunk #{i}: {e}")
+            try:
+                await ctx.send(f"⚠️ Error sending part of the response. Please try again or use a shorter query.")
+            except:
+                pass
 
 def get_user_key(ctx_or_message):
     """Generate a unique key for user storage.
