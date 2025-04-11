@@ -7,8 +7,9 @@ hugs.py
 globe.py 
 tools.py 
 
+data/
 splitBot/data
-data
+
 # Installation error artifacts
 pip-wheel-metadata/
 .eggs/
