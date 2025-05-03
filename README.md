@@ -1,7 +1,7 @@
 # OARC Discord Teacher
 
 <div align="center">
-  <img src="oarc-emoji.png" alt="Ollama Bot Logo" width="250"/>
+  <img src="assets\oarc-emoji.png" alt="Ollama Bot Logo" width="250"/>
   <br>
   <h3>Bringing AI-powered learning to your Discord server</h3>
 </div>
