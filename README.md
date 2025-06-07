@@ -211,12 +211,19 @@ flowchart TD
 - Python 3.9+ 
 - Ollama installed and running ([Download Ollama](https://ollama.com/))
 - Required models pulled in Ollama (see below)
+- UV package manager (recommended)
 
 ### Setup
 1. Clone this repository
-2. Create a virtual environment (optional but recommended):
+2. Create a virtual environment using UV (recommended):
    ```bash
-   python -m venv .venv
+   # Install UV if you don't have it
+   curl -sSf https://install.ultraviolet.rs | sh
+   # Or for Windows PowerShell:
+   # iwr -useb https://install.ultraviolet.rs | iex
+   
+   # Create and activate virtual environment
+   uv venv -p 3.11 .venv
    # Windows:
    .venv\Scripts\activate
    # Linux/Mac:
@@ -224,6 +231,10 @@ flowchart TD
    ```
 3. Install dependencies:
    ```bash
+   # Using UV (recommended - much faster installation)
+   uv pip install -r requirements.txt
+   
+   # Or using traditional pip
    pip install -r requirements.txt
    ```
 4. Configure the bot:
@@ -271,6 +282,7 @@ Edit the settings in the UI or modify the `.env` file.
 - Ensure Ollama is running and accessible
 - Verify that you've pulled the necessary models in Ollama
 - Run `test_imports.py` to verify your Python environment
+- For dependency issues, try reinstalling with `uv pip install --force-reinstall -r requirements.txt`
 
 ## 🚀 Usage Examples
 
@@ -392,6 +404,9 @@ For long-term hosting on your local PC:
 - **Storage issues**: Check disk space if you've stored many papers/searches
 - **Model loading issues**: Ensure you've pulled the model with `ollama pull model_name`
 - **Command not working**: Make sure you're mentioning the bot before every command
+- **Dependency conflicts**: Try using `uv pip sync requirements.txt` to ensure consistent dependencies
+- **Broken environment**: Remove and recreate with `Remove-Item -Recurse -Force .venv && uv venv -p 3.11 .venv`
+- **Missing core packages**: Install core utilities with `uv pip install uv pip wheel setuptools build twine`
 
 ## 📝 License
 
@@ -399,6 +414,7 @@ MIT License - See LICENSE file for details.
 
 ## 🔄 Recent Updates
 
+- Added UV package manager support for faster dependency installation
 - Added Groq API integration with `--groq` flag for enhanced processing
 - Implemented vision capabilities with `--llava` flag for image analysis
 - Enhanced DuckDuckGo search with vision-based query refinement

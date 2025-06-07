@@ -1,49 +1,53 @@
-# envCreation Cheat Sheet
 
-## Create env
+# UV Package Manager Cheat Sheet
+
+## Create Environment
 
 ```bash
+# Create a virtual environment with Python 3.11
 uv venv -p 3.11 .venv
+
+# Activate the environment
+# Windows:
 .venv\Scripts\activate
+# Linux/Mac:
+source .venv/bin/activate
 ```
 
-## Uninstall all packages from your Python environment
+## Remove Environment Entirely
 
 ```bash
-uv pip freeze > requirements.txt
+# Windows
+Remove-Item -Recurse -Force .venv
+
+# Linux/Mac
+rm -rf .venv
+```
+
+## Core Utils to Install After Cleaning Environment
+
+```bash
+# Install core utilities
+uv pip install uv pip wheel setuptools build twine
+
+# Install project requirements
+uv pip install -r requirements.txt
+# also if you encounter issues you can uninstall requirements if needed
 uv pip uninstall -r requirements.txt
 ```
 
-## Remove .venv entirely
-```bash
-Remove-Item -Recurse -Force .venv
-```
-
-## Core utils to install after cleaning env
-```bash
-# Install core utils
-uv pip install uv pip wheel setuptools build twine
-```
-
-## Install oarc-crawlers in development mode
+## Starting the Discord Bot
 
 ```bash
-# Install in development mode with dev dependencies
-uv pip install -e ".[dev]"
+# Use the following command to run the discord bot with UI
+python start_ui.py
 
-# Clean build artifacts (Windows PowerShell)
-Remove-Item -Path "dist","build","*.egg-info" -Recurse -Force -ErrorAction SilentlyContinue
-```
+# You can also run the bot directly (headless mode)
+python start_bot.py
 
-## Building the package, and uploading to pypi with twine
-
-```bash
-# Build package
-python -m build
-
-# Upload to TestPyPI
-python -m twine upload --repository testpypi dist/*
-
-# Upload to PyPI
-python -m twine upload dist/*
+# Or use the provided scripts
+# Windows:
+.\startup.bat
+# Linux/Mac:
+./startup.sh
 ```
