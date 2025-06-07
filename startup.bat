@@ -1,42 +1,38 @@
 @echo off
-REM Startup script for Ollama Learning Discord Bot on Windows
+title OARC Discord Teacher Bot
+echo Starting OARC Discord Teacher Bot...
+echo.
 
-REM Navigate to the bot directory
-cd /d "%~dp0"
-
-REM Activate virtual environment if it exists
-if exist venv\Scripts\activate.bat (
-    call venv\Scripts\activate.bat
+REM Check if virtual environment exists
+IF NOT EXIST .venv\Scripts\activate.bat (
+    echo Creating virtual environment...
+    python -m venv .venv
 )
 
-REM Ensure data directories exist
-if not exist data mkdir data
-if not exist data\papers mkdir data\papers
-if not exist data\searches mkdir data\searches
-if not exist data\crawls mkdir data\crawls
+REM Activate virtual environment
+call .venv\Scripts\activate.bat
 
-REM Check if Ollama is running
-tasklist | find /i "ollama.exe" >nul
-if errorlevel 1 (
-    echo Starting Ollama...
-    start "" ollama serve
-    REM Wait for Ollama to start
-    timeout /t 5
+REM Install or update dependencies
+echo Checking dependencies...
+pip install -r requirements.txt
+
+REM Run tests to validate setup
+echo Testing imports...
+python test_imports.py
+
+REM Check if .env file exists
+IF NOT EXIST .env (
+    echo Creating .env file...
+    python create_env_file.py
 )
 
-:loop
-echo Starting Ollama Learning Discord Bot...
-python splitBot/bot-management-ui-pyqt.py
+REM Run the UI
+echo Starting Discord Teacher UI...
+python start_ui.py
 
-REM If the bot exits with code 0, it was a clean shutdown
-if %errorlevel% equ 0 (
-    echo Bot shut down cleanly. Exiting...
-    goto :end
+REM Keep the window open if there's an error
+IF %ERRORLEVEL% NEQ 0 (
+    echo.
+    echo Error occurred! Please check the logs above.
+    pause
 )
-
-echo Bot crashed or encountered an error. Restarting in 10 seconds...
-timeout /t 10
-goto :loop
-
-:end
-pause

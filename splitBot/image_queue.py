@@ -1,352 +1,197 @@
-import asyncio
 import logging
-import time
 from collections import defaultdict
 from datetime import datetime, timedelta
-import torch
+import asyncio
+import re
 import gc  # Add import for garbage collection
 
 logger = logging.getLogger(__name__)
 
 class ImageGenerationQueue:
-    """Manages queued image generation requests from multiple Discord users"""
+    """Manages image generation requests with rate limiting and content moderation"""
     
     def __init__(self, rate_limit_count=3, rate_limit_period=3600):
-        self.queue = asyncio.Queue()
-        self.active_generation = False
-        self.current_task = None
-        self.status_updates = {}  # Store status update callbacks by user_key
+        """Initialize the queue with rate limiting parameters
         
-        # Rate limiting - default: 3 images per hour per user
+        Args:
+            rate_limit_count (int): Maximum number of generations allowed in the period
+            rate_limit_period (int): Time period for rate limiting in seconds
+        """
+        self.queue = []
+        self.user_requests = defaultdict(list)
         self.rate_limit_count = rate_limit_count
-        self.rate_limit_period = rate_limit_period  # in seconds
-        self.user_generations = defaultdict(list)  # Maps user_key -> list of generation timestamps
-        
-    async def add_to_queue(self, task_data):
-        """Add image generation task to queue with content moderation"""
-        user_key = task_data.get('user_key')
-        
-        # Extract prompt for moderation checks
-        prompt = task_data.get('prompt', '')
-        
-        # Log the received prompt
-        logging.info(f"Processing image generation request from user {user_key}: '{prompt}'")
-        
-        # Check rate limiting
-        if not self.can_generate(user_key):
-            usage = self.get_user_usage(user_key)
-            next_available = self.get_next_available_time(user_key)
-            logging.info(f"Rate limit reached for user {user_key}: {usage}/{self.rate_limit_count}")
-            return {
-                'success': False, 
-                'message': f"Rate limit reached ({usage}/{self.rate_limit_count} generations per hour). Next available at {next_available.strftime('%H:%M:%S')}"
-            }
-        
-        # Content moderation check - only use sexual content filter
-        try:
-            is_sexual_content = await self.check_sexual_content(prompt)
-            if is_sexual_content:
-                logging.warning(f"Sexual content detected in prompt from user {user_key}: '{prompt}'")
-                return {
-                    'success': False,
-                    'message': "⚠️ Content moderation: Your prompt was flagged for inappropriate sexual content. Please modify your request."
-                }
-        except Exception as e:
-            logging.error(f"Fatal error in content moderation: {e}", exc_info=True)
-            return {
-                'success': False,
-                'message': "⚠️ Guard model not available, cancelling image generation request. Please try again later."
-            }
-        
-        # Add to queue
-        position = self.queue.qsize() + (1 if self.active_generation else 0)
-        await self.queue.put(task_data)
-        
-        logging.info(f"Added image generation request to queue at position {position}: '{prompt}'")
-        
-        # If a status callback is provided, send initial status immediately
-        if user_key in self.status_updates and self.status_updates[user_key]:
-            if position > 0:
-                await self.status_updates[user_key](f"Your request is queued at position {position}. I'll notify you when it starts.")
-            else:
-                await self.status_updates[user_key]("Generating image now. This may take a minute...")
-        
-        # Start processing if not already running
-        if not self.active_generation:
-            asyncio.create_task(self.process_queue())
-            
-        return {
-            'success': True,
-            'position': position,
-            'message': "Added to queue" if position > 0 else "Processing immediately"
-        }
-    
-    def register_status_update(self, user_key, status_callback):
-        """Register a callback for status updates"""
-        self.status_updates[user_key] = status_callback
-        
-    async def process_queue(self):
-        """Process the queue of image generation tasks with memory management"""
-        if self.active_generation:
-            return
-            
-        self.active_generation = True
-        self.optimize_memory()
-        
-        try:
-            while not self.queue.empty():
-                # Get next task
-                task_data = await self.queue.get()
-                user_key = task_data.get('user_key')
-                
-                try:
-                    # Record that this user is generating an image
-                    self.user_generations[user_key].append(datetime.now())
-                    
-                    # Execute the generator function
-                    self.current_task = task_data
-                    
-                    # Send status update if callback is registered
-                    if user_key in self.status_updates and self.status_updates[user_key]:
-                        await self.status_updates[user_key]("Generating image now. This may take a minute...")
-                    
-                    # Pre-emptive garbage collection to free memory BEFORE the generation
-                    if torch.cuda.is_available():
-                        torch.cuda.empty_cache()
-                        gc.collect()
-                    
-                    # Run the generation task in a way that allows other tasks to run
-                    try:
-                        # Run the task with a short timeout to allow for asyncio task switching
-                        result = await asyncio.wait_for(task_data['generator_func'](), timeout=300)  # 5-minute timeout
-                    except asyncio.TimeoutError:
-                        logger.error("Image generation timed out after 5 minutes")
-                        if task_data.get('error_callback'):
-                            await task_data['error_callback']("Image generation timed out after 5 minutes")
-                        continue
-                    
-                    # Call the callback with the result
-                    if task_data.get('callback'):
-                        await task_data['callback'](result)
-                        
-                    # Wait a bit BEFORE cleaning memory to avoid blocking UI
-                    await asyncio.sleep(0.5)
-                        
-                    # Clean memory between generations - IMPORTANT!
-                    if torch.cuda.is_available():
-                        torch.cuda.empty_cache()
-                        gc.collect()
-                        
-                    # Reduce the stabilization delay
-                    await asyncio.sleep(0.2)  # Reduced from 1.0 second
-                        
-                except Exception as e:
-                    logger.error(f"Error processing queue item: {e}")
-                    if task_data.get('error_callback'):
-                        await task_data['error_callback'](str(e))
-                        
-                finally:
-                    self.queue.task_done()
-                    self.current_task = None
-                    # Allow heartbeat to catch up with a smaller delay
-                    await asyncio.sleep(0.05)  # Reduced from 0.1
-                    # Remove status update callback once task is complete
-                    if user_key in self.status_updates:
-                        del self.status_updates[user_key]
-        
-        finally:
-            self.active_generation = False
-            
-    def can_generate(self, user_key):
-        """Check if a user can generate an image based on rate limits"""
-        if user_key not in self.user_generations:
-            return True
-            
-        # Clean up old timestamps
-        cutoff_time = datetime.now() - timedelta(seconds=self.rate_limit_period)
-        self.user_generations[user_key] = [
-            ts for ts in self.user_generations[user_key] if ts > cutoff_time
+        self.rate_limit_period = rate_limit_period
+        self.processing = False
+        self.banned_terms = [
+            'nude', 'naked', 'porn', 'pornography', 'sex', 'sexual', 'nsfw', 
+            'explicit', 'adult', 'xxx', 'hentai', 'erotic', 'arousing',
+            'intercourse', 'genitals', 'genitalia', 'penis', 'vagina'
         ]
+        self.jailbreak_patterns = [
+            r'ignore.*?previous.*?(instructions|prompt)',
+            r'disregard.*?(instructions|guidelines|filters)',
+            r'bypass.*?(filter|moderation|detection)',
+            r'(don\'t|do not|never).*?(follow|obey).*?(instructions|guidelines)',
+            r'generate.*?(inappropriate|nsfw|explicit|harmful)',
+            r'pretend.*?(different|new).*?(instructions|guidelines)'
+        ]
+        logger.info("Image Generation Queue initialized")
+    
+    async def add_request(self, user_id, prompt, callback, **kwargs):
+        """Add an image generation request to the queue"""
+        try:
+            # Check if user is rate limited
+            if self.is_rate_limited(user_id):
+                return False, "You've reached your image generation limit. Please try again later."
+            
+            # Check if user is on cooldown
+            if self.is_on_cooldown(user_id):
+                return False, "Please wait before generating another image."
+                
+            # Check if user has too many pending requests
+            if len(self.requests[user_id]) >= self.max_queue_size:
+                return False, f"You have too many pending requests (max {self.max_queue_size})."
+                
+            # Check prompt for safety
+            is_safe, reason = await self.check_prompt_safety(prompt)
+            if not is_safe:
+                return False, f"Prompt rejected: {reason}"
+                
+            # Add request to queue
+            self.requests[user_id].append({
+                "prompt": prompt,
+                "callback": callback,
+                "timestamp": datetime.now(),
+                "kwargs": kwargs
+            })
+            
+            # Update generation count for rate limiting
+            self.user_generations[user_id].append(datetime.now())
+            
+            # Start processing if not already running
+            if not self.processing:
+                asyncio.create_task(self.process_queue())
+                
+            return True, "Your image request has been added to the queue."
+            
+        except Exception as e:
+            logger.error(f"Error adding request to queue: {e}")
+            return False, f"Error: {str(e)}"
+    
+    def is_on_cooldown(self, user_id):
+        """Check if user is on generation cooldown"""
+        if not self.requests[user_id]:
+            return False
         
-        # Check if under the limit
-        return len(self.user_generations[user_key]) < self.rate_limit_count
-        
-    def get_user_usage(self, user_key):
-        """Get current usage count for a user"""
-        if user_key not in self.user_generations:
+        last_request = max(req["timestamp"] for req in self.requests[user_id])
+        elapsed = (datetime.now() - last_request).total_seconds()
+        return elapsed < self.generation_cooldown
+    
+    def _get_cooldown_time(self, user_id):
+        """Get remaining cooldown time in seconds"""
+        if not self.user_requests[user_id]:
             return 0
             
-        # Clean up old timestamps
+        last_request = max(self.user_requests[user_id])
+        cooldown_time = 60  # 60 seconds cooldown between requests
+        time_since_last = (datetime.now() - last_request).total_seconds()
+        
+        return max(0, cooldown_time - time_since_last)
+    
+    def is_rate_limited(self, user_id):
+        """Check if user has exceeded their rate limit"""
+        # Remove old timestamps outside the rate limit period
         cutoff_time = datetime.now() - timedelta(seconds=self.rate_limit_period)
-        self.user_generations[user_key] = [
-            ts for ts in self.user_generations[user_key] if ts > cutoff_time
+        self.user_generations[user_id] = [
+            ts for ts in self.user_generations[user_id] if ts > cutoff_time
         ]
         
-        return len(self.user_generations[user_key])
-        
-    def get_next_available_time(self, user_key):
-        """Get timestamp when user can generate again"""
-        if user_key not in self.user_generations or not self.user_generations[user_key]:
-            return datetime.now()
+        # Check if user has exceeded their rate limit
+        return len(self.user_generations[user_id]) >= self.rate_limit_count
+    
+    async def check_prompt_safety(self, prompt):
+        """Check if the prompt contains inappropriate content"""
+        # Check for sexual content
+        sexual_result = await self.check_sexual_content(prompt)
+        if sexual_result:
+            return {
+                'safe': False,
+                'message': "Your prompt was rejected as it appears to request sexual or NSFW content"
+            }
             
-        # Sort timestamps and get the oldest one
-        sorted_times = sorted(self.user_generations[user_key])
-        if len(sorted_times) < self.rate_limit_count:
-            return datetime.now()
-            
-        # When will the oldest timestamp expire?
-        return sorted_times[0] + timedelta(seconds=self.rate_limit_period)
+        # Check for jailbreak attempts
+        jailbreak_result = await self.check_jailbreak_attempt(prompt)
+        if jailbreak_result:
+            return {
+                'safe': False,
+                'message': "Your prompt was rejected as it appears to attempt to bypass content guidelines"
+            }
         
-    def get_queue_status(self):
-        """Get current queue status"""
-        return {
-            'queue_size': self.queue.qsize(),
-            'active_generation': self.active_generation,
-            'current_task': self.current_task
-        }
-        
+        return {'safe': True, 'message': "Prompt passed safety checks"}
+    
     async def check_sexual_content(self, prompt):
-        """Check if the prompt contains sexual content using Granite Guardian."""
-        try:
-            import ollama
-            
-            # Skip extremely short prompts (unlikely to be problematic)
-            if (len(prompt.strip()) < 3):
-                logging.info(f"MODERATION: Skipping check for very short prompt: '{prompt}'")
-                return False
-            
-            # Log that we're checking for sexual content
-            logging.info(f"MODERATION: Checking prompt for sexual content: '{prompt}'")
-            
-            # System prompt specifically for sexual content detection
-            system_prompt = "sexual_content"
-            
-            messages = [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": prompt}
-            ]
-            
-            # Log exactly what we're sending to the model
-            logging.info(f"MODERATION REQUEST: System='{system_prompt}', User='{prompt}'")
-            
-            # Create client with no timeout - let it run as long as needed
-            client = ollama.AsyncClient()
-            
-            # Super long timeout (5 minutes) - practically no timeout for normal operations
-            try:
-                # This will wait indefinitely until Granite Guardian responds
-                logging.info(f"MODERATION: Waiting for Granite Guardian response...")
+        """Check if the prompt contains inappropriate sexual content"""
+        prompt_lower = prompt.lower()
+        
+        # Check for banned terms
+        for term in self.banned_terms:
+            if term in prompt_lower:
+                logger.warning(f"Banned term detected in prompt: {term}")
+                return True
                 
-                # Using a very long timeout (5 minutes) instead of no timeout at all
-                # to prevent completely hanging if something goes catastrophically wrong
-                response = await asyncio.wait_for(
-                    client.chat(
-                        model="granite3-guardian:8b",
-                        messages=messages,
-                        options={"temperature": 0, "num_predict": 10}
-                    ), 
-                    timeout=300.0  # 5 minute timeout (300 seconds)
-                )
-                
-                # Extract and log the full message content
-                full_response = response['message']['content']
-                logging.info(f"MODERATION FULL TEXT: '{full_response}'")
-                
-                # Granite Guardian responds with "yes" or "no"
-                result = full_response.strip().lower()
-                is_sexual = result == "yes"  # Exact match only
-                
-                # Log the final decision with clear markers
-                if is_sexual:
-                    logging.warning(f"MODERATION DECISION: [BLOCKED] Sexual content detected in prompt: '{prompt}'")
-                else:
-                    logging.info(f"MODERATION DECISION: [ALLOWED] Prompt passed sexual content check: '{prompt}'")
-                    
-                return is_sexual
-                
-            except asyncio.TimeoutError:
-                # This will only happen after 5 full minutes of waiting
-                logging.error("MODERATION FATAL TIMEOUT: Granite Guardian did not respond after 5 minutes")
-                logging.warning(f"MODERATION DECISION: [BLOCKED] Guard model not responding, cancelling image generation request for: '{prompt}'")
-                return True  # Block generation after extreme timeout
-                
-            except Exception as e:
-                logging.error(f"MODERATION ERROR accessing Granite Guardian: {e}", exc_info=True)
-                logging.warning(f"MODERATION DECISION: [BLOCKED] Guard model not available, cancelling image generation request for: '{prompt}'")
-                return True  # Block image generation if there's any error with moderation
-            
-        except Exception as e:
-            logging.error(f"MODERATION ERROR: {e}", exc_info=True)
-            logging.warning(f"MODERATION DECISION: [BLOCKED] Guard model not available, cancelling image generation request for: '{prompt}'")
-            return True  # Block image generation on any error
-
+        return False
+    
     async def check_jailbreak_attempt(self, prompt):
-        """Check if the prompt is attempting to jailbreak content filters."""
-        try:
-            import ollama
-            
-            # Log that we're checking for jailbreak attempts
-            logging.info(f"MODERATION: Checking prompt for jailbreak attempts: '{prompt}'")
-            
-            # System prompt specifically for jailbreak detection
-            system_prompt = "jailbreak"
-            
-            messages = [
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": prompt}
-            ]
-            
-            # Log exactly what we're sending to the model
-            logging.info(f"MODERATION REQUEST: System='{system_prompt}', User='{prompt}'")
-            
-            # Set options for deterministic results
-            client = ollama.AsyncClient()
-            response = await client.chat(
-                model="granite3-guardian:8b",
-                messages=messages,
-                options={"temperature": 0}
-            )
-            
-            # Log the complete raw response object
-            logging.info(f"MODERATION RAW RESPONSE: {response}")
-            
-            # Extract and log the full message content
-            full_response = response['message']['content']
-            logging.info(f"MODERATION FULL TEXT: '{full_response}'")
-            
-            # Normalized version for decision making
-            result = full_response.strip().lower()
-            logging.info(f"MODERATION NORMALIZED: '{result}'")
-            
-            # The model returns Yes or No
-            is_jailbreak = result == "yes"
-            
-            # Log the final decision with clear markers
-            if is_jailbreak:
-                logging.warning(f"MODERATION DECISION: [BLOCKED] Jailbreak attempt detected in prompt: '{prompt}'")
-            else:
-                logging.info(f"MODERATION DECISION: [ALLOWED] Prompt passed jailbreak check: '{prompt}'")
+        """Check if the prompt attempts to jailbreak or bypass filters"""
+        prompt_lower = prompt.lower()
+        
+        # Check for jailbreak patterns
+        for pattern in self.jailbreak_patterns:
+            if re.search(pattern, prompt_lower):
+                logger.warning(f"Jailbreak attempt detected in prompt with pattern: {pattern}")
+                return True
                 
-            return is_jailbreak
-        except Exception as e:
-            logging.error(f"MODERATION ERROR: {e}", exc_info=True)
-            # Log the complete stack trace for better debugging
-            return False  # Changed to allow content on error instead of blocking
-
-    def optimize_memory(self):
-        """Optimize memory to reduce fragmentation"""
-        if not torch.cuda.is_available():
-            return
+        # Count suspicious phrases
+        suspicious_phrases = [
+            "ignore", "bypass", "don't follow", "do not follow", 
+            "disregard", "override", "new instructions"
+        ]
+        
+        suspicion_count = sum(phrase in prompt_lower for phrase in suspicious_phrases)
+        if suspicion_count >= 2:
+            logger.warning(f"Multiple suspicious phrases detected in prompt: {suspicion_count}")
+            return True
             
-        # Clear PyTorch cache
-        torch.cuda.empty_cache()
+        return False
+    
+    async def process_queue(self):
+        """Process pending image generation requests"""
+        self.processing = True
         
-        # Run garbage collection
-        gc.collect()
-        
-        # Force compaction of memory (can help with fragmentation)
-        if hasattr(torch.cuda, 'memory_stats'):  # Only available in newer PyTorch
-            try:
-                torch.cuda.memory_stats()  # Force memory compaction
-            except:
-                pass
+        try:
+            # Process all user queues
+            for user_id, requests in list(self.requests.items()):
+                if not requests:
+                    continue
+                    
+                # Process the oldest request first
+                requests.sort(key=lambda r: r["timestamp"])
+                request = requests[0]
+                
+                try:
+                    # Call the callback function to generate the image
+                    callback = request["callback"]
+                    await callback(request["prompt"], **request["kwargs"])
+                except Exception as e:
+                    logger.error(f"Error processing image request: {e}")
+                
+                # Remove the processed request
+                self.requests[user_id].pop(0)
+        finally:
+            self.processing = False
+            
+            # If there are still requests, schedule another processing run
+            for requests in self.requests.values():
+                if requests:
+                    asyncio.create_task(self.process_queue())
+                    break

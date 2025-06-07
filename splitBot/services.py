@@ -9,25 +9,27 @@ import json
 import time
 from datetime import datetime, timezone, UTC
 from pathlib import Path
-import aiohttp
 from bs4 import BeautifulSoup
 from pytube import YouTube
 import concurrent.futures
 import unicodedata
+import ollama
 
 # Import Groq if available
 try:
     from groq import AsyncGroq, Groq
     GROQ_AVAILABLE = True
 except ImportError:
-    pass  # No action needed if Groq API is not installed
     GROQ_AVAILABLE = False
     logging.warning("Groq package not installed. To use --groq flag, run: pip install groq")
 
-import ollama
+# Import from config directly
+from splitBot.config import MODEL_NAME, VISION_MODEL_NAME, TEMPERATURE, TIMEOUT
+from splitBot.utils import ParquetStorage, SYSTEM_PROMPT
 
-from utils import ParquetStorage, SYSTEM_PROMPT
-from config import MODEL_NAME as CONFIG_MODEL_NAME
+# Log imported model configuration
+logging.info(f"Services using MODEL_NAME from config: {MODEL_NAME}")
+logging.info(f"Services using VISION_MODEL_NAME from config: {VISION_MODEL_NAME}")
 
 # ---------- Web Crawling Integration ----------
 
@@ -74,6 +76,23 @@ class WebCrawler:
                         elif element.name == 'ul':
                             for li in element.find_all('li', recursive=False):
                                 content += f"- {li.get_text().strip()}\n"
+                        # Add handling for more elements as needed
+                        elif element.name == 'ol':
+                            for i, li in enumerate(element.find_all('li', recursive=False), 1):
+                                content += f"{i}. {li.get_text().strip()}\n"
+                        elif element.name == 'table':
+                            # Basic table handling
+                            content += "\n| "
+                            # Add header row
+                            headers = element.find_all('th')
+                            if headers:
+                                content += " | ".join([h.get_text().strip() for h in headers]) + " |\n"
+                                content += "|" + "---|" * len(headers) + "\n"
+                            # Add data rows
+                            for row in element.find_all('tr'):
+                                cells = row.find_all('td')
+                                if cells:
+                                    content += "| " + " | ".join([c.get_text().strip() for c in cells]) + " |\n"
                             content += "\n"
                 
                 # Construct a structured representation
@@ -383,10 +402,11 @@ async def get_ollama_response(prompt, with_context=True, use_groq=False, convers
             return f"Error with Groq API: {str(e)}"
     else:
         try:
-            # Get selected model from environment
-            model_name = os.getenv('OLLAMA_MODEL')
-            if not model_name:
-                raise Exception("No model selected. Please select a model in the UI.")
+            # Get model from config - use the centralized configuration
+            model_name = MODEL_NAME
+            
+            # Log the model being used
+            logging.info(f"Using Ollama model: {model_name}")
             
             # Try loading the model
             if not await model_manager.load_model(model_name):
@@ -474,11 +494,15 @@ async def get_ollama_response(prompt, with_context=True, use_groq=False, convers
 async def process_image_with_llava(image_data, prompt, model_name=None):
     """Process image data with a vision model."""
     try:
-        vision_model = model_name or os.getenv('OLLAMA_VISION_MODEL')
+        # Use vision model from config if not explicitly specified
+        vision_model = model_name or VISION_MODEL_NAME
+        
+        # Log the model being used
+        logging.info(f"Using vision model: {vision_model}")
         
         # Try loading the vision model
         if not await model_manager.load_model(vision_model, is_vision=True):
-            raise Exception("Could not load vision model")
+            raise Exception(f"Could not load vision model: {vision_model}")
 
         # Format messages for vision model
         messages = [

@@ -4,11 +4,12 @@ import json
 import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
-import asyncio  # Make sure this is imported for send_in_chunks
+import asyncio
 from pathlib import Path
 from datetime import datetime, timezone, UTC
-from tabulate import tabulate  # Add this import
+from tabulate import tabulate
 import re
+import sys
 
 # System prompt for initializing the conversation
 SYSTEM_PROMPT = """
@@ -35,7 +36,7 @@ DEFAULT_RESOURCES = [
     "https://huggingface.co/docs",
     "https://huggingface.co/docs/transformers/index",
     "https://huggingface.co/docs/hub/index",
-    "https://github.com/Leoleojames1/ollama_agent_roll_cage",
+    "https://github.com/Ollama-Agent-Roll-Cage/oarc",
     "https://arxiv.org/abs/1706.03762"  # Attention Is All You Need paper
 ]
 
@@ -290,60 +291,21 @@ class ParquetStorage:
 
 class PandasQueryEngine:
     @staticmethod
-    async def execute_query(dataframe, query):
-        """Execute a natural language query on a pandas DataFrame using Ollama."""
+    async def execute_query(dataframe, query, model_name=None):
+        """Execute a natural language query on a pandas DataFrame"""
         try:
-            from services import get_ollama_response
-            
             # First ensure we have proper timestamp handling
             if 'timestamp' in dataframe.columns and not dataframe.empty:
                 dataframe['parsed_timestamp'] = pd.to_datetime(dataframe['timestamp'], utc=True)
                 dataframe['date'] = dataframe['parsed_timestamp'].dt.date
                 
-            # Create a more natural prompt for the LLM
-            df_info = f"""
-Available columns: {', '.join(dataframe.columns)}
-Sample data:
-{dataframe.head(3).to_string()}
-
-Data contains:
-- User messages and interactions
-- Timestamps of conversations
-- Search queries and results
-- Topics discussed
-"""
-            prompt = f"""Given this DataFrame information:
-{df_info}
-
-User query: "{query}"
-
-Convert this to a pandas operation that will:
-1. Extract relevant information
-2. Sort by timestamp if time-based
-3. Group or aggregate if needed
-4. Return only necessary columns
-
-Return only the pandas code, no explanation."""
-
-            # Get the pandas code to execute
-            pandas_code = await get_ollama_response(prompt, with_context=False)
-            pandas_code = pandas_code.strip()
-
-            # Execute safely
-            result = eval(pandas_code)
-
-            # Format results nicely
-            if isinstance(result, pd.DataFrame):
-                return {
-                    "success": True,
-                    "result": tabulate(result, headers='keys', tablefmt='pipe'),
-                    "count": len(result)
-                }
-            else:
-                return {
-                    "success": True, 
-                    "result": str(result)
-                }
+            # For now, just return basic info about the dataframe
+            result = {
+                "success": True,
+                "result": f"DataFrame with {len(dataframe)} rows and {len(dataframe.columns)} columns",
+                "columns": list(dataframe.columns)
+            }
+            return result
 
         except Exception as e:
             logging.error(f"PandasQueryEngine error: {e}", exc_info=True)

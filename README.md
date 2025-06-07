@@ -208,65 +208,69 @@ flowchart TD
 ## 🛠️ Setup
 
 ### Prerequisites
-- Python 3.8+
-- Discord Bot Token ([Discord Developer Portal](https://discord.com/developers/applications))
-- [Ollama](https://ollama.ai/download) installed locally
-- Recommended model: llama3 or faster/smaller models for better response time
-- (Optional) Groq API key for using `--groq` flag features
-- (Optional) Vision-capable Ollama model for image processing with `--llava` flag
+- Python 3.9+ 
+- Ollama installed and running ([Download Ollama](https://ollama.com/))
+- Required models pulled in Ollama (see below)
 
-### Installation
+### Setup
+1. Clone this repository
+2. Create a virtual environment (optional but recommended):
+   ```bash
+   python -m venv .venv
+   # Windows:
+   .venv\Scripts\activate
+   # Linux/Mac:
+   source .venv/bin/activate
+   ```
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. Configure the bot:
+   - Copy `.env.example` to `.env` and fill in the required values
+   - Ensure Ollama is running with the necessary models loaded
+
+### Required Ollama Models
+Make sure you have downloaded the necessary models:
 ```bash
-# Clone repository
-git clone https://github.com/Leoleojames1/OllamaDiscordTeacher
-cd OllamaDiscordTeacher
-
-# Set up environment
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
-
-# Configure .env file
-DISCORD_TOKEN=your_token_here
-OLLAMA_MODEL=llama3
-OLLAMA_VISION_MODEL=llava  # Optional for image processing
-GROQ_API_KEY=your_groq_key_here  # Optional for Groq API
-GROQ_MODEL=llama3-70b-8192  # Optional for Groq API
-TEMPERATURE=0.7
-TIMEOUT=120.0
-DATA_DIR=data
+ollama pull llama3.1:8b  # Primary text model
+ollama pull llava:latest  # Vision model
 ```
 
 ### Starting the Bot
-```
-# Command line interface
-python main.py
-```
-### GUI Management Interface
-The Ollama Teacher Bot comes with a graphical management interface that provides:
+You can start the bot in two ways:
 
-- Real-time bot status monitoring
-- Start/stop/restart controls
-- User and conversation tracking
-- Log viewing and analysis
-- Configuration editing
-- ArXiv paper management
-- Link collection visualization
-- Model switching for both base and vision models
+#### UI Management Mode
+Run the UI to manage the bot:
+```bash
+# Windows
+startup.bat
 
-```
-# Graphical interface
-python bot-management-ui-pyqt.py
-```
-```
-# OR use the startup scripts
 # Linux/Mac
 ./startup.sh
 ```
+
+#### Headless Mode
+To run the bot directly:
+```bash
+python start_bot.py
 ```
-# Windows
-startup.bat
-```
+
+## Features
+- AI assistance via Discord chat
+- Multimodal capabilities (image understanding with vision models)
+- User profile tracking
+- Web search and information retrieval
+- Knowledge base management
+
+## Configuration
+Edit the settings in the UI or modify the `.env` file.
+
+## Troubleshooting
+- If you encounter issues with the UI, check the logs at `splitBot/bot_manager.log`
+- Ensure Ollama is running and accessible
+- Verify that you've pulled the necessary models in Ollama
+- Run `test_imports.py` to verify your Python environment
 
 ## 🚀 Usage Examples
 

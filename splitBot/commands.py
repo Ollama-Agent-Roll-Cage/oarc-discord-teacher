@@ -1,24 +1,32 @@
-import os
-import re
-import logging
-import json
-from datetime import datetime, timezone, UTC
-from pathlib import Path
-from collections import defaultdict
-import pandas as pd
-from discord import File
-import asyncio
-from io import BytesIO
-import re
+"""
+Command registration and handlers for the Ollama Discord Teacher bot.
+"""
 
-from utils import (
+import os
+import logging
+import discord
+from discord import File  # Add this import
+import urllib.parse
+from discord.ext import commands
+import asyncio
+from datetime import datetime, UTC
+import re
+import json
+from collections import defaultdict
+from io import BytesIO
+from pathlib import Path
+import time
+
+# Import local modules
+from splitBot.config import MODEL_NAME, VISION_MODEL_NAME
+from splitBot.utils import (
     send_in_chunks, get_user_key, store_user_conversation,
     ParquetStorage, PandasQueryEngine, DEFAULT_RESOURCES, SYSTEM_PROMPT
 )
-from services import (
+from splitBot.services import (
     get_ollama_response, ArxivSearcher, DuckDuckGoSearcher, WebCrawler
 )
-from image_queue import ImageGenerationQueue
+from splitBot.image_queue import ImageGenerationQueue
 
 # Initialize logging
 logger = logging.getLogger(__name__)
@@ -26,12 +34,13 @@ logger = logging.getLogger(__name__)
 # Configure data directory
 DATA_DIR = os.getenv('DATA_DIR', 'data')
 
-def register_commands(bot, USER_CONVERSATIONS, COMMAND_MEMORY, conversation_logs, USER_PROFILES_DIR):
-    """Register all bot commands."""
+def register_commands(bot):
+    """Register all custom bot commands with the Discord bot"""
+    logger.info("Registering bot commands...")
     
-    # Create a global image queue for the bot
-    image_queue = ImageGenerationQueue(rate_limit_count=3, rate_limit_period=3600)  # 3 images per hour
-
+    # Create an image queue with rate limiting (3 images per hour per user)
+    image_queue = ImageGenerationQueue(rate_limit_count=3, rate_limit_period=3600)
+    
     @bot.command(name='reset')
     async def reset(ctx):
         """Resets the user's conversation log."""
@@ -67,7 +76,7 @@ def register_commands(bot, USER_CONVERSATIONS, COMMAND_MEMORY, conversation_logs
 - `!ddg <query> [--groq] [--llava] <question>` - Search DuckDuckGo and learn
 - `!crawl <url1> [url2 url3...] [--groq] <question>` - Learn from web pages
 - `!pandas <query>` - Query stored data using natural language
-- `!links [limit]` - Collect and organize links from channel history
+- `!links [limit|all]` - Collect and organize links from channel history
 
 ## Image Generation
 - `!sdxl <prompt> [--width <pixels>] [--height <pixels>] [--steps <count>] [--guidance <value>]` - Generate AI images with SDXL
@@ -94,12 +103,14 @@ def register_commands(bot, USER_CONVERSATIONS, COMMAND_MEMORY, conversation_logs
   Analyze multiple papers  
 - `!ddg "python asyncio" How to use async/await?`  
   Search DuckDuckGo with a query  
-- `!ddg --llava "neural network" How does this type match the image?`  
+- `!ddx --llava "neural network" How does this type match the image?`  
   Use vision models with an image  
 - `!crawl https://pypi.org/project/ollama/ https://github.com/ollama/ollama Compare these`  
   Crawl and compare web pages  
 - `!links 500`  
   Collect links from the last 500 messages  
+- `!links all`  
+  Collect ALL links from the entire channel history  
 - `!sdxl A beautiful sunset over mountains --width 1024 --height 768`  
   Generate an image  
 
@@ -549,113 +560,192 @@ Address the user by name ({user_name}) in your response."""
             await ctx.send(f"⚠️ Error accessing profile: {str(e)}")
 
     @bot.command(name='links')
-    async def collect_links(ctx, limit: int = None):
-        """Collect all links from the channel and format them as markdown lists."""
+    async def collect_links(ctx, limit: str = None):
+        """Collect all links from the channel and format them as markdown lists.
+        
+        Usage:
+        !links - Collect links from the last 100 messages
+        !links 500 - Collect links from the last 500 messages
+        !links all - Collect ALL links from the channel (may take a while)
+        """
         try:
             async with ctx.typing():
-                if limit is None:
-                    limit = 100  # Default limit
+                # Parse the limit parameter
+                actual_limit = 100  # Default limit
+                is_all_mode = False
                 
-                # Fetch messages
-                messages = await ctx.channel.history(limit=limit).flatten()
+                if limit:
+                    if limit.lower() == 'all':
+                        actual_limit = 50000  # Very high number instead of None
+                        is_all_mode = True
+                        await ctx.send("🔍 Collecting **ALL** links from this channel. This may take a while...")
+                    else:
+                        try:
+                            actual_limit = int(limit)
+                            await ctx.send(f"🔍 Collecting links from the last {actual_limit} messages...")
+                        except ValueError:
+                            await ctx.send(f"⚠️ Invalid limit '{limit}'. Using default of 100 messages.")
+                            actual_limit = 100
+            
+            # Fetch messages - use async iteration
+            messages = []
+            counter = 0
+            
+            # Set a very high number for "all" mode instead of None
+            # Discord API has limitations on history retrieval
+            message_limit = 50000 if is_all_mode else actual_limit
+            
+            # Progress update function for large retrievals
+            last_update_time = time.time()
+            
+            async for msg in ctx.channel.history(limit=message_limit):
+                messages.append(msg)
+                counter += 1
                 
-                # Extract links with metadata
-                links_data = defaultdict(list)
-                
-                for msg in messages:
-                    if msg.author.bot:
-                        continue
-                        
-                    # Extract URLs from message content
-                    urls = re.findall(r'(https?://\S+)', msg.content)
+                # Send progress updates periodically in "all" mode
+                if is_all_mode and counter % 1000 == 0:
+                    current_time = time.time()
+                    # Only update every 10 seconds to avoid spamming
+                    if current_time - last_update_time >= 10:
+                        await ctx.send(f"📊 Progress update: Processed {counter} messages so far...")
+                        last_update_time = current_time
+            
+            # Extract links with metadata
+            links_data = defaultdict(list)
+            link_count = 0
+            
+            for msg in messages:
+                if msg.author.bot:
+                    continue
                     
-                    for url in urls:
-                        # Clean URL (remove trailing punctuation)
-                        url = url.rstrip(',.!?;:\'\"')
-                        
-                        # Categorize based on domain
-                        domain = urllib.parse.urlparse(url).netloc
-                        category = "Other"
-                        
-                        if "github" in domain:
-                            category = "GitHub"
-                        elif "arxiv" in domain:
-                            category = "Research Papers"
-                        elif "huggingface" in domain or "hf.co" in domain:
-                            category = "Hugging Face"
-                        elif "youtube" in domain or "youtu.be" in domain:
-                            category = "Videos"
-                        elif "docs" in domain or "documentation" in domain:
-                            category = "Documentation"
-                        elif "pypi" in domain:
-                            category = "Python Packages"
-                        
-                        links_data[category].append({
-                            'url': url,
-                            'timestamp': msg.created_at.isoformat(),
-                            'author_name': msg.author.display_name or msg.author.name,
-                            'author_id': msg.author.id
-                        })
+                # Extract URLs from message content
+                urls = re.findall(r'(https?://\S+)', msg.content)
                 
-                # Create markdown chunks
-                if not any(links_data.values()):
-                    await ctx.send(f"No links found in the last {limit} messages.")
-                    return
+                for url in urls:
+                    # Clean URL (remove trailing punctuation)
+                    url = url.rstrip(',.!?;:\'\"')
                     
-                # Format as Markdown chunks
-                markdown_chunks = []
-                current_chunk = "# Links Collection\n\n"
-                current_chunk += f"*Collected from the last {limit} messages*\n\n"
-                
-                for category, links in links_data.items():
-                    if not links:
-                        continue
-                        
-                    current_chunk += f"## {category}\n\n"
+                    # Categorize based on domain
+                    domain = urllib.parse.urlparse(url).netloc
+                    category = "Other"
                     
-                    for link in links:
-                        link_entry = f"- [{link['url']}]({link['url']})\n  - Shared by {link['author_name']}\n  - {link['timestamp'][:10]}\n\n"
-                        
-                        # If chunk gets too large, start a new one
-                        if len(current_chunk) + len(link_entry) > 1900:
-                            markdown_chunks.append(current_chunk)
-                            current_chunk = f"# Links Collection (Continued)\n\n"
-                        
-                        current_chunk += link_entry
-                
-                # Add the last chunk if there's any content left
-                if current_chunk and len(current_chunk) > 50:  # Not just the header
-                    markdown_chunks.append(current_chunk)
-                
-                # Save links to storage
-                timestamp = int(datetime.now(UTC).timestamp())
-                links_dir = Path(f"{DATA_DIR}/links")
-                links_dir.mkdir(parents=True, exist_ok=True)
-                
-                # Save to a file and send as attachment
-                for i, chunk in enumerate(markdown_chunks):
-                    file_path = links_dir / f"links_{ctx.guild.id}_{timestamp}_part{i+1}.md"
-                    with open(file_path, "w", encoding="utf-8") as f:
-                        f.write(chunk)
+                    if "github" in domain:
+                        category = "GitHub"
+                    elif "arxiv" in domain:
+                        category = "Research Papers"
+                    elif "huggingface" in domain or "hf.co" in domain:
+                        category = "Hugging Face"
+                    elif "youtube" in domain or "youtu.be" in domain:
+                        category = "Videos"
+                    elif "docs" in domain or "documentation" in domain:
+                        category = "Documentation"
+                    elif "pypi" in domain:
+                        category = "Python Packages"
+                    elif "colab" in domain:
+                        category = "Google Colab"
+                    elif "twitter" in domain or "x.com" in domain:
+                        category = "Twitter/X"
+                    elif "medium" in domain:
+                        category = "Medium Articles"
+                    elif "discord" in domain:
+                        category = "Discord Links"
+                    elif "ollama" in domain:
+                        category = "Ollama Resources"
                     
-                    # Send the file
-                    await ctx.send(f"Links collection part {i+1} of {len(markdown_chunks)}", file=File(file_path))
+                    links_data[category].append({
+                        'url': url,
+                        'timestamp': msg.created_at.isoformat(),
+                        'author_name': msg.author.display_name or msg.author.name,
+                        'author_id': msg.author.id
+                    })
+                    link_count += 1
+            
+            # Create markdown chunks
+            if not any(links_data.values()):
+                await ctx.send(f"No links found in the {'entire channel history' if is_all_mode else f'last {actual_limit} messages'}.")
+                return
                 
-                # Also save to parquet for database access
-                links_file = links_dir / f"links_{ctx.guild.id}_{timestamp}.parquet"
-                all_links = []
-                for category, items in links_data.items():
-                    for item in items:
-                        item['category'] = category
-                        all_links.append(item)
-                        
-                if all_links:
-                    ParquetStorage.save_to_parquet(all_links, str(links_file))
-                    logging.info(f"Links saved to {links_file}")
+            # Format as Markdown chunks
+            markdown_chunks = []
+            current_chunk = "# Links Collection\n\n"
+            
+            # Add summary info - FIX HERE
+            if is_all_mode:
+                current_chunk += f"*Collected from entire channel history ({counter} messages processed)*\n\n"
+            else:
+                current_chunk += f"*Collected from the last {len(messages)} messages*\n\n"
+                
+            current_chunk += f"**Links found:** {link_count}\n"
+            current_chunk += f"**Categories found:** {len([c for c, l in links_data.items() if l])}\n\n"
+            current_chunk += "## Categories\n"
+            
+            # Add table of contents
+            for category, links in links_data.items():
+                if links:
+                    current_chunk += f"- {category}: {len(links)} links\n"
+            
+            current_chunk += "\n---\n\n"
+            
+            # Add links by category
+            for category, links in links_data.items():
+                if not links:
+                    continue
+                
+                current_chunk += f"## {category}\n\n"
+                
+                # Sort links by date (newest first)
+                sorted_links = sorted(links, key=lambda x: x['timestamp'], reverse=True)
+                
+                for link in sorted_links:
+                    link_entry = f"- [{link['url']}]({link['url']})\n  - Shared by {link['author_name']}\n  - {link['timestamp'][:10]}\n\n"
                     
-                # Schedule a background content extraction
-                asyncio.create_task(extract_content_from_links(links_data, ctx.guild.id))
+                    # If chunk gets too large, start a new one
+                    if len(current_chunk) + len(link_entry) > 1900:
+                        markdown_chunks.append(current_chunk)
+                        current_chunk = f"# Links Collection (Continued)\n\n"
                     
+                    current_chunk += link_entry
+            
+            # Add the last chunk if there's any content left
+            if current_chunk and len(current_chunk) > 50:  # Not just the header
+                markdown_chunks.append(current_chunk)
+            
+            # Save links to storage
+            timestamp = int(datetime.now(UTC).timestamp())
+            links_dir = Path(f"{DATA_DIR}/links")
+            links_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Save to a file and send as attachment
+            for i, chunk in enumerate(markdown_chunks):
+                file_path = links_dir / f"links_{ctx.guild.id}_{timestamp}_part{i+1}.md"
+                with open(file_path, "w", encoding="utf-8") as f:
+                    f.write(chunk)
+                
+                # Send the file
+                await ctx.send(f"Links collection part {i+1} of {len(markdown_chunks)}", file=File(file_path))
+            
+            # Also save to parquet for database access
+            links_file = links_dir / f"links_{ctx.guild.id}_{timestamp}.parquet"
+            all_links = []
+            for category, items in links_data.items():
+                for item in items:
+                    item['category'] = category
+                    all_links.append(item)
+            
+            if all_links:
+                ParquetStorage.save_to_parquet(all_links, str(links_file))
+                logging.info(f"Links saved to {links_file}")
+                
+            # Send link summary
+            summary = f"✅ Found {link_count} links across {len([c for c, l in links_data.items() if l])} categories"
+            if is_all_mode:
+                summary += f" after processing the entire channel history ({counter} messages)"
+            else:
+                summary += f" in the last {len(messages)} messages"
+            await ctx.send(summary)
+            
+            # Schedule a background content extraction
+            asyncio.create_task(extract_content_from_links(links_data, ctx.guild.id))
         except Exception as e:
             logging.error(f"Error collecting links: {e}")
             await ctx.send(f"⚠️ Error collecting links: {str(e)}")
@@ -685,7 +775,7 @@ Address the user by name ({user_name}) in your response."""
                         html = await WebCrawler.fetch_url_content(url)
                         if not html:
                             continue
-                            
+                        
                         # Extract text from HTML
                         content = await WebCrawler.extract_text_from_html(html)
                         
@@ -869,3 +959,216 @@ Address the user by name ({user_name}) in your response."""
 """
         
         await ctx.send(status_text)
+
+    # Return the registered commands for reference
+    logger.info("Bot commands registered successfully")
+    return {
+        "reset": reset,  # Use the actual function name (reset) instead of reset_command
+        "arxiv": arxiv_search,
+        "help": help_command,
+        "generate": sdxl_generate
+    }
+
+# Add these internal functions for slash commands to use
+
+async def reset_internal(interaction):
+    """Reset user conversation internal implementation."""
+    try:
+        user_key = get_user_key(interaction)
+        USER_CONVERSATIONS[user_key] = [{'role': 'system', 'content': SYSTEM_PROMPT}]
+        if user_key in COMMAND_MEMORY:
+            COMMAND_MEMORY[user_key].clear()
+        return "✅ Your conversation context has been reset."
+    except Exception as e:
+        logging.error(f"Error in reset_internal: {e}")
+        return f"⚠️ Error: {str(e)}"
+
+async def view_profile_internal(interaction, question=None):
+    """View user profile internal implementation."""
+    try:
+        user_key = get_user_key(interaction)
+        user_name = interaction.user.display_name or interaction.user.name
+        profile_path = os.path.join(USER_PROFILES_DIR, f"{user_key}_profile.json")
+            
+        # Check if profile exists
+        if not os.path.exists(profile_path):
+            return f"⚠️ No profile found for {user_name}. Interact with me more to build your profile!"
+                
+        # Load profile data
+        with open(profile_path, 'r', encoding='utf-8') as f:
+            profile_data = json.load(f)
+                
+        # Get conversation history
+        conversations = USER_CONVERSATIONS.get(user_key, [])
+        user_messages = [
+            conv for conv in conversations 
+            if conv['role'] == 'user' and 'content' in conv
+        ]
+            
+        # Format basic profile info
+        profile_text = f"""# 👤 Profile for {user_name}
+
+## Activity Summary
+- Messages: {len(user_messages)}
+- First Interaction: {user_messages[0]['timestamp'] if user_messages else 'N/A'}
+- Last Active: {profile_data.get('timestamp', 'Unknown')}
+
+## Learning Analysis
+{profile_data.get('analysis', 'No analysis available yet.')}
+"""
+
+        if question:
+            # Create context for answering questions about the user
+            context = f"""User Profile Information:
+{profile_data.get('analysis', '')}
+
+Recent Conversations:
+{chr(10).join([f"- {msg['content']}" for msg in user_messages[-10:]])}
+
+Question about the user: {question}
+
+Please provide a detailed, personalized answer based on the user's profile and conversation history.
+Address the user by name ({user_name}) in your response."""
+
+            answer = await get_ollama_response(context, with_context=False)
+            return f"# 🔍 Profile Query\n\n{answer}"
+        else:
+            # Just show the profile
+            return profile_text
+                
+    except Exception as e:
+        logging.error(f"Error in view_profile_internal: {e}")
+        return f"⚠️ Error accessing profile: {str(e)}"
+
+async def collect_links_internal(channel, limit=100):
+    """Collect links from channel history internal implementation."""
+    try:
+        from discord import File  # Add this import for slash commands
+        
+        # Parse the limit parameter
+        actual_limit = limit
+        is_all_mode = False
+        
+        if isinstance(limit, str) and limit.lower() == 'all':
+            actual_limit = 50000  # Very high number instead of None
+            is_all_mode = True
+        
+        # Fetch messages - use async iteration
+        messages = []
+        counter = 0
+        async for msg in channel.history(limit=actual_limit):
+            messages.append(msg)
+            counter += 1
+        
+        # Extract links with metadata
+        links_data = defaultdict(list)
+        link_count = 0
+        
+        for msg in messages:
+            if msg.author.bot:
+                continue
+                
+            # Extract URLs from message content
+            urls = re.findall(r'(https?://\S+)', msg.content)
+            
+            for url in urls:
+                # Clean URL (remove trailing punctuation)
+                url = url.rstrip(',.!?;:\'\"')
+                
+                # Categorize based on domain
+                domain = urllib.parse.urlparse(url).netloc
+                category = "Other"
+                
+                if "github" in domain:
+                    category = "GitHub"
+                elif "arxiv" in domain:
+                    category = "Research Papers"
+                elif "huggingface" in domain or "hf.co" in domain:
+                    category = "Hugging Face"
+                elif "youtube" in domain or "youtu.be" in domain:
+                    category = "Videos"
+                elif "docs" in domain or "documentation" in domain:
+                    category = "Documentation"
+                elif "pypi" in domain:
+                    category = "Python Packages"
+                elif "colab" in domain:
+                    category = "Google Colab"
+                elif "twitter" in domain or "x.com" in domain:
+                    category = "Twitter/X"
+                elif "medium" in domain:
+                    category = "Medium Articles"
+                elif "discord" in domain:
+                    category = "Discord Links"
+                elif "ollama" in domain:
+                    category = "Ollama Resources"
+                
+                links_data[category].append({
+                    'url': url,
+                    'timestamp': msg.created_at.isoformat(),
+                    'author_name': msg.author.display_name or msg.author.name,
+                    'author_id': msg.author.id
+                })
+                link_count += 1
+        
+        # Create markdown response
+        if not any(links_data.values()):
+            return f"No links found in the {'entire channel history' if is_all_mode else f'last {actual_limit} messages'}."
+            
+        # Format as Markdown
+        formatted_results = "# Links Collection\n\n"
+        
+        # Add summary info
+        if is_all_mode:
+            formatted_results += f"*Collected from entire channel history ({counter} messages processed)*\n\n"
+        else:
+            formatted_results += f"*Collected from the last {len(messages)} messages*\n\n"
+            
+        formatted_results += f"**Links found:** {link_count}\n"
+        formatted_results += f"**Categories found:** {len([c for c, l in links_data.items() if l])}\n\n"
+        formatted_results += "## Categories\n"
+        
+        # Add table of contents
+        for category, links in links_data.items():
+            if links:
+                formatted_results += f"- {category}: {len(links)} links\n"
+        
+        formatted_results += "\n---\n\n"
+        
+        # Add links by category
+        for category, links in links_data.items():
+            if not links:
+                continue
+                
+            formatted_results += f"## {category}\n\n"
+            
+            # Sort links by date (newest first)
+            sorted_links = sorted(links, key=lambda x: x['timestamp'], reverse=True)
+            
+            for link in sorted_links:
+                formatted_results += f"- [{link['url']}]({link['url']})\n  - Shared by {link['author_name']}\n  - {link['timestamp'][:10]}\n\n"
+        
+        # Save links to storage
+        timestamp = int(datetime.now(UTC).timestamp())
+        links_dir = Path(f"{DATA_DIR}/links")
+        links_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Save to parquet for database access
+        links_file = links_dir / f"links_{channel.guild.id}_{timestamp}.parquet"
+        all_links = []
+        for category, items in links_data.items():
+            for item in items:
+                item['category'] = category
+                all_links.append(item)
+                
+        if all_links:
+            ParquetStorage.save_to_parquet(all_links, str(links_file))
+            logging.info(f"Links saved to {links_file}")
+            
+        # Schedule a background content extraction
+        asyncio.create_task(extract_content_from_links(links_data, channel.guild.id))
+        
+        return formatted_results
+            
+    except Exception as e:
+        logging.error(f"Error in collect_links_internal: {e}")
+        return f"⚠️ Error collecting links: {str(e)}"
